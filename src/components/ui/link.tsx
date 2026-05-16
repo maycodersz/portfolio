@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
 
 export type LinkProps = {
   href?: string
@@ -7,18 +7,56 @@ export type LinkProps = {
   className?: string
 } & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'>
 
-/** Unified link — uses React Router for internal paths, native <a> for external/hash-only. */
-export default function Link({ href = '#', children, className, ...rest }: LinkProps) {
-  const isExternal =
-    href.startsWith('http://') || href.startsWith('https://') || href.startsWith('mailto:')
-  const isHashOnly = href.startsWith('#')
+/** True for same-origin anchors like `/#contact` — React Router's `<Link to={...}>` does not reliably scroll hash targets */
+function internalPathFragment(
+  href: string,
+): { pathname: string; hashFrag: string } | null {
+  if (!href.startsWith('/') || !href.includes('#')) return null
+  try {
+    const u = new URL(href, window.location.origin)
+    if (u.origin !== window.location.origin) return null
+    const frag = u.hash.startsWith('#') ? u.hash.slice(1) : ''
+    if (!frag) return null
+    return {
+      pathname: u.pathname || '/',
+      hashFrag: frag,
+    }
+  } catch {
+    return null
+  }
+}
 
-  if (isExternal || isHashOnly) {
+/** Unified link: native anchors for externals/hash-only/path#hash (with SPA navigate for hashes); RouterLink for plain in-app routes. */
+export default function Link({ href = '#', children, className, onClick, ...rest }: LinkProps) {
+  const navigate = useNavigate()
+
+  const isHttpExternal = href.startsWith('http://') || href.startsWith('https://')
+  const isMailto = href.startsWith('mailto:')
+  const isHashOnly = href.startsWith('#')
+  const fragmentPath = React.useMemo(() => internalPathFragment(href), [href])
+
+  const navigateFragmentThenScroll = React.useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>) => {
+      onClick?.(e)
+      if (e.defaultPrevented || !fragmentPath) return
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
+      e.preventDefault()
+      navigate({
+        pathname: fragmentPath.pathname,
+        hash: fragmentPath.hashFrag,
+      })
+    },
+    [fragmentPath, navigate, onClick],
+  )
+
+  if (isHttpExternal) {
     return (
       <a
         href={href}
         className={className}
-        {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={onClick}
         {...rest}
       >
         {children}
@@ -26,8 +64,32 @@ export default function Link({ href = '#', children, className, ...rest }: LinkP
     )
   }
 
+  if (isMailto) {
+    return (
+      <a href={href} className={className} onClick={onClick} {...rest}>
+        {children}
+      </a>
+    )
+  }
+
+  if (isHashOnly) {
+    return (
+      <a href={href} className={className} onClick={onClick} {...rest}>
+        {children}
+      </a>
+    )
+  }
+
+  if (fragmentPath) {
+    return (
+      <a href={href} className={className} onClick={navigateFragmentThenScroll} {...rest}>
+        {children}
+      </a>
+    )
+  }
+
   return (
-    <RouterLink to={href} className={className}>
+    <RouterLink to={href} className={className} onClick={onClick} {...rest}>
       {children}
     </RouterLink>
   )
