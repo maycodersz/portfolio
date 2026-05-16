@@ -153,7 +153,7 @@ export const portfolio = {
 
   navbar: {
     brandName: 'Maycoder',
-    brandHref: '/',
+    brandHref: '/#hero',
     items: [
       { id: 'nav-cv', label: 'CV', href: '/#cv', kind: 'link' },
       { id: 'nav-work', label: 'Work', href: '/#works', kind: 'link' },

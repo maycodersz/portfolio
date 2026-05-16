@@ -155,7 +155,7 @@ function ProjectCard({ project }: { project: Project }) {
             )}
           >
             <div className="flex shrink-0 items-center justify-center px-6 py-6 md:w-[min(28%,200px)] md:px-5">
-              <span className="text-gradient-brand px-px py-px text-center text-[11px] font-bold uppercase leading-tight tracking-widest">
+              <span className="text-center text-[11px] font-bold uppercase leading-tight tracking-widest text-foreground">
                 {project.title}
               </span>
             </div>
@@ -168,7 +168,7 @@ function ProjectCard({ project }: { project: Project }) {
               )}
               <p
                 className={cn(
-                  'text-gradient-brand mt-2 px-px py-px text-sm font-semibold leading-relaxed sm:text-base',
+                  'mt-2 text-sm leading-relaxed text-muted-foreground sm:text-base',
                   !project.highlight && 'mt-0',
                 )}
               >
@@ -179,11 +179,11 @@ function ProjectCard({ project }: { project: Project }) {
             <div className="flex shrink-0 flex-col justify-center gap-5 px-6 py-6 md:w-[min(32%,260px)] md:px-6">
               <div>
                 <p className="text-gradient-brand px-px py-px text-sm font-bold">{metaProjectTypeLabel}</p>
-                <p className="text-gradient-brand mt-1 px-px py-px text-sm">{project.projectType}</p>
+                <p className="mt-1 text-sm text-foreground">{project.projectType}</p>
               </div>
               <div>
                 <p className="text-gradient-brand px-px py-px text-sm font-bold">{metaDurationLabel}</p>
-                <p className="text-gradient-brand mt-1 px-px py-px text-sm">{project.duration}</p>
+                <p className="mt-1 text-sm text-foreground">{project.duration}</p>
               </div>
             </div>
           </div>
