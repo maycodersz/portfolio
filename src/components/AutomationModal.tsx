@@ -186,8 +186,10 @@ export function AutomationModal({ project, open, onOpenChange }: AutomationModal
                       </span>
                     ))}
                   </div>
-                  <DialogTitle className="text-xl font-bold tracking-tight sm:text-2xl">{project.title}</DialogTitle>
-                  <DialogDescription className="text-left text-[15px] leading-relaxed text-muted-foreground">
+                  <DialogTitle className="text-[clamp(1.125rem,0.75rem+1.5vw,1.5rem)] font-bold leading-snug tracking-tight">
+                    {project.title}
+                  </DialogTitle>
+                  <DialogDescription className="text-left text-[clamp(0.8125rem,0.6rem+0.95vw,0.9375rem)] leading-relaxed text-muted-foreground">
                     {project.description}
                   </DialogDescription>
                 </DialogHeader>

@@ -612,7 +612,11 @@ export const portfolio = {
         { title: 'Photo & PDF capture', description: 'Capture proof in-line with tasks so evidence stays next to the commitment.' },
         { title: 'Timeline view', description: 'Chronological scan of what is due and what changed so nothing slips between apps.' },
       ],
-      pageImages: [{ src: imgAdminoCaseStudy01, title: 'Screenshot 01' }],
+      pageImages: [
+        { src: imgAdminoCaseStudy01, title: 'Screenshot 01' },
+        { src: imgAdminoCaseStudy01, title: 'Screenshot 02' },
+        { src: imgAdminoCaseStudy01, title: 'Screenshot 03' }
+      ],
     },
   ] satisfies Readonly<Project[]>,
 

@@ -47,7 +47,7 @@ function CategoryPills({
             type="button"
             onClick={() => onChange(id)}
             className={cn(
-              'flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors duration-150',
+              'flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors duration-150 sm:px-3.5 sm:py-1.5 sm:text-sm',
               isActive
                 ? 'border-primary/30 bg-primary/15 text-accent-foreground'
                 : 'border-border bg-muted text-muted-foreground hover:border-primary/20 hover:bg-accent/60 hover:text-accent-foreground',
@@ -134,7 +134,7 @@ function FanCard({
   const cardInner = (
     <div
       className={cn(
-        'flex h-full flex-col overflow-hidden rounded-2xl border bg-card transition-[border-color,box-shadow] duration-300',
+        'flex h-full min-w-0 w-full flex-col overflow-hidden rounded-2xl border bg-card [container-type:inline-size] transition-[border-color,box-shadow] duration-300',
         isCenter
           ? 'border-primary/30 shadow-[0_28px_90px_-24px_rgb(124_79_226/50%),inset_0_1px_0_rgb(255_255_255/15%)] ring-1 ring-primary/10'
           : 'border-border shadow-[0_12px_40px_-16px_rgb(0_0_0/30%),inset_0_1px_0_rgb(255_255_255/8%)]',
@@ -151,7 +151,7 @@ function FanCard({
       }}
     >
       {/* ── Image / placeholder ─────────────────────────────────── */}
-      <div className="relative w-full flex-[0_0_58%] overflow-hidden">
+      <div className="relative w-full min-w-0 flex-[0_0_58%] overflow-hidden">
         {project.image ? (
           <img
             src={project.image}
@@ -173,25 +173,29 @@ function FanCard({
       {/* ── Metadata ────────────────────────────────────────────── */}
       <div
         className={cn(
-          'flex min-h-0 flex-1 flex-col justify-start gap-3 px-4 pt-4 pb-3 sm:px-5 sm:pt-5 sm:pb-4',
+          'flex min-h-0 min-w-0 w-full flex-1 flex-col justify-start gap-1.5 px-2.5 pt-2.5 pb-2 min-[420px]:gap-2 min-[420px]:px-3.5 min-[420px]:pt-3.5 min-[420px]:pb-2.5 sm:gap-2.5 sm:px-4 sm:pt-4 sm:pb-3',
           scrollReveal && sectionInView && isCenter && 'animate-stat-content-rise',
         )}
         style={{
           animationDelay: contentRiseDelayMs > 0 ? `${contentRiseDelayMs}ms` : undefined,
         }}
       >
-        <span className="text-[11px] font-semibold uppercase tracking-wide text-accent-foreground">
+        <span className="text-[clamp(0.5rem,0.28rem+2cqw,0.625rem)] font-semibold uppercase tracking-wide text-accent-foreground">
           {automationCardEyebrow(project)}
         </span>
-        <h3 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">{project.title}</h3>
-        <p className="text-[15px] leading-relaxed text-muted-foreground">{project.description}</p>
+        <h3 className="text-[clamp(0.8125rem,0.4rem+3.25cqw,1.125rem)] font-bold leading-tight tracking-tight text-foreground">
+          {project.title}
+        </h3>
+        <p className="text-[clamp(0.625rem,0.38rem+2.15cqw,0.8125rem)] leading-snug text-muted-foreground sm:leading-relaxed">
+          {project.description}
+        </p>
       </div>
     </div>
   )
 
   return (
     <div
-      className={cn('absolute inset-0', !isCenter && 'cursor-pointer')}
+      className={cn('absolute inset-0 min-w-0 overflow-hidden', !isCenter && 'cursor-pointer')}
       style={{
         zIndex,
         opacity: opacityOnStage,
@@ -205,7 +209,7 @@ function FanCard({
         <WithCursorFollow
           label={auto.viewWorkCursorLabel}
           onClick={onClickCenter}
-          containerClassName="h-full"
+          containerClassName="h-full min-w-0 w-full"
         >
           {cardInner}
         </WithCursorFollow>
@@ -385,7 +389,7 @@ export function AutomationSection() {
           <div className="flex max-w-xl flex-col gap-6">
             <p
               className={cn(
-                'text-[11px] font-bold uppercase tracking-[0.38em] text-accent-foreground motion-reduce:animate-none',
+                'text-[clamp(0.625rem,0.4rem+0.75vw,0.6875rem)] font-bold uppercase tracking-[0.38em] text-accent-foreground motion-reduce:animate-none',
                 canAnim ? 'animate-stats-eyebrow-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
               )}
             >
@@ -405,7 +409,7 @@ export function AutomationSection() {
             <div>
               <p
                 className={cn(
-                  'text-sm leading-relaxed text-muted-foreground motion-reduce:animate-none sm:text-[15px]',
+                  'text-[clamp(0.75rem,0.55rem+0.9vw,0.9375rem)] leading-relaxed text-muted-foreground motion-reduce:animate-none',
                   canAnim ? 'animate-stats-support-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
                 )}
                 style={{ animationDelay: canAnim ? '0.48s' : undefined }}
