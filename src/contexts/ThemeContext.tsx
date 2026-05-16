@@ -20,10 +20,21 @@ function getInitialTheme(): Theme {
 
 function applyThemeClass(theme: Theme) {
   const root = document.documentElement
-  if (theme === 'dark') {
-    root.classList.add('dark')
+
+  const apply = () => {
+    if (theme === 'dark') {
+      root.classList.add('dark')
+    } else {
+      root.classList.remove('dark')
+    }
+  }
+
+  if (document.startViewTransition) {
+    document.startViewTransition(apply)
   } else {
-    root.classList.remove('dark')
+    root.classList.add('theme-transitioning')
+    apply()
+    window.setTimeout(() => root.classList.remove('theme-transitioning'), 500)
   }
 }
 

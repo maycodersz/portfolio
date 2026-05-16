@@ -6,8 +6,25 @@ import { cn } from '@/utils/cn'
 
 const p = portfolio.pricing
 
+/** Same surface as ContactSection method/social tiles (icon rows): experiment on pricing cards. */
+const pricingCardSurfaceLikeContact = cn(
+  'bg-background',
+  'dark:bg-white/[0.04] dark:backdrop-blur-sm',
+)
+
+/** Featured outer ring only (dark): strong white→purple ramp — matches main/accent CTA chrome. */
+const popularDarkMainButtonBorderGradient =
+  'dark:bg-none dark:bg-gradient-to-b dark:from-white dark:via-primary dark:to-[rgb(124_79_226)]'
+
+/** “Most popular” pill: matches main/accent Button fill (dark = vertical accent ramp). */
+const popularBadgeMainButtonDark = cn(
+  'dark:border dark:border-primary/50 dark:text-white dark:backdrop-blur-md',
+  'dark:bg-gradient-to-b dark:from-white/[0.28] dark:via-primary/30 dark:to-primary/[0.45]',
+  'dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.42),0_8px_28px_-12px_rgb(124_79_226/42%)]',
+)
+
 /**
- * 1px gradient stroke around featured plan — matches Most Popular badge ramp.
+ * Gradient stroke + glow around featured plan — main/accent Button-style rim (esp. dark).
  */
 function PopularGradientBorderShell({
   active,
@@ -20,13 +37,15 @@ function PopularGradientBorderShell({
   return (
     <div
       className={cn(
-        /* Whole frame + rim scale together — inner scale hides the parent's gradient stripe */
-        'relative isolate scale-[1.03] rounded-2xl p-[2px]',
+        /* Gradient-filled pad = stroke; thicker so accent rim reads like main Button chrome */
+        'relative isolate scale-[1.03] rounded-2xl p-[3px]',
         '[background-image:var(--brand-text-gradient)]',
         '[background-color:transparent]',
-        'shadow-[0_12px_40px_-16px_rgb(147_51_234_/_20%)]',
-        'dark:bg-none dark:bg-gradient-to-b dark:from-[var(--brand-from)] dark:to-[var(--brand-to)]',
-        'dark:shadow-[0_8px_40px_-12px_var(--brand-shadow-glow)]',
+        /* Light — soft purple lift */
+        'shadow-[0_12px_40px_-16px_rgb(147_51_234_/_22%),0_0_0_1px_rgb(147_51_234_/_12%)]',
+        popularDarkMainButtonBorderGradient,
+        /* Dark — main Button-style border glow (primary ring + lavender aura) */
+        'dark:shadow-[0_0_0_1px_rgb(167_139_250/45%),0_0_0_2px_rgb(124_79_226/35%),0_16px_52px_-14px_rgb(124_79_226/55%),0_0_36px_-10px_rgb(167_139_250/30%)]',
       )}
     >
       {children}
@@ -45,14 +64,6 @@ function PricingCard({
   delay: string
   inView: boolean
 }) {
-  const cardGradients: Record<string, string> = {
-    'web-dev': 'from-white to-violet-50/80',
-    'mobile-app': 'from-white to-purple-50',
-    automation: 'from-white to-blue-50/80',
-  }
-
-  const lightGradient = cardGradients[plan.id] ?? 'from-white to-slate-50'
-
   const isPopular = !!plan.isPopular
 
   return (
@@ -67,33 +78,24 @@ function PricingCard({
         <div
           className={cn(
             'relative flex flex-col gap-6 p-7 transition-all duration-300',
-            isPopular ? 'rounded-[calc(1rem-2px)]' : 'rounded-2xl',
+            isPopular ? 'rounded-[calc(1rem-3px)]' : 'rounded-2xl',
             'hover:-translate-y-1.5 active:scale-[0.98] active:duration-150',
-            /* Light mode */
-            `bg-gradient-to-b ${lightGradient}`,
-            /* Border — transparent inside light gradient shell for popular plan */
-            isPopular && 'border-transparent dark:border-white/10',
-            /* Dark mode — glass */
-            'dark:bg-white/[0.04] dark:backdrop-blur-xl',
-            !isPopular && 'border border-border',
+            /* Match ContactSection icon tiles — bg + subtle frost in dark */
+            pricingCardSurfaceLikeContact,
+            isPopular && 'border-transparent dark:border-transparent',
+            !isPopular && 'border border-border dark:border-white/10',
           )}
         >
-          {/* Dark-mode inner gradient shimmer */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-b from-white/[0.07] to-transparent dark:block hidden"
-          />
-
           {isPopular && (
             <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
               <span
                 className={cn(
                   'inline-flex whitespace-nowrap rounded-full px-3.5 py-1',
-                  'text-[11px] font-bold uppercase tracking-widest text-white',
-                  /* Light: headline gradient fills the pill. Dark headline ramp starts near white,
-                   * so badge uses vertical brand hues instead — keeps white labels readable. */
-                  '[background:var(--brand-text-gradient)] dark:bg-none dark:bg-gradient-to-b dark:from-[var(--brand-from)] dark:to-[var(--brand-to)]',
-                  'shadow-[0_2px_12px_-4px_rgb(0_0_0_/0.25)]',
+                  'text-[11px] font-bold uppercase tracking-widest',
+                  /* Light — same surface as accent/main Button */
+                  'border border-white/35 text-primary-foreground shadow-[var(--cta-rest-shadow)]',
+                  'bg-gradient-to-br from-[var(--cta-main-from)] via-[var(--cta-main-via)] to-[var(--cta-main-to)]',
+                  popularBadgeMainButtonDark,
                 )}
               >
                 {p.popularBadgeLabel}

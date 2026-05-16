@@ -1,5 +1,12 @@
 import { Boxes, Cpu, Database, Webhook } from 'lucide-react'
-import { type CSSProperties, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import {
+  type CSSProperties,
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 
 import { portfolio } from '@/content/portfolio'
 import { skillIconUrl } from '@/lib/skillLogos'
@@ -17,7 +24,7 @@ function chunkPairs<T>(arr: readonly T[]): T[][] {
 /* Filter & color logic lives in index.css (.skill-chip-btn / .skill-chip-icon / .skill-chip-fallback)
    to avoid Tailwind v4 dark:group-hover specificity conflicts. */
 const chipClass =
-  'skill-chip-btn flex shrink-0 items-center rounded-md px-3 py-2 outline-none transition-[background,background-image] duration-200 ease-[cubic-bezier(0.33,_1,_0.68,_1)] hover:[background:var(--skill-chip-hover-gradient)] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none'
+  'skill-chip-btn flex shrink-0 items-center rounded-md px-3 py-2 outline-none transition-[background,background-image] duration-200 ease-[cubic-bezier(0.33,_1,_0.68,_1)] hover:[background:var(--skill-chip-hover-gradient)] focus-visible:[background:var(--skill-chip-hover-gradient)] active:[background:var(--skill-chip-hover-gradient)] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none'
 
 const skillImgMono = 'skill-chip-icon size-9 shrink-0 object-contain'
 
@@ -83,6 +90,18 @@ const APPROX_CHIP_PX = 96
 function SkillGroupMarquee({ items }: { items: readonly string[] }) {
   const viewportRef = useRef<HTMLDivElement>(null)
   const [loopsInHalf, setLoopsInHalf] = useState(2)
+  /** True while finger/stylus is down on a chip — keeps marquee paused after :active ends only until pointerup on window */
+  const [interactionPause, setInteractionPause] = useState(false)
+
+  const handleViewportPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    const target = e.target
+    if (!(target instanceof Element)) return
+    if (!target.closest('.skill-chip-btn')) return
+    setInteractionPause(true)
+    const clear = () => setInteractionPause(false)
+    window.addEventListener('pointerup', clear, { once: true })
+    window.addEventListener('pointercancel', clear, { once: true })
+  }, [])
 
   useLayoutEffect(() => {
     const el = viewportRef.current
@@ -114,7 +133,12 @@ function SkillGroupMarquee({ items }: { items: readonly string[] }) {
 
       <div
         ref={viewportRef}
-        className="skills-marquee-row relative z-[1] w-full max-w-full overflow-hidden rounded-md sm:min-w-0"
+        role="presentation"
+        onPointerDownCapture={handleViewportPointerDown}
+        className={cn(
+          'skills-marquee-row relative z-[1] w-full max-w-full overflow-hidden rounded-md sm:min-w-0',
+          interactionPause && 'skills-marquee-row--interaction-pause',
+        )}
         style={{ '--skill-marquee-duration': `${durationSec}s` } as CSSProperties}
       >
         <div className="skill-marquee-track flex items-center gap-6 px-4 py-2 sm:gap-7 sm:px-5 sm:py-3">
