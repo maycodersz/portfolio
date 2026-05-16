@@ -1,3 +1,14 @@
+import imgAutomationCalendar from '@/assets/projects/automation/project-5.png'
+import imgAutomationEmail from '@/assets/projects/automation/project-4.png'
+import imgAutomationJarvis from '@/assets/projects/automation/project-1.png'
+import imgAutomationReceipt from '@/assets/projects/automation/project-2.png'
+import imgAutomationSales from '@/assets/projects/automation/project-3.png'
+import imgAdminoPhone from '@/assets/projects/mobile/admino/phone.png'
+import imgAdminoTablet from '@/assets/projects/mobile/admino/tablet.png'
+import imgAcademicHubDesktop from '@/assets/projects/web/academic-hub/desktop.png'
+import imgAcademicHubPhone from '@/assets/projects/web/academic-hub/phone.png'
+import imgAcademicHubTablet from '@/assets/projects/web/academic-hub/tablet.png'
+
 export type NavbarItemKind = 'link' | 'cta'
 
 export type NavbarItem = {
@@ -22,8 +33,8 @@ export type ProjectKind = 'website' | 'mobile'
 
 export type ProjectScreens = {
   desktop?: string
-  tablet?: string
-  phone?: string
+  tablet: string
+  phone: string
 }
 
 export type Project = {
@@ -39,15 +50,27 @@ export type Project = {
 
 /* ─── Automation project types ───────────────────────────────────────────── */
 
-export type AutomationCategory = 'all' | 'ai' | 'automation' | 'crm' | 'marketing' | 'analytics'
+export type AutomationCategory = 'all' | 'ai' | 'automation'
+
+export type AutomationProjectLinkVariant = 'web' | 'mobile'
+
+export type AutomationProjectLink =
+  | {
+      href: string
+      variant: AutomationProjectLinkVariant
+    }
+  | null
 
 export type AutomationProject = {
   id: string
   title: string
-  category: Exclude<AutomationCategory, 'all'>
+  categories: readonly Exclude<AutomationCategory, 'all'>[]
   description: string
-  tags: string[]
-  image?: string
+  tags: readonly string[]
+  image: string
+  /** Stored data backends (Sheets, Postgres, Drive, etc.) — renders as chips like Tech stack */
+  databases: readonly string[]
+  link: AutomationProjectLink
 }
 
 export type AutomationCategoryFilter = {
@@ -103,6 +126,15 @@ export type StatItem = {
   icon: string
 }
 
+/** Resolve display label for a non-`all` automation category from `portfolio.automation.categoryFilters`. */
+export function automationCategoryLabel(
+  categoryFilters: readonly AutomationCategoryFilter[],
+  id: Exclude<AutomationCategory, 'all'>,
+): string {
+  const row = categoryFilters.find((f) => f.id === id)
+  return row?.label ?? id
+}
+
 /* ─── Content ────────────────────────────────────────────────────────────── */
 
 export const portfolio = {
@@ -137,9 +169,9 @@ export const portfolio = {
     /** Dot pagination beneath stat cards (`aria-label` prefix). */
     paginationGoToCardPrefix: 'Show stat card',
     items: [
-      { id: 'projects',  value: 12, suffix: '+', label: 'Projects Built',          icon: 'Layers'   },
-      { id: 'apis',      value: 30, suffix: '+', label: 'APIs & Tools Integrated', icon: 'Plug'     },
-      { id: 'platforms', value: 8,  suffix: '',  label: 'Platforms',               icon: 'Monitor'  },
+      { id: 'projects', value: 12, suffix: '+', label: 'Projects Built', icon: 'Layers' },
+      { id: 'apis', value: 30, suffix: '+', label: 'APIs & Tools Integrated', icon: 'Plug' },
+      { id: 'platforms', value: 8, suffix: '', label: 'Platforms', icon: 'Monitor' },
     ] as const satisfies Readonly<StatItem[]>,
   },
 
@@ -236,23 +268,33 @@ export const portfolio = {
       {
         id: 'email',
         label: 'Email',
-        value: 'your@gmail.com',
-        href: 'mailto:your@gmail.com',
+        value: 'nunez.aianmhyco.bernardino@gmail.com',
+        href: 'mailto:nunez.aianmhyco.bernardino@gmail.com',
         platform: 'gmail',
       },
       {
         id: 'linkedin',
         label: 'LinkedIn',
-        value: '/in/yourhandle',
-        href: 'https://linkedin.com/in/yourhandle',
+        value: 'Aian Mhyco Nunez',
+        href: 'https://www.linkedin.com/in/aian-mhyco-nu%C3%B1ez-16b21a39b/',
         platform: 'linkedin',
       },
     ] as const satisfies Readonly<ContactMethod[]>,
     socials: [
-      { id: 'facebook', label: 'Facebook', href: 'https://facebook.com/yourpage', platform: 'facebook' },
-      { id: 'instagram', label: 'Instagram', href: 'https://instagram.com/yourhandle', platform: 'instagram' },
-      { id: 'tiktok', label: 'TikTok', href: 'https://tiktok.com/@yourhandle', platform: 'tiktok' },
-      { id: 'youtube', label: 'YouTube', href: 'https://youtube.com/@yourchannel', platform: 'youtube' },
+      { id: 'facebook', label: 'Facebook', href: 'https://www.facebook.com/profile.php?id=61588914774614', platform: 'facebook' },
+      {
+        id: 'instagram',
+        label: 'Instagram',
+        href: 'https://www.instagram.com/maycoder.ai.automation/?hl=en',
+        platform: 'instagram',
+      },
+      { id: 'tiktok', label: 'TikTok', href: 'https://www.tiktok.com/@maycoder.ai.automation', platform: 'tiktok' },
+      {
+        id: 'youtube',
+        label: 'YouTube',
+        href: 'https://www.youtube.com/@maycoder.ai.automation.n8n',
+        platform: 'youtube',
+      },
     ] as const satisfies Readonly<SocialLink[]>,
   },
 
@@ -260,6 +302,8 @@ export const portfolio = {
     eyebrow: 'Project',
     caseStudyPendingMessage: 'Full case study coming soon.',
     slugFallbackHeading: 'Project',
+    backLabel: 'Back to work',
+    backHref: '/#works',
   },
 
   works: {
@@ -275,6 +319,11 @@ export const portfolio = {
 
   projectShowcase: {
     sectionAriaLabel: 'Featured project',
+    screens: {
+      desktop: imgAcademicHubDesktop,
+      tablet: imgAcademicHubTablet,
+      phone: imgAcademicHubPhone,
+    },
   },
 
   automation: {
@@ -282,7 +331,7 @@ export const portfolio = {
     eyebrow: 'Playground',
     title: 'Automation & AI Projects',
     description:
-      'A curated archive of automation workflows, AI pipelines, CRM integrations, and marketing tools built across client engagements.',
+      'n8n workflows, AI agents on Telegram, and integrations across Gmail, Calendar, spreadsheets, databases, and more.',
     categoryFilterAriaLabel: 'Filter by category',
     emptyCategoryMessage: 'No projects in this category.',
     carouselViewportHeightPx: 340,
@@ -291,9 +340,6 @@ export const portfolio = {
       { id: 'all', label: 'All' },
       { id: 'ai', label: 'AI' },
       { id: 'automation', label: 'Automation' },
-      { id: 'crm', label: 'CRM' },
-      { id: 'marketing', label: 'Marketing' },
-      { id: 'analytics', label: 'Analytics' },
     ] as const satisfies Readonly<AutomationCategoryFilter[]>,
     carouselAria: {
       previous: 'Previous',
@@ -304,8 +350,12 @@ export const portfolio = {
 
   automationModal: {
     fallbackTitle: 'Project',
-    eyebrow: 'Case Study',
-    pendingBody: 'Full details coming soon.',
+    eyebrow: 'Automation workflow',
+    techStackHeading: 'Tech stack',
+    databaseHeading: 'Data storage',
+    openLinkLabelWeb: 'Open live site',
+    openLinkLabelMobile: 'Open app link',
+    imageAltFallback: 'Workflow screenshot',
   },
 
   skillGroups: [
@@ -341,57 +391,92 @@ export const portfolio = {
   projects: [
     {
       id: 'academic-hub',
-      title: 'Academic Hub',
+      title: 'OLFU Academic Hub',
       kind: 'website',
       description:
-        'A student-built resource hub for Our Lady of Fatima University — reviewers, notes, leaderboards, and study rooms in one platform.',
+        'A collaborative academic resource platform for Our Lady of Fatima University students. Features study material uploads, XP-based leveling & leaderboards, student profiles, bookmarks, file requests, room/chat areas, moderation tools, notifications, and Google Sign-In restricted to school email domains.',
       projectType: 'EdTech, Web App',
       duration: '6 Months',
       highlight: '200+ students onboarded in the first month',
       screens: {
-        desktop: undefined,
-        tablet: undefined,
-        phone: undefined,
+        desktop: imgAcademicHubDesktop,
+        tablet: imgAcademicHubTablet,
+        phone: imgAcademicHubPhone,
       },
     },
     {
       id: 'admino-mobile',
-      title: 'Admino',
+      title: 'Admino — Life Admin App',
       kind: 'mobile',
-      description: 'Description here.',
+      description:
+        'A local-first mobile app for personal life admin — bills, renewals, subscriptions, medical tasks, IDs, and more. Capture tasks with categories and action types, attach photos or PDFs as proof, set due dates with local reminders, and browse everything from Inbox, Timeline, and Vault views. Data stays fully on-device.',
       projectType: 'Utility App, Mobile App',
-      duration: '1 Month',
-      highlight: 'Highlight here.',
+      duration: 'Ongoing',
+      highlight: '',
       screens: {
-        tablet: undefined,
-        phone: undefined,
+        tablet: imgAdminoTablet,
+        phone: imgAdminoPhone,
       },
     },
-  ] as const satisfies Readonly<Project[]>,
+  ] satisfies Readonly<Project[]>,
 
   automationProjects: [
     {
-      id: 'ai-assistant',
-      title: 'AI Jarvis 1',
-      category: 'ai',
-      description: 'Description here.',
-      tags: ['OpenAI', 'n8n', 'PostgreSQL', 'Telegram', 'Supabase'],
+      id: 'automation-jarvis',
+      title: 'Jarvis AI Agent',
+      categories: ['ai', 'automation'],
+      description:
+        'A personal AI assistant on Telegram that delegates tasks to specialized sub-agents. The Email Agent handles all Gmail operations, while the Calendar Agent manages Google Calendar events — all orchestrated through n8n with PostgreSQL for persistent memory.',
+      tags: ['n8n', 'Telegram', 'Gmail', 'Google Calendar', 'PostgreSQL'],
+      image: imgAutomationJarvis,
+      databases: ['PostgreSQL'],
+      link: null,
     },
     {
-      id: 'ai-assistant',
-      title: 'AI Jarvis 2',
-      category: 'ai',
-      description: 'Description here.',
-      tags: ['OpenAI', 'n8n', 'PostgreSQL', 'Telegram', 'Supabase'],
+      id: 'automation-receipt-bot',
+      title: 'Receipt Processor Bot',
+      categories: ['ai', 'automation'],
+      description:
+        'Send a receipt photo to Telegram and this bot automatically processes it using AI vision — extracting items, quantities, and prices, then logging everything to Google Sheets and saving the original receipt image to Google Drive. Zero manual data entry.',
+      tags: ['n8n', 'Telegram', 'OpenAI', 'Google Sheets', 'Google Drive'],
+      image: imgAutomationReceipt,
+      databases: ['Google Sheets', 'Google Drive'],
+      link: null,
     },
     {
-      id: 'ai-assistant',
-      title: 'AI Jarvis 3',
-      category: 'ai',
-      description: 'Description here.',
-      tags: ['OpenAI', 'n8n', 'PostgreSQL', 'Telegram', 'Supabase'],
+      id: 'automation-sales-tracker',
+      title: 'Sales Tracker Bot',
+      categories: ['ai', 'automation'],
+      description:
+        'A feature-rich Telegram bot for small business management. Log sales and expenses instantly, scan handwritten records with AI image recognition, and pull daily, weekly, monthly, or custom-range financial reports. Includes void/undo support and CSV export.',
+      tags: ['n8n', 'Telegram', 'OpenAI', 'PostgreSQL', 'Google Sheets'],
+      image: imgAutomationSales,
+      databases: ['PostgreSQL', 'Google Sheets'],
+      link: null,
     },
-  ] as const satisfies Readonly<AutomationProject[]>,
+    {
+      id: 'automation-email-agent',
+      title: 'Email Agent',
+      categories: ['ai', 'automation'],
+      description:
+        'An AI-powered n8n automation that handles all Gmail tasks — reading, summarizing, drafting, and organizing emails on command. Uses PostgreSQL for conversation memory and Google Sheets as a lightweight log, triggered via webhook.',
+      tags: ['n8n', 'Gmail', 'OpenAI', 'Google Sheets', 'PostgreSQL'],
+      image: imgAutomationEmail,
+      databases: ['PostgreSQL', 'Google Sheets'],
+      link: null,
+    },
+    {
+      id: 'automation-calendar-agent',
+      title: 'Calendar Agent',
+      categories: ['automation'],
+      description:
+        'A dedicated n8n automation agent for Google Calendar management — create, update, query, and delete events on behalf of the user through natural language. Pairs with the Jarvis AI Agent as a specialized sub-agent for scheduling tasks.',
+      tags: ['n8n', 'Google Calendar', 'Google Sheets', 'PostgreSQL'],
+      image: imgAutomationCalendar,
+      databases: ['PostgreSQL', 'Google Sheets'],
+      link: null,
+    },
+  ] satisfies readonly AutomationProject[],
 } as const
 
 export type Portfolio = typeof portfolio

@@ -8,7 +8,6 @@ import { SkillsShowcase } from '@/components/SkillsShowcase'
 import { StatsSection } from '@/components/StatsSection'
 import { WorksSection } from '@/components/WorksSection'
 import NavBar from '@/components/ui/navbar'
-import { WorksPaperPlaneSuppressor } from '@/contexts/SiteCursorContext'
 
 function App() {
   return (
@@ -20,9 +19,9 @@ function App() {
       </div>
       <SkillsShowcase />
       <StatsSection />
-      <WorksPaperPlaneSuppressor id="works">
+      <div id="works" className="scroll-mt-[var(--navbar-height)]">
         <WorksSection />
-      </WorksPaperPlaneSuppressor>
+      </div>
       <AutomationSection />
       <PricingSection />
       <ContactSection />

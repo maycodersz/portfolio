@@ -1,6 +1,3 @@
-import desktopImg from '@/assets/desktop.png'
-import phoneImg from '@/assets/phone.png'
-import tabletImg from '@/assets/tablet.png'
 import { cn } from '@/utils/cn'
 
 const TILT_TRANSITION =
@@ -18,7 +15,7 @@ export function MonitorFrame({
   canAnimate = true,
   desktopAlt,
 }: {
-  src?: string
+  src: string
   visible: boolean
   canAnimate?: boolean
   desktopAlt: string
@@ -44,7 +41,7 @@ export function MonitorFrame({
         <div className="overflow-hidden rounded-[10px] border border-primary/22 bg-[var(--device-frame-bg)] p-[6px] shadow-[0_0_0_1px_rgb(124_79_226/32%),0_32px_80px_-12px_rgba(0,0,0,0.85),inset_0_1px_0_rgb(124_79_226/10%)]">
           <div className="overflow-hidden rounded-[6px]">
             <img
-              src={src ?? desktopImg}
+              src={src}
               alt={desktopAlt}
               className="block w-full object-cover object-top"
               draggable={false}
@@ -64,7 +61,7 @@ export function TabletFrame({
   canAnimate = true,
   tabletAlt,
 }: {
-  src?: string
+  src: string
   visible: boolean
   canAnimate?: boolean
   tabletAlt: string
@@ -91,7 +88,7 @@ export function TabletFrame({
           <div className="absolute left-1/2 top-[3px] h-[5px] w-[5px] -translate-x-1/2 rounded-full bg-[var(--device-frame-dot)] shadow-[inset_0_1px_2px_rgba(0,0,0,0.8)]" />
           <div className="overflow-hidden rounded-[6px]">
             <img
-              src={src ?? tabletImg}
+              src={src}
               alt={tabletAlt}
               className="block w-full object-cover object-top"
               draggable={false}
@@ -109,7 +106,7 @@ export function PhoneFrame({
   canAnimate = true,
   phoneAlt,
 }: {
-  src?: string
+  src: string
   visible: boolean
   canAnimate?: boolean
   phoneAlt: string
@@ -139,7 +136,7 @@ export function PhoneFrame({
           <div className="absolute left-1/2 top-[6px] z-[1] h-[8px] w-[28%] -translate-x-1/2 rounded-full bg-[var(--device-frame-notch)] shadow-[inset_0_1px_2px_rgba(0,0,0,0.8)]" />
           <div className="overflow-hidden rounded-[clamp(16px,2.5vw,26px)]">
             <img
-              src={src ?? phoneImg}
+              src={src}
               alt={phoneAlt}
               className="block w-full object-cover object-top"
               draggable={false}

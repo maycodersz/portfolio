@@ -36,7 +36,7 @@ function WebsiteDeviceStage({
   return (
     <div className={DEVICE_STAGE_CLASS}>
       <div className="absolute left-1/2 top-0 z-[1] w-[58%] -translate-x-1/2">
-        <MonitorFrame src={screens.desktop} visible={visible} canAnimate={canAnimate} desktopAlt={alts.desktop} />
+        <MonitorFrame src={screens.desktop!} visible={visible} canAnimate={canAnimate} desktopAlt={alts.desktop} />
       </div>
       <div className="absolute right-[0%] top-[8%] z-[5] w-[34%]">
         <TabletFrame src={screens.tablet} visible={visible} canAnimate={canAnimate} tabletAlt={alts.tablet} />
@@ -89,6 +89,7 @@ function ProjectCard({ project }: { project: Project }) {
     portfolio.works
 
   const isMobile = project.kind === 'mobile'
+  const goWork = () => navigate(`/work/${project.id}`)
 
   return (
     <section
@@ -109,12 +110,12 @@ function ProjectCard({ project }: { project: Project }) {
         className="pointer-events-none absolute right-[5%] top-[20%] h-[40%] w-[30%] rounded-full bg-primary/[0.055] blur-[100px]"
       />
 
-      <WithCursorFollow
-        containerClassName="flex min-h-0 flex-1 flex-col px-[10%]"
-        label={viewWorkCursorLabel}
-        onClick={() => navigate(`/work/${project.id}`)}
-      >
-        <div className="flex min-h-0 flex-1 flex-col justify-center">
+      <div className="flex min-h-0 flex-1 flex-col px-[10%]">
+        <WithCursorFollow
+          containerClassName="flex min-h-0 flex-1 flex-col justify-center"
+          label={viewWorkCursorLabel}
+          onClick={goWork}
+        >
           {isMobile ? (
             <MobileDeviceStage
               key={revealKey}
@@ -132,32 +133,42 @@ function ProjectCard({ project }: { project: Project }) {
               alts={devicePreviewAlt}
             />
           )}
-        </div>
+        </WithCursorFollow>
 
         <div className="w-full shrink-0 space-y-2 py-4 md:pt-10 lg:py-12">
           <div
+            role="button"
+            tabIndex={0}
+            onClick={goWork}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                goWork()
+              }
+            }}
             className={cn(
-              'flex flex-col overflow-hidden rounded-2xl border border-primary/[0.18]',
+              'flex flex-col overflow-hidden rounded-2xl border border-primary/[0.18] outline-none',
               'bg-[var(--works-info-bg)] shadow-[inset_0_1px_0_rgb(124_79_226/8%)]',
+              'focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
               'md:flex-row md:divide-x md:divide-primary/15',
               'divide-y divide-primary/15 md:divide-y-0',
             )}
           >
             <div className="flex shrink-0 items-center justify-center px-6 py-6 md:w-[min(28%,200px)] md:px-5">
-              <span className="text-center text-[11px] font-bold uppercase leading-tight tracking-widest text-foreground">
+              <span className="text-gradient-brand px-px py-px text-center text-[11px] font-bold uppercase leading-tight tracking-widest">
                 {project.title}
               </span>
             </div>
 
             <div className="min-w-0 flex-1 px-6 py-6 md:px-8">
               {project.highlight && (
-                <p className="text-sm font-medium leading-snug text-accent-foreground sm:text-[15px]">
+                <p className="text-gradient-brand px-px py-px text-sm font-medium leading-snug sm:text-[15px]">
                   {project.highlight}
                 </p>
               )}
               <p
                 className={cn(
-                  'mt-2 text-sm font-semibold leading-relaxed text-foreground sm:text-base',
+                  'text-gradient-brand mt-2 px-px py-px text-sm font-semibold leading-relaxed sm:text-base',
                   !project.highlight && 'mt-0',
                 )}
               >
@@ -167,28 +178,24 @@ function ProjectCard({ project }: { project: Project }) {
 
             <div className="flex shrink-0 flex-col justify-center gap-5 px-6 py-6 md:w-[min(32%,260px)] md:px-6">
               <div>
-                <p className="text-sm font-bold text-foreground">{metaProjectTypeLabel}</p>
-                <p className="mt-1 text-sm text-muted-foreground">{project.projectType}</p>
+                <p className="text-gradient-brand px-px py-px text-sm font-bold">{metaProjectTypeLabel}</p>
+                <p className="text-gradient-brand mt-1 px-px py-px text-sm">{project.projectType}</p>
               </div>
               <div>
-                <p className="text-sm font-bold text-foreground">{metaDurationLabel}</p>
-                <p className="mt-1 text-sm text-muted-foreground">{project.duration}</p>
+                <p className="text-gradient-brand px-px py-px text-sm font-bold">{metaDurationLabel}</p>
+                <p className="text-gradient-brand mt-1 px-px py-px text-sm">{project.duration}</p>
               </div>
             </div>
           </div>
 
           {/* Mobile-only View Work button */}
           <div className="flex justify-center pt-2 lg:hidden">
-            <Button
-              variant="accent"
-              size="sm"
-              onClick={() => navigate(`/work/${project.id}`)}
-            >
+            <Button variant="accent" size="sm" onClick={goWork}>
               {viewWorkCursorLabel} →
             </Button>
           </div>
         </div>
-      </WithCursorFollow>
+      </div>
     </section>
   )
 }

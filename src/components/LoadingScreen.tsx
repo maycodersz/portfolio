@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 
-import alterEgoDarkImg from '@/assets/alter-ego-dark.png'
-import alterEgoLightImg from '@/assets/alter-ego-light.png'
-import profileDarkImg from '@/assets/profile-dark.png'
-import profileLightImg from '@/assets/profile-light.png'
+import alterEgoDarkImg from '@/assets/hero/alter-ego-dark.png'
+import alterEgoLightImg from '@/assets/hero/alter-ego-light.png'
+import profileDarkImg from '@/assets/hero/profile-dark.png'
+import profileLightImg from '@/assets/hero/profile-light.png'
 import { cn } from '@/utils/cn'
 
 /**

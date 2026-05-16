@@ -5,6 +5,7 @@ import { AutomationModal } from '@/components/AutomationModal'
 import { Button } from '@/components/ui/button'
 import { WithCursorFollow } from '@/components/CursorFollowButton'
 import {
+  automationCategoryLabel,
   type AutomationCategory,
   type AutomationProject,
   portfolio,
@@ -22,7 +23,7 @@ const auto = portfolio.automation
 
 function categoryCount(cat: AutomationCategory) {
   if (cat === 'all') return portfolio.automationProjects.length
-  return portfolio.automationProjects.filter((p) => p.category === cat).length
+  return portfolio.automationProjects.filter((p) => p.categories.includes(cat)).length
 }
 
 function CategoryPills({
@@ -93,6 +94,12 @@ function fanRevealShellDelayMs(slot: FanSlot): number | undefined {
   if (slot === 'hidden') return undefined
   const tier = slot === 'center' ? 0 : slot === 'left' ? 1 : 2
   return (2 - tier) * 100
+}
+
+function automationCardEyebrow(project: AutomationProject): string {
+  return project.categories
+    .map((c) => automationCategoryLabel(portfolio.automation.categoryFilters, c))
+    .join(' · ')
 }
 
 type FanCardProps = {
@@ -166,22 +173,18 @@ function FanCard({
       {/* ── Metadata ────────────────────────────────────────────── */}
       <div
         className={cn(
-          'flex flex-1 flex-col justify-end gap-1.5 px-4 pb-4 pt-3 sm:gap-2 sm:px-5 sm:pb-6 sm:pt-4',
+          'flex min-h-0 flex-1 flex-col justify-start gap-3 px-4 pt-4 pb-3 sm:px-5 sm:pt-5 sm:pb-4',
           scrollReveal && sectionInView && isCenter && 'animate-stat-content-rise',
         )}
         style={{
           animationDelay: contentRiseDelayMs > 0 ? `${contentRiseDelayMs}ms` : undefined,
         }}
       >
-        <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-accent-foreground sm:text-[10px]">
-          {project.category}
+        <span className="text-[11px] font-semibold uppercase tracking-wide text-accent-foreground">
+          {automationCardEyebrow(project)}
         </span>
-        <h3 className="text-base font-black leading-snug tracking-[-0.03em] text-foreground sm:text-xl">
-          {project.title}
-        </h3>
-        <p className="text-xs leading-relaxed text-muted-foreground sm:text-sm">
-          {project.description}
-        </p>
+        <h3 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">{project.title}</h3>
+        <p className="text-[15px] leading-relaxed text-muted-foreground">{project.description}</p>
       </div>
     </div>
   )
@@ -355,7 +358,7 @@ export function AutomationSection() {
   const filteredProjects =
     activeCategory === 'all'
       ? portfolio.automationProjects
-      : portfolio.automationProjects.filter((p) => p.category === activeCategory)
+      : portfolio.automationProjects.filter((p) => p.categories.includes(activeCategory))
 
   const handleOpen = (project: AutomationProject) => {
     setModalProject(project)

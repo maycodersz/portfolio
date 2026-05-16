@@ -22,6 +22,7 @@ export function ProjectShowcaseSection() {
   const animState = useSectionAnimState(visible, scrollDir)
   const canAnimate = animState === 'animating'
   const { devicePreviewAlt } = portfolio.works
+  const showcaseScreens = portfolio.projectShowcase.screens
 
   return (
     <section
@@ -46,15 +47,30 @@ export function ProjectShowcaseSection() {
         )}
       >
         <div className="absolute left-1/2 top-0 z-[1] w-[58%] -translate-x-1/2">
-          <MonitorFrame visible={visible} canAnimate={canAnimate} desktopAlt={devicePreviewAlt.desktop} />
+          <MonitorFrame
+            src={showcaseScreens.desktop}
+            visible={visible}
+            canAnimate={canAnimate}
+            desktopAlt={devicePreviewAlt.desktop}
+          />
         </div>
 
         <div className="absolute right-[0%] top-[8%] z-[5] w-[34%]">
-          <TabletFrame visible={visible} canAnimate={canAnimate} tabletAlt={devicePreviewAlt.tablet} />
+          <TabletFrame
+            src={showcaseScreens.tablet}
+            visible={visible}
+            canAnimate={canAnimate}
+            tabletAlt={devicePreviewAlt.tablet}
+          />
         </div>
 
         <div className="absolute left-[1%] top-[18%] z-10 w-[17%]">
-          <PhoneFrame visible={visible} canAnimate={canAnimate} phoneAlt={devicePreviewAlt.phone} />
+          <PhoneFrame
+            src={showcaseScreens.phone}
+            visible={visible}
+            canAnimate={canAnimate}
+            phoneAlt={devicePreviewAlt.phone}
+          />
         </div>
 
         <div className={DEVICE_STAGE_SPACER_FEATURED} aria-hidden />

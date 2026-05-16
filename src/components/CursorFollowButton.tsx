@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 
 import {
@@ -6,6 +6,7 @@ import {
   viewWorkCursorGradientRing,
   viewWorkCursorGradientRingEmphasis,
 } from '@/components/ui/button'
+import { useSiteCursor } from '@/contexts/SiteCursorContext'
 import { portfolio } from '@/content/portfolio'
 import { useIsPointerFine } from '@/hooks/useIsPointerFine'
 import { useCursorFollow } from '@/hooks/useCursorFollow'
@@ -93,10 +94,32 @@ export function WithCursorFollow({
   onClick,
 }: WithCursorFollowProps) {
   const ref = useRef<HTMLDivElement>(null)
+  const isPointerFine = useIsPointerFine()
+  const { setPaperPlaneSuppressed } = useSiteCursor()
   const cursor = useCursorFollow(ref as React.RefObject<HTMLElement | null>)
 
+  useEffect(() => {
+    if (!isPointerFine) return
+    const el = ref.current
+    if (!el) return
+
+    const onEnter = () => setPaperPlaneSuppressed(true)
+    const onLeave = () => setPaperPlaneSuppressed(false)
+    el.addEventListener('mouseenter', onEnter)
+    el.addEventListener('mouseleave', onLeave)
+    return () => {
+      el.removeEventListener('mouseenter', onEnter)
+      el.removeEventListener('mouseleave', onLeave)
+      setPaperPlaneSuppressed(false)
+    }
+  }, [isPointerFine, setPaperPlaneSuppressed])
+
   return (
-    <div ref={ref} className={cn('group', containerClassName)} onClick={onClick}>
+    <div
+      ref={ref}
+      className={cn('group', isPointerFine && 'cursor-none', containerClassName)}
+      onClick={onClick}
+    >
       {children}
       <CursorFollowButton {...cursor} label={label} className={className} />
     </div>

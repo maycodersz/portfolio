@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTheme } from '@/contexts/ThemeContext'
 
-import alterEgoDarkImg from '@/assets/alter-ego-dark.png'
-import alterEgoLightImg from '@/assets/alter-ego-light.png'
-import profileDarkImg from '@/assets/profile-dark.png'
-import profileLightImg from '@/assets/profile-light.png'
+import alterEgoDarkImg from '@/assets/hero/alter-ego-dark.png'
+import alterEgoLightImg from '@/assets/hero/alter-ego-light.png'
+import profileDarkImg from '@/assets/hero/profile-dark.png'
+import profileLightImg from '@/assets/hero/profile-light.png'
 import { Button } from '@/components/ui/button'
+import Link from '@/components/ui/link'
 import { portfolio, type HeroCta } from '@/content/portfolio'
 import { useIsMobileViewport } from '@/hooks/useIsMobileViewport'
 import { useIsPointerFine } from '@/hooks/useIsPointerFine'
@@ -26,13 +27,13 @@ function HeroCtaRow({ actions }: { actions: readonly HeroCta[] }) {
           case 'secondary':
             return (
               <Button key={action.id} asChild variant="secondary" size="default">
-                <a href={action.href}>{action.label}</a>
+                <Link href={action.href}>{action.label}</Link>
               </Button>
             )
           case 'main':
             return (
               <Button key={action.id} asChild variant="accent" size="default">
-                <a href={action.href}>{action.label}</a>
+                <Link href={action.href}>{action.label}</Link>
               </Button>
             )
           default: {

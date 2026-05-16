@@ -269,41 +269,31 @@ export function ContactSection() {
                   <legend className="text-gradient-brand mb-2 block px-px py-px text-sm font-semibold">
                     {f.projectTypeLabel}
                   </legend>
-                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-                    {projectOptions.map((opt) => (
-                      <label
-                        key={opt.id}
-                        className={cn(
-                          'flex cursor-pointer items-center justify-center rounded-xl border px-3 py-3 text-center text-sm font-medium transition-all duration-300',
-                          form.projectType === opt.id
-                            ? cn(
-                                'border-primary/35 text-foreground',
-                                'bg-gradient-to-b from-white/88 via-primary/[0.14] to-primary/[0.26]',
-                                'shadow-[inset_0_1px_0_rgba(255,255,255,0.55)] backdrop-blur-md',
-                                'dark:from-white/[0.12] dark:via-primary/[0.22] dark:to-primary/[0.34]',
-                                'dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.22)]',
-                                'ring-2 ring-primary/25',
-                              )
-                            : 'border-border bg-background hover:border-primary/30 dark:bg-white/[0.04]',
-                        )}
-                      >
-                        <input
-                          type="radio"
-                          name="projectType"
-                          value={opt.id}
-                          checked={form.projectType === opt.id}
-                          onChange={() => update('projectType', opt.id)}
-                          className="sr-only"
-                        />
-                        <span
+                  <div className="flex flex-wrap gap-2">
+                    {projectOptions.map((opt) => {
+                      const active = form.projectType === opt.id
+                      return (
+                        <label
+                          key={opt.id}
                           className={cn(
-                            form.projectType === opt.id && 'text-gradient-brand px-px py-px',
+                            'flex cursor-pointer items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors duration-150',
+                            active
+                              ? 'border-primary/30 bg-primary/15 text-accent-foreground'
+                              : 'border-border bg-muted text-muted-foreground hover:border-primary/20 hover:bg-accent/60 hover:text-accent-foreground',
                           )}
                         >
+                          <input
+                            type="radio"
+                            name="projectType"
+                            value={opt.id}
+                            checked={active}
+                            onChange={() => update('projectType', opt.id)}
+                            className="sr-only"
+                          />
                           {opt.label}
-                        </span>
-                      </label>
-                    ))}
+                        </label>
+                      )
+                    })}
                   </div>
                 </fieldset>
 

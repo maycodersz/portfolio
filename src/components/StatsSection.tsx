@@ -236,8 +236,9 @@ export function StatsSection() {
   return (
     <section
       ref={sectionRef}
+      id="cv"
       aria-label={stats.sectionAriaLabel}
-      className="box-border flex min-h-[auto] flex-col overflow-hidden border-t border-border lg:min-h-dvh"
+      className="box-border flex min-h-[auto] scroll-mt-[var(--navbar-height)] flex-col overflow-hidden border-t border-border lg:min-h-dvh"
     >
       <div className="flex min-h-0 flex-1 items-center px-[6%] py-8 sm:px-[10%]">
         <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:gap-16">

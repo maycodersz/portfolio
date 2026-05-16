@@ -1,5 +1,6 @@
 import { Check } from 'lucide-react'
 
+import Link from '@/components/ui/link'
 import { type PricingPlan, portfolio } from '@/content/portfolio'
 import { useRevealOnView } from '@/hooks/useRevealOnView'
 import { useSectionAnimState } from '@/hooks/useSectionAnimState'
@@ -216,12 +217,12 @@ export function PricingSection() {
           style={{ animationDelay: canAnim ? '0.88s' : undefined }}
         >
           <p className="text-sm text-muted-foreground">{p.disclaimer}</p>
-          <a
+          <Link
             href={p.ctaHref}
             className="text-sm font-semibold text-primary underline-offset-4 hover:underline"
           >
             {p.ctaLabel}
-          </a>
+          </Link>
         </div>
       </div>
     </section>

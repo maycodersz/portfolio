@@ -31,8 +31,8 @@ export function useSiteCursor() {
 }
 
 /**
- * Hide the global paper-plane cursor while the pointer is inside this subtree
- * so only layered UI (e.g. View Work) reads as the cursor.
+ * Optional wrapper: hide the paper-plane cursor for a subtree without using `WithCursorFollow`.
+ * Prefer `WithCursorFollow` for View Work zones — it scopes suppression to that element only.
  */
 export function WorksPaperPlaneSuppressor({
   children,
