@@ -1,0 +1,621 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── Inter font ──────────────────────────────────────────────────────────── */
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Shared brand (hue anchor — actual surfaces use theme blocks below)
+ * ─────────────────────────────────────────────────────────────────────────── */
+:root {
+  --radius: 0.5rem;
+
+  --brand:              #7C4FE2;
+  --brand-from:         #C4AAFF;
+  --brand-mid:          #8B5CF6;
+  --brand-to:           #5E32C0;
+
+  --navbar-height: 7.5rem;
+
+  /* Primary actions always map to brand purple */
+  --primary: var(--brand);
+}
+
+/* ── Light palette — purple · pink · black · white ─────────────────────────── */
+:root {
+  --brand-shadow-glow: rgb(124 79 226 / 35%);
+
+  --color-page-background: #f5f5f7;
+  --color-page-foreground: oklch(0.15 0 0);
+
+  --background: var(--color-page-background);
+  --foreground: var(--color-page-foreground);
+
+  --card: #ffffff;
+  --card-foreground: oklch(0.12 0 0);
+
+  --popover: #ffffff;
+  --popover-foreground: oklch(0.12 0 0);
+
+  --primary-foreground: #ffffff;
+
+  --secondary: oklch(0.94 0.005 280);
+  --secondary-foreground: oklch(0.2 0 0);
+
+  --muted: oklch(0.92 0.004 280);
+  --muted-foreground: oklch(0.45 0 0);
+
+  --accent: oklch(0.95 0.02 280);
+  --accent-foreground: #5E32C0;
+
+  --destructive: oklch(0.55 0.22 25);
+  --destructive-foreground: #ffffff;
+
+  --border: oklch(0.88 0.005 280);
+  --input: oklch(0.90 0.005 280);
+  --ring: var(--brand);
+
+  /* Header / brand gradient: top pink accent → bottom accent purple */
+  --brand-text-gradient: linear-gradient(to bottom, #fbcfe8 0%, #E879F9 28%, #B76EF5 58%, var(--accent-foreground) 100%);
+
+  --color-hero-heading-from: #E879F9;
+  --color-hero-heading-to: var(--accent-foreground);
+
+  /* Skills chip hover — aligned with vertical brand gradient */
+  --skill-chip-hover-gradient: linear-gradient(to bottom, #fce7f3 0%, #E879F9 38%, var(--accent-foreground) 100%);
+
+  /* Light-only: CTAs purple → pink */
+  --cta-main-from: color-mix(in srgb, var(--brand-mid) 92%, white 8%);
+  --cta-main-via: #B76EF5;
+  --cta-main-to: #E879F9;
+  --cta-rest-shadow: 0 8px 32px -8px rgb(124 79 226 / 55%), inset 0 1px 0 rgba(255, 255, 255, 0.42);
+  --cta-hover-shadow: 0 14px 44px -8px rgb(232 121 249 / 42%), inset 0 1px 0 rgba(255, 255, 255, 0.52);
+
+  /* Stat cards: white · pink · violet · deep purple */
+  --stat-card-surface-gradient: linear-gradient(to bottom, #ffffff 0%, #fce7f3 22%, #ddd6fe 40%, #8B5CF6 62%, #4c1d95 100%);
+
+  /* Hero portrait spotlight (lavender allowed in light only) */
+  --hero-portrait-spot-inner: rgba(196, 170, 255, 0.2);
+  --hero-portrait-spot-edge: rgba(124, 79, 226, 0.08);
+
+  /* Legacy @utility bg-view-work-pill — matches brand (pink top → accent bottom) */
+  --view-work-pill-gradient: linear-gradient(to bottom, #fbcfe8 0%, #E879F9 35%, var(--accent-foreground) 100%);
+
+  /* ── Glass / frosted panel tokens (light) ──────────────────────────────── */
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(0, 0, 0, 0.10);
+  --glass-text: rgba(0, 0, 0, 0.55);
+  --glass-text-hover: rgba(0, 0, 0, 0.85);
+  --glass-divider: rgba(0, 0, 0, 0.10);
+
+  /* ── Device frame tokens (light) ───────────────────────────────────────── */
+  --device-frame-bg: oklch(0.96 0 0);
+  --device-frame-stand-from: oklch(0.88 0 0);
+  --device-frame-stand-to: oklch(0.92 0 0);
+  --device-frame-base-from: oklch(0.85 0 0);
+  --device-frame-base-to: oklch(0.90 0 0);
+  --device-frame-dot: oklch(0.82 0 0);
+  --device-frame-notch: oklch(0.88 0 0);
+  --device-frame-button: oklch(0.84 0 0);
+
+  /* ── Works info bar (light) ────────────────────────────────────────────── */
+  --works-info-bg: rgba(255, 255, 255, 0.92);
+}
+
+/* ── Dark palette — black · gray · purple · white (no pink) ───────────────── */
+.dark {
+  --brand-shadow-glow: rgb(124 79 226 / 55%);
+
+  --color-page-background: #000;
+  --color-page-foreground: oklch(0.965 0 0);
+
+  --background: var(--color-page-background);
+  --foreground: var(--color-page-foreground);
+
+  --card: oklch(0.18 0 0);
+  --card-foreground: oklch(0.985 0 0);
+
+  --popover: oklch(0.16 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+
+  --primary-foreground: oklch(0.98 0.01 276);
+
+  --secondary: color-mix(in oklch, var(--brand) 8%, oklch(0.26 0 0));
+  --secondary-foreground: oklch(0.985 0 0);
+
+  --muted: color-mix(in oklch, var(--brand) 10%, oklch(0.22 0 0));
+  --muted-foreground: oklch(0.72 0 0);
+
+  --accent: color-mix(in srgb, #7C4FE2 22%, #06000c);
+  --accent-foreground: #A78BFA;
+
+  --destructive: oklch(0.55 0.22 25);
+  --destructive-foreground: oklch(0.985 0 0);
+
+  --border: rgb(255 255 255 / 10%);
+  --input: rgb(255 255 255 / 12%);
+  --ring: color-mix(in oklch, var(--brand) 70%, oklch(0.88 0.06 276));
+
+  /* Header / brand gradient: top white → bottom accent (muted violet) */
+  --brand-text-gradient: linear-gradient(to bottom, #ffffff 0%, #e4e4e7 32%, var(--accent-foreground) 100%);
+
+  --color-hero-heading-from: #ffffff;
+  --color-hero-heading-to: var(--accent-foreground);
+
+  /* Dark CTAs: purple-only fallbacks if var() is read; glossy button uses Tailwind */
+  --cta-main-from: #8B5CF6;
+  --cta-main-via: #7C4FE2;
+  --cta-main-to: #5E32C0;
+  --cta-rest-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), inset 0 -1px 0 rgba(0, 0, 0, 0.13), 0 0 28px -8px rgba(124, 79, 226, 0.45);
+  --cta-hover-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72), inset 0 -1px 0 rgba(0, 0, 0, 0.08), 0 14px 44px -10px rgba(124, 79, 226, 0.6);
+
+  /* Stat cards: zinc grays + purple (no pink / lavender wash) */
+  --stat-card-surface-gradient: linear-gradient(to bottom, #e4e4e7 0%, #a1a1aa 26%, #7C4FE2 55%, #3b0764 100%);
+
+  --hero-portrait-spot-inner: rgba(124, 79, 226, 0.22);
+  --hero-portrait-spot-edge: rgba(92, 59, 170, 0.12);
+
+  /* Skills chip hover — matches header: white → accent violet */
+  --skill-chip-hover-gradient: var(--brand-text-gradient);
+
+  /* Legacy @utility bg-view-work-pill — matches header gradient */
+  --view-work-pill-gradient: linear-gradient(to bottom, #ffffff 0%, #e4e4e7 32%, var(--accent-foreground) 100%);
+
+  /* ── Glass / frosted panel tokens (dark) ───────────────────────────────── */
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-text: rgba(255, 255, 255, 0.55);
+  --glass-text-hover: rgba(255, 255, 255, 0.9);
+  --glass-divider: rgba(255, 255, 255, 0.12);
+
+  /* ── Device frame tokens (dark) ────────────────────────────────────────── */
+  --device-frame-bg: oklch(0.14 0 0);
+  --device-frame-stand-from: oklch(0.22 0 0);
+  --device-frame-stand-to: oklch(0.17 0 0);
+  --device-frame-base-from: oklch(0.26 0 0);
+  --device-frame-base-to: oklch(0.18 0 0);
+  --device-frame-dot: oklch(0.28 0 0);
+  --device-frame-notch: oklch(0.1 0 0);
+  --device-frame-button: oklch(0.24 0 0);
+
+  /* ── Works info bar (dark) ─────────────────────────────────────────────── */
+  --works-info-bg: rgba(0, 0, 0, 0.88);
+}
+
+html {
+  scroll-padding-top: var(--navbar-height);
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+/* Brand / hero gradient text — vertical gradient via --brand-text-gradient per theme */
+@utility text-gradient-brand {
+  background: var(--brand-text-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+@utility bg-view-work-pill {
+  background-image: var(--view-work-pill-gradient);
+}
+
+/* ── Skill chip icon theming ─────────────────────────────────────────────────
+ * Plain CSS so dark + hover specificity is unambiguous (avoids Tailwind v4
+ * dark:group-hover variant cascade conflicts).
+ * Icons are fetched black from CDN (/000000).
+ * ───────────────────────────────────────────────────────────────────────── */
+
+/* Raster icons */
+.skill-chip-icon {
+  filter: none;
+  transition: filter 200ms cubic-bezier(0.33, 1, 0.68, 1);
+}
+/* dark: invert black → white */
+.dark .skill-chip-icon {
+  filter: invert(1);
+}
+/* light hover: invert black → white */
+.skill-chip-btn:hover .skill-chip-icon {
+  filter: invert(1);
+}
+/* dark hover: revert to black (readable on the light-top gradient) */
+.dark .skill-chip-btn:hover .skill-chip-icon {
+  filter: none;
+}
+
+/* Lucide fallback icons */
+.skill-chip-fallback {
+  color: #000;
+  transition: color 200ms cubic-bezier(0.33, 1, 0.68, 1);
+}
+.dark .skill-chip-fallback {
+  color: #fff;
+}
+.skill-chip-btn:hover .skill-chip-fallback {
+  color: #fff;
+}
+.dark .skill-chip-btn:hover .skill-chip-fallback {
+  color: #000;
+}
+
+/* Chip label text color */
+.skill-chip-btn {
+  color: #000;
+}
+.dark .skill-chip-btn {
+  color: #fff;
+}
+.skill-chip-btn:hover {
+  color: #fff;
+}
+.dark .skill-chip-btn:hover {
+  color: #000;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  background-color: var(--color-page-background);
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-page-background);
+  color: var(--color-page-foreground);
+}
+
+/*
+ * Site uses GlobalPaperPlaneCursor only — suppress every system cursor
+ * (pointer, text, grab, etc.) on hover/active/focus.
+ * Only apply on fine-pointer (mouse) devices; touch/coarse devices keep the
+ * native cursor so users have visible tap affordance.
+ */
+@media (pointer: fine) {
+  *,
+  *::before,
+  *::after {
+    cursor: none !important;
+  }
+}
+
+@keyframes hero-roll-down {
+  from {
+    transform: translate3d(0, -115%, 0);
+    opacity: 0;
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@utility animate-hero-roll {
+  animation: hero-roll-down 0.58s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Hero text entrance — simple fade in from left */
+@keyframes hero-fade-left {
+  from {
+    opacity: 0;
+    transform: translateX(-28px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@utility animate-hero-fade-left {
+  animation: hero-fade-left 1.12s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes skill-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.skill-marquee-track {
+  width: max-content;
+  animation: skill-marquee var(--skill-marquee-duration, 40s) linear infinite;
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.skills-marquee-row:hover .skill-marquee-track,
+.skills-marquee-row:active .skill-marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skill-marquee-track {
+    animation: none;
+    transform: none;
+  }
+}
+
+/* monitor: rise from below */
+@keyframes device-rise {
+  from {
+    transform: translateY(64px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@utility animate-device-rise {
+  animation: device-rise 1.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* tablet: enter from right */
+@keyframes device-enter-right {
+  from {
+    transform: translateX(80px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@utility animate-device-enter-right {
+  animation: device-enter-right 1.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* phone: enter from left */
+@keyframes device-enter-left {
+  from {
+    transform: translateX(-80px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@utility animate-device-enter-left {
+  animation: device-enter-left 1.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .device-animated {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+}
+
+/* ── Stats section ──────────────────────────────────────────────────────── */
+
+/* Card entrance — blur shed + overshoot scale (attention-catching) */
+@keyframes stat-pop-in {
+  0% {
+    transform: scale(0.78) translateY(32px);
+    opacity: 0;
+    filter: blur(10px);
+  }
+
+  58% {
+    transform: scale(1.06) translateY(-6px);
+    opacity: 1;
+    filter: blur(0);
+  }
+
+  78% {
+    transform: scale(0.97) translateY(4px);
+    opacity: 1;
+    filter: blur(0);
+  }
+
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@utility animate-stat-pop-in {
+  animation: stat-pop-in 1.12s cubic-bezier(0.34, 1.45, 0.44, 1) both;
+}
+
+/* Front-card copy — fast reveal */
+@keyframes stat-content-rise {
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+    filter: blur(4px);
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@utility animate-stat-content-rise {
+  animation: stat-content-rise 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes stats-eyebrow-in {
+  from {
+    opacity: 0;
+    transform: translateX(-36px) skewX(-6deg);
+    filter: blur(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) skewX(0deg);
+    filter: blur(0);
+  }
+}
+
+@keyframes stats-headline-in {
+  0% {
+    opacity: 0;
+    transform: translateX(-52px) translateY(16px) scale(0.92);
+    filter: blur(14px);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateX(10px) translateY(-4px) scale(1.03);
+    filter: blur(0);
+  }
+
+  72% {
+    transform: translateX(-4px) translateY(2px) scale(0.99);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0) translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@utility animate-stats-eyebrow-in {
+  animation: stats-eyebrow-in 0.9s cubic-bezier(0.34, 1.25, 0.44, 1) both;
+}
+
+@utility animate-stats-headline-in {
+  animation: stats-headline-in 1.28s cubic-bezier(0.34, 1.2, 0.52, 1) both;
+}
+
+/* Description / filter row after headline — gentle rise */
+@keyframes stats-support-in {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+    filter: blur(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@utility animate-stats-support-in {
+  animation: stats-support-in 1s cubic-bezier(0.34, 1.15, 0.44, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes stat-pop-in {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes stat-content-rise {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  .animate-stat-pop-in {
+    filter: none !important;
+    transform: none !important;
+    animation-duration: 0.35s !important;
+  }
+
+  .animate-stat-content-rise {
+    filter: none !important;
+    transform: none !important;
+    animation-duration: 0.18s !important;
+  }
+
+  .animate-stats-eyebrow-in,
+  .animate-stats-headline-in,
+  .animate-stats-support-in {
+    animation: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+  }
+
+  .animate-hero-roll,
+  .animate-hero-fade-left {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .stat-card-shell {
+    animation: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+  }
+}
+
+/* Number finish glow pulse */
+@keyframes stat-finish-glow {
+  0%   { text-shadow: 0 0 0px transparent; }
+  40%  { text-shadow: 0 0 20px var(--brand-shadow-glow); }
+  100% { text-shadow: 0 0 0px transparent; }
+}
+
+@utility animate-stat-finish-glow {
+  animation: stat-finish-glow 0.6s ease-out forwards;
+}

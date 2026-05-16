@@ -1,0 +1,344 @@
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useTheme } from '@/contexts/ThemeContext'
+
+import alterEgoDarkImg from '@/assets/alter-ego-dark.png'
+import alterEgoLightImg from '@/assets/alter-ego-light.png'
+import profileDarkImg from '@/assets/profile-dark.png'
+import profileLightImg from '@/assets/profile-light.png'
+import { Button } from '@/components/ui/button'
+import { portfolio, type HeroCta } from '@/content/portfolio'
+import { useIsPointerFine } from '@/hooks/useIsPointerFine'
+import { useRevealOnView } from '@/hooks/useRevealOnView'
+import { cn } from '@/utils/cn'
+
+const { hero } = portfolio
+
+/* ── CTA row ─────────────────────────────────────────────────────────────── */
+
+function HeroCtaRow({ actions }: { actions: readonly HeroCta[] }) {
+  return (
+    <div className="mt-6 flex flex-wrap gap-3">
+      {actions.map((action) => {
+        switch (action.tone) {
+          case 'secondary':
+            return (
+              <Button key={action.id} asChild variant="secondary" size="default">
+                <a href={action.href}>{action.label}</a>
+              </Button>
+            )
+          case 'main':
+            return (
+              <Button key={action.id} asChild variant="accent" size="default">
+                <a href={action.href}>{action.label}</a>
+              </Button>
+            )
+          default: {
+            const _exhaustiveTone: never = action.tone
+            return _exhaustiveTone
+          }
+        }
+      })}
+    </div>
+  )
+}
+
+/* ── Rolling heading ─────────────────────────────────────────────────────── */
+
+function RollingHeroHeading({
+  before,
+  rotatingTitles,
+  sectionInView,
+}: {
+  before: string
+  rotatingTitles: readonly string[]
+  sectionInView: boolean
+}) {
+  const [index, setIndex] = useState(0)
+
+  useEffect(() => {
+    if (sectionInView) setIndex(0)
+  }, [sectionInView])
+
+  useEffect(() => {
+    if (!sectionInView || rotatingTitles.length === 0) return
+    const id = window.setInterval(() => {
+      setIndex((i) => (i + 1) % rotatingTitles.length)
+    }, 2600)
+    return () => clearInterval(id)
+  }, [sectionInView, rotatingTitles.length])
+
+  const active = rotatingTitles[index] ?? ''
+  const gradient = 'text-gradient-brand'
+
+  const slotChars = useMemo(() => {
+    const n = rotatingTitles.reduce((m, s) => Math.max(m, s.length), 0)
+    return Math.max(n, 1)
+  }, [rotatingTitles])
+
+  const slotWidth = `${slotChars + 0.75}ch`
+
+  return (
+    <h1
+      aria-label={`${before} ${active}`}
+      className="relative m-0 text-[clamp(2rem,4vw,3rem)] font-bold leading-tight tracking-[-0.02em]"
+    >
+      <span className="flex flex-wrap items-baseline gap-x-2 gap-y-1" aria-hidden>
+        <span className={gradient}>{before}</span>
+        <span
+          className={cn(
+            gradient,
+            'relative inline-block h-[1.15em] max-w-full shrink-0 overflow-hidden align-bottom [width:var(--hero-roll-w)] [min-width:var(--hero-roll-w)]',
+          )}
+          style={{ ['--hero-roll-w' as string]: slotWidth }}
+        >
+          <span
+            key={sectionInView ? index : 'idle'}
+            className={cn(
+              gradient,
+              'inline-block whitespace-nowrap',
+              sectionInView && 'animate-hero-roll',
+            )}
+          >
+            {active}
+          </span>
+        </span>
+      </span>
+    </h1>
+  )
+}
+
+/* ── Hero portrait ─────────────────────────────────────────────────────────── */
+
+/**
+ * Alter ego fills the frame at rest.
+ * On hover, the alter-ego gets an inverse radial mask (transparent under the
+ * light) while the profile is drawn only inside a matching spotlight mask,
+ * so overlap fringes from the bottom layer do not show behind the portrait.
+ */
+function HeroProfileStage() {
+  const { theme } = useTheme()
+  const isPointerFine = useIsPointerFine()
+  const alterEgoImg = theme === 'dark' ? alterEgoDarkImg : alterEgoLightImg
+  const profileImg = theme === 'dark' ? profileDarkImg : profileLightImg
+
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [localPos, setLocalPos] = useState({ x: 0, y: 0 })
+  const [isHovering, setIsHovering] = useState(false)
+
+  const syncPosFromEvent = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isPointerFine) return
+    const el = containerRef.current
+    if (!el) return
+    const rect = el.getBoundingClientRect()
+    setLocalPos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    })
+  }
+
+  /* Opaque centre = profile visible here; fades to transparent outward */
+  const profileSpotlightMask = `radial-gradient(circle 200px at ${localPos.x}px ${localPos.y}px, rgb(255 255 255) 0%, rgb(255 255 255) 43%, rgb(255 255 255 / 0) 100%)`
+
+  /*
+   * Inverse mask on alter-ego while hovering: transparent hole under the light
+   * (slightly wider + earlier fade than the profile mask) so robot/alter-ego
+   * disappears where the portrait paints — no leftover rim or double exposure.
+   */
+  const alterEgoCutoutMask = `radial-gradient(circle 220px at ${localPos.x}px ${localPos.y}px, rgb(255 255 255 / 0) 0%, rgb(255 255 255 / 0) 38%, rgb(255 255 255) 60%, rgb(255 255 255) 100%)`
+
+  const imgClass =
+    'pointer-events-none absolute inset-0 h-full w-full select-none object-contain object-bottom'
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative h-full w-full"
+      onMouseMove={syncPosFromEvent}
+      onMouseEnter={(e) => {
+        if (!isPointerFine) return
+        syncPosFromEvent(e)
+        setIsHovering(true)
+      }}
+      onMouseLeave={() => {
+        if (!isPointerFine) return
+        setIsHovering(false)
+      }}
+    >
+      {/* Default view; hover cuts a hole matching the spotlight so excess alter-ego does not show behind the portrait */}
+      <img
+        src={alterEgoImg}
+        alt={hero.alterEgoAlt}
+        loading="lazy"
+        draggable={false}
+        className={cn(imgClass, 'z-[1]')}
+        style={
+          isHovering && isPointerFine
+            ? {
+                maskImage: alterEgoCutoutMask,
+                maskSize: '100% 100%',
+                maskRepeat: 'no-repeat',
+                WebkitMaskImage: alterEgoCutoutMask,
+                WebkitMaskSize: '100% 100%',
+                WebkitMaskRepeat: 'no-repeat',
+              }
+            : undefined
+        }
+      />
+
+      {/* Profile only while hovering — masked to spotlight (no stray pixels outside) */}
+      {isHovering && isPointerFine && (
+        <img
+          src={profileImg}
+          alt=""
+          aria-hidden
+          className={cn(imgClass, 'z-[2]')}
+          style={{
+            maskImage: profileSpotlightMask,
+            maskSize: '100% 100%',
+            maskRepeat: 'no-repeat',
+            WebkitMaskImage: profileSpotlightMask,
+            WebkitMaskSize: '100% 100%',
+            WebkitMaskRepeat: 'no-repeat',
+          }}
+        />
+      )}
+
+      {/* Spotlight glow — soft purple light at cursor that "illuminates" the reveal */}
+      {/* Spotlight glow — above portrait */}
+      {isHovering && isPointerFine && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute z-[4]"
+          style={{
+            left: localPos.x,
+            top: localPos.y,
+            width: 320,
+            height: 320,
+            transform: 'translate(-50%, -50%)',
+            background:
+              'radial-gradient(circle, var(--hero-portrait-spot-inner) 0%, var(--hero-portrait-spot-edge) 48%, transparent 72%)',
+            filter: 'blur(20px)',
+            mixBlendMode: 'screen',
+          }}
+        />
+      )}
+
+      {/* Ambient bottom glow */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[3]"
+        style={{
+          background:
+            'radial-gradient(ellipse 55% 35% at 50% 100%, rgb(124 79 226 / 10%) 0%, transparent 70%)',
+        }}
+      />
+    </div>
+  )
+}
+
+/* ── Section ─────────────────────────────────────────────────────────────── */
+
+export function HeroSplineSection() {
+  const [heroRef, heroInView, heroPlayKey] = useRevealOnView<HTMLElement>({
+    threshold: 0.14,
+    rootMargin: '0px 0px -12% 0px',
+  })
+
+  const isPointerFine = useIsPointerFine()
+
+  /* Section-level fog: a soft purple mist that follows the cursor */
+  const [fogPos, setFogPos] = useState({ x: 0, y: 0 })
+  const [fogVisible, setFogVisible] = useState(false)
+
+  const handleSectionMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    if (!isPointerFine) return
+    const rect = e.currentTarget.getBoundingClientRect()
+    setFogPos({ x: e.clientX - rect.left, y: e.clientY - rect.top })
+    if (!fogVisible) setFogVisible(true)
+  }
+
+  return (
+    <section
+      ref={heroRef}
+      aria-label="Hero"
+      className="-mt-[var(--navbar-height)] pt-[var(--navbar-height)] relative z-0 m-0 w-full max-w-none scroll-mt-[var(--navbar-height)] overflow-hidden p-0"
+      onMouseMove={handleSectionMouseMove}
+      onMouseLeave={() => setFogVisible(false)}
+    >
+      {/* Ambient bg tint */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-0"
+        style={{
+          background:
+            'radial-gradient(ellipse 80% 60% at 65% 50%, rgb(124 79 226 / 7%) 0%, transparent 65%)',
+        }}
+      />
+
+      {/* Fog glow — CSS transition gives the "lag" that makes it feel like holding fog */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute z-[1]"
+        style={{
+          left: fogPos.x,
+          top: fogPos.y,
+          width: 580,
+          height: 580,
+          transform: 'translate(-50%, -50%)',
+          background:
+            'radial-gradient(circle, rgb(124 79 226 / 10%) 0%, rgb(92 59 170 / 5%) 42%, transparent 70%)',
+          filter: 'blur(60px)',
+          transition: 'left 0.25s ease-out, top 0.25s ease-out, opacity 0.35s ease',
+          opacity: fogVisible ? 1 : 0,
+          pointerEvents: 'none',
+        }}
+      />
+
+      <div className="relative z-[2] box-border flex h-[calc(100dvh-var(--navbar-height))] min-h-[min(480px,calc(100dvh-var(--navbar-height)))] w-full flex-col px-[10%] md:flex-row">
+        {/* Left — text; key remounts fades each time hero re-enters view */}
+        <div
+          key={heroPlayKey}
+          className="relative z-[2] box-border flex w-full min-w-0 flex-col justify-center py-8 md:flex-1"
+        >
+          <div
+            className={cn(
+              'motion-reduce:animate-none',
+              heroInView ? 'animate-stats-headline-in' : 'opacity-0',
+            )}
+          >
+            <RollingHeroHeading
+              before={hero.headlineBefore}
+              rotatingTitles={hero.rotatingTitles}
+              sectionInView={heroInView}
+            />
+          </div>
+
+          <p
+            className={cn(
+              'mt-4 max-w-xl text-base leading-relaxed text-muted-foreground motion-reduce:animate-none sm:text-xl',
+              heroInView ? 'animate-stats-support-in' : 'opacity-0',
+            )}
+            style={{ animationDelay: heroInView ? '0.48s' : undefined }}
+          >
+            {hero.description}
+          </p>
+
+          <div
+            className={cn(
+              'motion-reduce:animate-none',
+              heroInView ? 'animate-stats-support-in' : 'opacity-0',
+            )}
+            style={{ animationDelay: heroInView ? '0.72s' : undefined }}
+          >
+            <HeroCtaRow actions={hero.ctas} />
+          </div>
+        </div>
+
+        {/* Right — profile stage; on mobile it sits below the copy and takes remaining height */}
+        <div className="relative z-[2] box-border flex min-h-[min(40vh,320px)] w-full min-w-0 md:flex-1 md:min-h-0">
+          <HeroProfileStage />
+        </div>
+      </div>
+    </section>
+  )
+}
