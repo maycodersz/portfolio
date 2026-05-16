@@ -503,8 +503,8 @@ export const portfolio = {
       },
       heroImage: imgAdminoPhone,
       links: [
+        { label: 'App Store listing', href: 'https://apps.apple.com/example', variant: 'live' },
         { label: 'Source code', href: 'https://github.com/example/admino', variant: 'github' },
-        { label: 'App Store listing', href: 'https://apps.apple.com/example', variant: 'appstore' },
       ],
       techStack: [
         {
