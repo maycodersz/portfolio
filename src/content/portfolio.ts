@@ -37,6 +37,32 @@ export type ProjectScreens = {
   phone: string
 }
 
+export type ProjectLinkVariant = 'live' | 'github' | 'appstore'
+
+export type ProjectLink = {
+  label: string
+  href: string
+  variant: ProjectLinkVariant
+}
+
+export type TechStackCategory = {
+  heading: string
+  items: readonly string[]
+}
+
+export type CaseStudy = {
+  overview: string
+  problem: string
+  solution: string
+  results: string
+}
+
+export type ProjectPageImage = {
+  src: string
+  alt: string
+  label?: string
+}
+
 export type Project = {
   id: string
   title: string
@@ -46,6 +72,11 @@ export type Project = {
   duration: string
   highlight?: string
   screens: ProjectScreens
+  heroImage?: string
+  links?: readonly ProjectLink[]
+  techStack?: readonly TechStackCategory[]
+  caseStudy?: CaseStudy
+  pageImages?: readonly ProjectPageImage[]
 }
 
 /* ─── Automation project types ───────────────────────────────────────────── */
@@ -304,6 +335,19 @@ export const portfolio = {
     slugFallbackHeading: 'Project',
     backLabel: 'Back to work',
     backHref: '/#works',
+    overviewHeading: 'Overview',
+    problemHeading: 'The problem',
+    solutionHeading: 'The solution',
+    resultsHeading: 'Results & impact',
+    techStackHeading: 'Tech stack',
+    screenshotsHeading: 'Screenshots',
+    visitLiveLabel: 'Live site',
+    visitGithubLabel: 'Source code',
+    visitAppstoreLabel: 'Download',
+    carouselPrevLabel: 'Previous screenshot',
+    carouselNextLabel: 'Next screenshot',
+    notFoundHeading: 'Project not found',
+    notFoundMessage: 'This project does not exist or the link may be outdated.',
   },
 
   works: {
@@ -403,6 +447,46 @@ export const portfolio = {
         tablet: imgAcademicHubTablet,
         phone: imgAcademicHubPhone,
       },
+      heroImage: imgAcademicHubDesktop,
+      links: [
+        { label: 'View live demo', href: 'https://academic-hub.example.com', variant: 'live' },
+        { label: 'Repository', href: 'https://github.com/example/olfu-academic-hub', variant: 'github' },
+      ],
+      techStack: [
+        {
+          heading: 'Frontend',
+          items: ['React', 'TypeScript', 'Tailwind CSS', 'React Router'],
+        },
+        {
+          heading: 'Backend',
+          items: ['Supabase', 'Edge Functions', 'PostgreSQL Row Level Security'],
+        },
+        {
+          heading: 'Auth & integrations',
+          items: ['Google OAuth', 'Firebase Cloud Messaging'],
+        },
+        {
+          heading: 'DevOps',
+          items: ['Vercel', 'GitHub Actions'],
+        },
+      ],
+      caseStudy: {
+        overview:
+          'OLFU Academic Hub is an internal-facing platform aimed at consolidating study materials and community tooling for Fatima University students. The goal was to replace scattered chats and folders with something structured, moderated, and easy to onboard new cohorts.',
+        problem:
+          'Study resources lived across group chats and ad-hoc links, which made discovery hard—especially during exam season. Volunteers could not reliably moderate uploads, duplicate files were common, and there was no clear progress loop to reward consistent contributors.',
+        solution:
+          'We introduced a moderated upload pipeline with material categories and reporting, bookmarks and file-request flows tied to moderation queues, XP and leaderboards to encourage uploads, rooms for focused discussion, and Google Sign-In limited to validated school domains.',
+        results:
+          'Over 200 students joined in month one with steady weekly uploads after launch. Moderation tooling cut duplicate spam reports substantially, while leaderboards noticeably increased revisits ahead of examinations (placeholder narrative—replace with your real metrics).',
+      },
+      pageImages: [
+        { src: imgAcademicHubDesktop, alt: 'Academic Hub — Home page' },
+        { src: imgAcademicHubDesktop, alt: 'Academic Hub — Materials library' },
+        { src: imgAcademicHubDesktop, alt: 'Academic Hub — Student profile' },
+        { src: imgAcademicHubDesktop, alt: 'Academic Hub — Leaderboard' },
+        { src: imgAcademicHubDesktop, alt: 'Academic Hub — Room chat' },
+      ],
     },
     {
       id: 'admino-mobile',
@@ -417,6 +501,42 @@ export const portfolio = {
         tablet: imgAdminoTablet,
         phone: imgAdminoPhone,
       },
+      heroImage: imgAdminoPhone,
+      links: [
+        { label: 'Source code', href: 'https://github.com/example/admino', variant: 'github' },
+        { label: 'App Store listing', href: 'https://apps.apple.com/example', variant: 'appstore' },
+      ],
+      techStack: [
+        {
+          heading: 'Mobile',
+          items: ['React Native', 'Expo', 'TypeScript', 'Expo Router'],
+        },
+        {
+          heading: 'Data & persistence',
+          items: ['Expo SQLite', 'Local file attachments', 'Reminders APIs'],
+        },
+        {
+          heading: 'Experience',
+          items: ['Local-first UX', 'PDF & image capture'],
+        },
+      ],
+      caseStudy: {
+        overview:
+          'Admino is designed for busy people juggling renewals and paperwork: everything from passports to subscriptions. The premise is capturing tasks quickly—often with attachments—without sending personal data through a third-party dashboard.',
+        problem:
+          'Calendar apps blur personal and work items, spreadsheets go stale quickly, and many “finance” trackers over-index on syncing which users do not want for sensitive proofs. Existing tools rarely model proof attachments and escalation paths cleanly.',
+        solution:
+          'We built inbox, timeline, and vault views anchored on SQLite with files stored on-device, plus categories and reminders for due dates that stay local-only. Screens reduce cognitive load—one capture flow, deterministic sorting, predictable exports when the user chooses to share.',
+        results:
+          'Pilot feedback highlighted faster capture time vs. spreadsheets and clearer confidence that sensitive PDFs stayed off the cloud unless explicitly exported (placeholder—replace after user testing summaries).',
+      },
+      pageImages: [
+        { src: imgAdminoPhone, alt: 'Admino — Inbox view' },
+        { src: imgAdminoPhone, alt: 'Admino — Timeline view' },
+        { src: imgAdminoPhone, alt: 'Admino — Vault view' },
+        { src: imgAdminoPhone, alt: 'Admino — Task detail' },
+        { src: imgAdminoPhone, alt: 'Admino — Capture screen' },
+      ],
     },
   ] satisfies Readonly<Project[]>,
 
