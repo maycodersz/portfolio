@@ -3,6 +3,7 @@ import {
   Bell,
   BellRing,
   Box,
+  Briefcase,
   Cloud,
   Container,
   Database,
@@ -27,42 +28,30 @@ import {
   Terminal,
   Timer,
   Triangle,
+  Webhook,
   Wind,
   Workflow,
   Zap,
 } from 'lucide-react'
 
 /**
- * Exact labels from `portfolio.projects[].techStack[].items` (and common aliases).
- * Add a row here whenever you add a new skill string so the icon stays predictable.
+ * Lucide fallbacks only when Simple Icons CDN has no slug (see `skillLogos.ts`).
+ * Prefer adding slugs there for real brand glyphs on project/skills surfaces.
  */
 const LABEL_ICON: Record<string, LucideIcon> = {
-  // Academic Hub — Frontend
-  React: LayoutTemplate,
-  TypeScript: FileType2,
-  'Tailwind CSS': Wind,
-  'React Router': Route,
-  // Academic Hub — Backend
-  Supabase: Database,
-  'Edge Functions': Zap,
-  'PostgreSQL Row Level Security': Shield,
-  // Academic Hub — Auth
-  'Google OAuth': KeyRound,
-  'Firebase Cloud Messaging': BellRing,
-  // Academic Hub — DevOps
-  Vercel: Triangle,
-  'GitHub Actions': GitBranch,
-  // Admino — Mobile
-  'React Native': Smartphone,
-  Expo: Box,
-  'Expo Router': Route,
-  // Admino — Data
-  'Expo SQLite': Database,
+  'Go High Level': Briefcase,
+  Webhooks: Webhook,
   'Local file attachments': HardDrive,
   'Reminders APIs': Bell,
-  // Admino — Experience
   'Local-first UX': Smartphone,
   'PDF & image capture': ImagePlus,
+  shadcn: LayoutTemplate,
+  Lucide: Sparkles,
+  'TanStack React Query': Zap,
+  Zod: Shield,
+  'react-pdf': FileText,
+  Resend: Mail,
+  'next-themes': Palette,
 }
 
 function iconByExactOrCaseInsensitive(label: string): LucideIcon | undefined {
@@ -75,31 +64,49 @@ function iconByExactOrCaseInsensitive(label: string): LucideIcon | undefined {
   return undefined
 }
 
-/** Fallback heuristics for labels not yet listed in `LABEL_ICON`. */
 function iconByPattern(lower: string): LucideIcon {
   if (lower.includes('react native')) return Smartphone
   if (lower.includes('sqlite') || lower.includes('postgres') || lower.includes('supabase')) return Database
-  if (lower.includes('expo router') || lower.includes('router')) return Route
+  if (
+    lower.includes('react router') ||
+    lower.includes('expo router') ||
+    (lower.includes('router') && lower.includes('react'))
+  ) {
+    return Route
+  }
   if (lower.includes('expo')) return Box
   if (lower.includes('oauth') || lower.includes('jwt') || lower.includes('sign-in') || lower.includes('auth')) {
     return KeyRound
   }
   if (lower.includes('tailwind')) return Wind
   if (lower.includes('typescript') || lower === 'ts' || lower.endsWith(' ts')) return FileType2
+  if (lower.includes('react-pdf')) return FileText
   if (lower.includes('react')) return LayoutTemplate
   if (lower.includes('github')) return GitBranch
   if (lower.includes('vercel') || lower.includes('deploy')) return Triangle
   if (lower.includes('firebase') || lower.includes('fcm') || lower.includes('push')) return BellRing
+  if (
+    lower.includes('row level security') ||
+    lower.includes('permissions policy') ||
+    lower.includes(' rls ')
+  ) {
+    return Shield
+  }
   if (lower.includes('edge function') || lower.includes('lambda') || lower.includes('worker')) return Zap
   if (lower.includes('reminder') || lower.includes('calendar')) return Timer
   if (lower.includes('pdf') || lower.includes('image capture') || lower.includes('photo')) return ImagePlus
   if (lower.includes('file') || lower.includes('attachment') || lower.includes('vault')) return HardDrive
   if (lower.includes('local-first') || lower.includes('on-device')) return Smartphone
   if (lower.includes('n8n') || lower.includes('workflow')) return Workflow
+  if (lower.includes('tanstack') || lower.includes('react query')) return Zap
+  if (lower.includes('zod')) return Shield
+  if (lower.includes('shadcn')) return LayoutTemplate
+  if (lower.includes('lucide')) return Sparkles
+  if (lower.includes('next-themes') || lower.includes('themes')) return Palette
   if (lower.includes('openai') || lower.includes('gpt') || lower.includes('llm')) return Sparkles
   if (lower.includes('python')) return Terminal
   if (lower.includes('node')) return FileCode2
-  if (lower.includes('mail') || lower.includes('gmail')) return Mail
+  if (lower.includes('mail') || lower.includes('gmail') || lower.includes('resend')) return Mail
   if (lower.includes('docker') || lower.includes('container')) return Container
   if (lower.includes('npm') || lower.includes('pnpm') || lower.includes('package')) return Package
   if (lower.includes('markdown') || lower.includes('doc')) return FileText

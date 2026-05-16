@@ -1,6 +1,7 @@
 ﻿import type { ReactNode } from 'react'
 
 import { GlobalPaperPlaneCursor } from '@/components/GlobalPaperPlaneCursor'
+import { ScrollToTopFab } from '@/components/ScrollToTopFab'
 import { cn } from '@/utils/cn'
 
 type AppShellProps = {
@@ -19,8 +20,8 @@ export function AppShell({ children, className }: AppShellProps) {
       {/* overflow-x-clip trims horizontal bleed without creating a scroll container,
           so position:sticky inside child sections continues to work correctly */}
       <main className="relative flex-1 overflow-x-clip">{children}</main>
+      <ScrollToTopFab />
       <GlobalPaperPlaneCursor />
     </div>
   )
 }
-

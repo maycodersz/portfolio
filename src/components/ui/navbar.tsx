@@ -282,7 +282,7 @@ export default function NavBar({
                 aria-controls="mobile-nav-overlay"
                 aria-label={menuOpen ? 'Close menu' : 'Open menu'}
                 onClick={() => setMenuOpen((o) => !o)}
-                className="rounded-lg text-[var(--glass-text-hover)] hover:bg-[var(--glass-bg)] hover:text-foreground"
+                className="shrink-0 rounded-lg border-0 bg-transparent shadow-none backdrop-blur-none text-[var(--glass-text-hover)] hover:bg-[color:var(--glass-bg)] hover:text-[var(--glass-text-hover)]"
               >
                 <Menu className="size-6" />
               </Button>
@@ -308,7 +308,7 @@ export default function NavBar({
             <div className="relative flex h-full flex-col pt-6">
               <motion.button
                 type="button"
-                className="absolute right-4 top-4 rounded-lg p-2 text-foreground hover:bg-[var(--glass-bg)]"
+                className="absolute right-[max(1rem,calc(10%+env(safe-area-inset-right,0px)))] top-[max(1rem,env(safe-area-inset-top,0px))] rounded-lg p-2 text-foreground hover:bg-black/10 dark:hover:bg-white/10"
                 onClick={() => setMenuOpen(false)}
                 whileTap={{ scale: 0.95 }}
                 initial={{ opacity: 0 }}

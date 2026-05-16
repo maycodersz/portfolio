@@ -1,16 +1,23 @@
 import {
+  ClipboardList,
   ExternalLink,
   Layers,
   type LucideIcon,
+  Medal,
+  MessagesSquare,
+  Search,
+  ShieldCheck,
   Smartphone,
   Sparkles,
   Trophy,
+  Upload,
   Users,
   Zap,
 } from 'lucide-react'
 import { motion } from 'motion/react'
 import type { ReactNode } from 'react'
 
+import { BrandSkillLogo } from '@/components/BrandSkillLogo'
 import { GithubMark } from '@/components/icons/GithubMark'
 import { Button } from '@/components/ui/button'
 import {
@@ -23,16 +30,18 @@ import {
 } from '@/content/portfolio'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { cn } from '@/utils/cn'
-import { projectTechIcon } from '@/utils/projectTechIcon'
 
 type ProjectBentoGridProps = {
   project: Project
   className?: string
 }
 
-const FEATURE_ICONS: LucideIcon[] = [Sparkles, Zap, Trophy, Layers, Users, Smartphone]
+const LEGACY_FEATURE_ICONS: LucideIcon[] = [Sparkles, Zap, Trophy, Layers, Users, Smartphone]
 
-const gridClass = 'grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-3'
+/** Order matches Academic Hub bento grid: upload → search → leaderboard → chatroom → moderation → request. */
+const BENTO_FEATURE_ICONS: LucideIcon[] = [Upload, Search, Medal, MessagesSquare, ShieldCheck, ClipboardList]
+
+const gridClass = 'grid grid-cols-1 items-stretch gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-3'
 
 const infoTileClass =
   'flex min-h-[220px] flex-col rounded-2xl border border-primary/20 bg-primary/[0.04] p-8 shadow-[0_24px_70px_-28px_rgb(124_79_226/18%)] dark:border-primary/25 dark:bg-primary/[0.06]'
@@ -41,16 +50,25 @@ const resultsTileClass =
   'flex min-h-[140px] flex-col rounded-2xl border border-border bg-card p-8 shadow-[0_20px_50px_-24px_rgb(0_0_0/18%)] dark:border-primary/10'
 
 const caseTileClass =
-  'flex min-h-[180px] flex-col rounded-2xl border border-border bg-card p-6 shadow-[0_12px_40px_-20px_rgb(0_0_0/14%)] dark:border-primary/10'
+  'flex h-full min-h-0 flex-col rounded-2xl border border-border bg-card p-6 shadow-[0_12px_40px_-20px_rgb(0_0_0/14%)] dark:border-primary/10'
+
+const inventoryTechShellClass =
+  'flex flex-col rounded-2xl border border-border bg-card p-5 shadow-[0_12px_40px_-20px_rgb(0_0_0/14%)] dark:border-primary/10 sm:p-6'
+
+const inventoryGridWrapperClass =
+  'rounded-2xl border border-border bg-muted/15 p-4 dark:border-primary/10 dark:bg-muted/25 sm:p-5'
 
 const linksTileClass =
   'flex min-h-0 flex-col rounded-2xl border border-border bg-card p-6 shadow-[0_12px_40px_-20px_rgb(0_0_0/14%)] dark:border-primary/10'
 
 const techTileClass =
-  'flex min-h-0 flex-col rounded-2xl border border-border/80 bg-muted/30 p-6 shadow-sm dark:border-primary/10'
+  'flex h-full min-h-0 flex-col rounded-2xl border border-border/80 bg-muted/30 p-6 shadow-sm dark:border-primary/10'
 
 const featureTileClass =
   'flex min-h-[140px] flex-col rounded-2xl border border-border bg-card p-5 shadow-[0_8px_30px_-18px_rgb(0_0_0/12%)] dark:border-primary/10'
+
+const bentoFeatureCellClass =
+  'flex h-full min-h-[140px] flex-col rounded-2xl border border-border bg-card p-4 shadow-[0_8px_30px_-18px_rgb(0_0_0/12%)] dark:border-primary/10 sm:min-h-[150px] sm:p-5'
 
 function linkAriaLabel(link: ProjectLink, copy: typeof portfolio.projectDetailPage): string {
   if (link.variant === 'live') return `${copy.visitLiveLabel}: ${link.label}`
@@ -85,19 +103,60 @@ function BentoMotionTile({
   )
 }
 
-function FeatureTileInner({ feature, icon }: { feature: ProjectFeature; icon: LucideIcon }) {
+function FeatureGridBesideTechInner({
+  features,
+  heading,
+}: {
+  features: readonly ProjectFeature[]
+  heading: string
+}) {
+  const slice = features.slice(0, 6)
+  return (
+    <>
+      <h2 className="text-[10px] font-semibold uppercase tracking-[0.3em] text-accent-foreground/90">{heading}</h2>
+      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-4">
+        {slice.map((feature, i) => (
+          <div key={feature.title} className={bentoFeatureCellClass}>
+            <FeatureTileInner
+              feature={feature}
+              icon={BENTO_FEATURE_ICONS[i % BENTO_FEATURE_ICONS.length] ?? Sparkles}
+              compact
+            />
+          </div>
+        ))}
+      </div>
+    </>
+  )
+}
+
+function FeatureTileInner({
+  feature,
+  icon,
+  compact = false,
+}: {
+  feature: ProjectFeature
+  icon: LucideIcon
+  compact?: boolean
+}) {
   const Icon = icon
   return (
     <>
-      <div className="mb-3 flex items-center gap-2">
-        <span className="flex size-10 items-center justify-center rounded-xl border border-primary/20 bg-muted/60 text-accent-foreground">
-          <Icon className="size-5 shrink-0" aria-hidden />
+      <div className={cn('mb-2 flex items-start gap-2 sm:mb-3', compact && 'items-center')}>
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-muted/60 text-accent-foreground sm:size-10">
+          <Icon className={cn('size-4 shrink-0 sm:size-5')} aria-hidden />
         </span>
-        <h3 className="text-gradient-brand px-px py-px text-base font-extrabold tracking-tight sm:text-lg">
+        <h3
+          className={cn(
+            'text-gradient-brand px-px py-px font-extrabold tracking-tight',
+            compact ? 'text-sm sm:text-base' : 'text-base sm:text-lg',
+          )}
+        >
           {feature.title}
         </h3>
       </div>
-      <p className="text-sm leading-relaxed text-muted-foreground">{feature.description}</p>
+      <p className={cn('leading-relaxed text-muted-foreground', compact ? 'text-xs sm:text-sm' : 'text-sm')}>
+        {feature.description}
+      </p>
     </>
   )
 }
@@ -117,20 +176,17 @@ function TechStackBlock({ categories }: { categories: readonly TechStackCategory
               {cat.heading}
             </h3>
             <ul className="flex flex-wrap gap-1.5">
-              {cat.items.map((item) => {
-                const TechIcon = projectTechIcon(item)
-                return (
-                  <li
-                    key={item}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background/80 py-0.5 pl-1.5 pr-2.5 text-xs font-medium text-foreground dark:border-primary/15 dark:bg-muted/40"
-                  >
-                    <span className="flex size-6 shrink-0 items-center justify-center rounded-full border border-primary/15 bg-muted/50 text-accent-foreground">
-                      <TechIcon className="size-3.5 shrink-0" aria-hidden />
-                    </span>
-                    {item}
-                  </li>
-                )
-              })}
+              {cat.items.map((item) => (
+                <li
+                  key={item}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background/80 py-0.5 pl-1.5 pr-2.5 text-xs font-medium text-foreground dark:border-primary/15 dark:bg-muted/40"
+                >
+                  <span className="flex size-6 shrink-0 items-center justify-center rounded-full border border-primary/15 bg-muted/50 text-accent-foreground">
+                    <BrandSkillLogo label={item} variant="techPill" />
+                  </span>
+                  {item}
+                </li>
+              ))}
             </ul>
           </div>
         ))}
@@ -139,11 +195,22 @@ function TechStackBlock({ categories }: { categories: readonly TechStackCategory
   )
 }
 
-function CaseStudyTileInner({
+function CaseStudyTileInner({ heading, body }: { heading: string; body: string }) {
+  return (
+    <>
+      <h3 className="text-gradient-brand px-px py-px text-lg font-extrabold tracking-tight sm:text-xl">{heading}</h3>
+      <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">{body}</p>
+    </>
+  )
+}
+
+function ResultsTileInner({
   heading,
+  metrics,
   body,
 }: {
   heading: string
+  metrics?: readonly { value: string; label: string }[]
   body: string
 }) {
   return (
@@ -151,18 +218,44 @@ function CaseStudyTileInner({
       <h3 className="text-gradient-brand px-px py-px text-lg font-extrabold tracking-tight sm:text-xl">
         {heading}
       </h3>
-      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{body}</p>
+      {metrics?.length ? (
+        <dl
+          className={cn(
+            'mt-6 grid grid-cols-1 gap-3 sm:gap-4',
+            metrics.length >= 4 ? 'grid-cols-2 sm:grid-cols-4' : 'sm:grid-cols-3',
+          )}
+        >
+          {metrics.map((m) => (
+            <div
+              key={`${m.value}-${m.label}`}
+              className="flex flex-col rounded-xl border border-border bg-muted/25 px-4 py-4 dark:border-primary/10"
+            >
+              <dt className="order-2 mt-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                {m.label}
+              </dt>
+              <dd className="order-1 text-3xl font-extrabold tabular-nums tracking-tight text-gradient-brand px-px py-px sm:text-4xl">
+                {m.value}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      ) : null}
+      <p className={cn('text-sm leading-relaxed text-muted-foreground', metrics?.length ? 'mt-6' : 'mt-3')}>
+        {body}
+      </p>
     </>
   )
 }
 
-/** Non-uniform bento: hero info + links row, case study + tech, feature row, full-width results, trailing features. */
+/** 2×3 feature blocks + tech stack → problem / solution (full-width pair) → results. */
 export function ProjectBentoGrid({ project, className }: ProjectBentoGridProps) {
   const copy = portfolio.projectDetailPage
   const reducedMotion = usePrefersReducedMotion()
   const feats = [...(project.features ?? [])].slice(0, 6)
   const tech = project.techStack ?? []
   const links = project.links ?? []
+  const bentoFeatures = (project.bentoFeatureQuadrant ?? []).slice(0, 6)
+  const useBentoFeatureGridLayout = bentoFeatures.length >= 6 && tech.length > 0
   const cs: CaseStudy | undefined = project.caseStudy
   let motionIndex = 0
   const next = () => motionIndex++
@@ -201,7 +294,11 @@ export function ProjectBentoGrid({ project, className }: ProjectBentoGridProps) 
           </BentoMotionTile>
 
           {links.length > 0 ? (
-            <BentoMotionTile reducedMotion={reducedMotion} index={next()} className={cn(linksTileClass, 'md:col-span-1 lg:col-span-1')}>
+            <BentoMotionTile
+              reducedMotion={reducedMotion}
+              index={next()}
+              className={cn(linksTileClass, 'self-start md:col-span-1 lg:col-span-1')}
+            >
               <h3 className="text-gradient-brand px-px py-px text-lg font-extrabold tracking-tight">{copy.linksHeading}</h3>
               <div className="mt-4 flex flex-col gap-3">
                 {links.map((link) => (
@@ -225,36 +322,68 @@ export function ProjectBentoGrid({ project, className }: ProjectBentoGridProps) 
             </BentoMotionTile>
           ) : null}
 
-          {cs?.problem ? (
-            <BentoMotionTile reducedMotion={reducedMotion} index={next()} className={caseTileClass}>
-              <CaseStudyTileInner heading={copy.problemHeading} body={cs.problem} />
+          {useBentoFeatureGridLayout ? (
+            <BentoMotionTile
+              reducedMotion={reducedMotion}
+              index={next()}
+              className={cn(inventoryTechShellClass, 'md:col-span-2 lg:col-span-3')}
+            >
+              <div className="grid gap-6 lg:grid-cols-3 lg:gap-6">
+                <div className={cn(inventoryGridWrapperClass, 'min-w-0 lg:col-span-2')}>
+                  <FeatureGridBesideTechInner features={bentoFeatures} heading={copy.featureGridHeading} />
+                </div>
+                <div className="flex min-h-0 min-w-0 lg:col-span-1">
+                  <div className={cn(techTileClass, 'w-full flex-1')}>
+                    <TechStackBlock categories={tech} />
+                  </div>
+                </div>
+              </div>
             </BentoMotionTile>
-          ) : null}
-          {cs?.solution ? (
-            <BentoMotionTile reducedMotion={reducedMotion} index={next()} className={caseTileClass}>
-              <CaseStudyTileInner heading={copy.solutionHeading} body={cs.solution} />
-            </BentoMotionTile>
-          ) : null}
-          {tech.length > 0 ? (
+          ) : tech.length > 0 ? (
             <BentoMotionTile reducedMotion={reducedMotion} index={next()} className={techTileClass}>
               <TechStackBlock categories={tech} />
             </BentoMotionTile>
           ) : null}
 
-          {feats[0] ? (
+          {!useBentoFeatureGridLayout && feats[0] ? (
             <BentoMotionTile reducedMotion={reducedMotion} index={next()} className={featureTileClass}>
-              <FeatureTileInner feature={feats[0]} icon={FEATURE_ICONS[0] ?? Sparkles} />
+              <FeatureTileInner feature={feats[0]} icon={LEGACY_FEATURE_ICONS[0] ?? Sparkles} />
             </BentoMotionTile>
           ) : null}
-          {feats[1] ? (
+          {!useBentoFeatureGridLayout && feats[1] ? (
             <BentoMotionTile reducedMotion={reducedMotion} index={next()} className={featureTileClass}>
-              <FeatureTileInner feature={feats[1]} icon={FEATURE_ICONS[1] ?? Sparkles} />
+              <FeatureTileInner feature={feats[1]} icon={LEGACY_FEATURE_ICONS[1] ?? Sparkles} />
             </BentoMotionTile>
           ) : null}
-          {feats[2] ? (
+          {!useBentoFeatureGridLayout && feats[2] ? (
             <BentoMotionTile reducedMotion={reducedMotion} index={next()} className={featureTileClass}>
-              <FeatureTileInner feature={feats[2]} icon={FEATURE_ICONS[2] ?? Layers} />
+              <FeatureTileInner feature={feats[2]} icon={LEGACY_FEATURE_ICONS[2] ?? Layers} />
             </BentoMotionTile>
+          ) : null}
+          {!useBentoFeatureGridLayout && feats[3] ? (
+            <BentoMotionTile reducedMotion={reducedMotion} index={next()} className={featureTileClass}>
+              <FeatureTileInner feature={feats[3]} icon={LEGACY_FEATURE_ICONS[3] ?? Users} />
+            </BentoMotionTile>
+          ) : null}
+          {!useBentoFeatureGridLayout && feats[4] ? (
+            <BentoMotionTile reducedMotion={reducedMotion} index={next()} className={featureTileClass}>
+              <FeatureTileInner feature={feats[4]} icon={LEGACY_FEATURE_ICONS[4] ?? Smartphone} />
+            </BentoMotionTile>
+          ) : null}
+
+          {cs?.problem || cs?.solution ? (
+            <div className="grid grid-cols-1 gap-5 md:col-span-2 md:grid-cols-2 md:gap-6 lg:col-span-3">
+              {cs?.problem ? (
+                <BentoMotionTile reducedMotion={reducedMotion} index={next()} className={caseTileClass}>
+                  <CaseStudyTileInner heading={copy.problemHeading} body={cs.problem} />
+                </BentoMotionTile>
+              ) : null}
+              {cs?.solution ? (
+                <BentoMotionTile reducedMotion={reducedMotion} index={next()} className={caseTileClass}>
+                  <CaseStudyTileInner heading={copy.solutionHeading} body={cs.solution} />
+                </BentoMotionTile>
+              ) : null}
+            </div>
           ) : null}
 
           {cs?.results ? (
@@ -263,18 +392,7 @@ export function ProjectBentoGrid({ project, className }: ProjectBentoGridProps) 
               index={next()}
               className={cn(resultsTileClass, 'md:col-span-2 lg:col-span-3')}
             >
-              <CaseStudyTileInner heading={copy.resultsHeading} body={cs.results} />
-            </BentoMotionTile>
-          ) : null}
-
-          {feats[3] ? (
-            <BentoMotionTile reducedMotion={reducedMotion} index={next()} className={featureTileClass}>
-              <FeatureTileInner feature={feats[3]} icon={FEATURE_ICONS[3] ?? Users} />
-            </BentoMotionTile>
-          ) : null}
-          {feats[4] ? (
-            <BentoMotionTile reducedMotion={reducedMotion} index={next()} className={featureTileClass}>
-              <FeatureTileInner feature={feats[4]} icon={FEATURE_ICONS[4] ?? Smartphone} />
+              <ResultsTileInner heading={copy.resultsHeading} metrics={cs.resultMetrics} body={cs.results} />
             </BentoMotionTile>
           ) : null}
         </div>

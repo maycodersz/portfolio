@@ -5,9 +5,16 @@ import imgAutomationReceipt from '@/assets/projects/automation/project-2.png'
 import imgAutomationSales from '@/assets/projects/automation/project-3.png'
 import imgAdminoPhone from '@/assets/projects/mobile/admino/phone.png'
 import imgAdminoTablet from '@/assets/projects/mobile/admino/tablet.png'
+import imgAdminoCaseStudy01 from '@/assets/projects/mobile/admino/case-study/1.png'
 import imgAcademicHubDesktop from '@/assets/projects/web/academic-hub/desktop.png'
 import imgAcademicHubPhone from '@/assets/projects/web/academic-hub/phone.png'
 import imgAcademicHubTablet from '@/assets/projects/web/academic-hub/tablet.png'
+/* Academic Hub case-study carousel (filenames sort 1…17; titles are editable in-page). */
+import imgAhCaseStudy01 from '@/assets/projects/web/academic-hub/case-study/1.png'
+import imgAhCaseStudy02 from '@/assets/projects/web/academic-hub/case-study/2.png'
+import imgAhCaseStudy03 from '@/assets/projects/web/academic-hub/case-study/3.png'
+import imgAhCaseStudy04 from '@/assets/projects/web/academic-hub/case-study/4.png'
+import imgAhCaseStudy05 from '@/assets/projects/web/academic-hub/case-study/5.png'
 
 export type NavbarItemKind = 'link' | 'cta'
 
@@ -55,17 +62,25 @@ export type ProjectFeature = {
   description: string
 }
 
+export type CaseStudyResultMetric = {
+  value: string
+  label: string
+}
+
 export type CaseStudy = {
   overview: string
   problem: string
   solution: string
   results: string
+  /** Large scannable figures shown above the results narrative (optional). */
+  resultMetrics?: readonly CaseStudyResultMetric[]
 }
 
+/** Device showcase slide — `src` then `title` (caption + progress chips); optional `alt` overrides a11y. */
 export type ProjectPageImage = {
   src: string
-  alt: string
-  label?: string
+  title: string
+  alt?: string
 }
 
 export type Project = {
@@ -83,6 +98,10 @@ export type Project = {
   caseStudy?: CaseStudy
   pageImages?: readonly ProjectPageImage[]
   features?: readonly ProjectFeature[]
+  /**
+   * Up to six feature cards in a 2×3 grid beside the tech stack (icon + title + body).
+   */
+  bentoFeatureQuadrant?: readonly ProjectFeature[]
 }
 
 /* ─── Automation project types ───────────────────────────────────────────── */
@@ -197,6 +216,10 @@ export const portfolio = {
       { id: 'nav-pricing', label: 'Pricing', href: '/#pricing', kind: 'link' },
       { id: 'nav-hire', label: 'Hire Me', href: '/#contact', kind: 'cta' },
     ] as const satisfies Readonly<NavbarItem[]>,
+  },
+
+  scrollToTopFab: {
+    ariaLabel: 'Back to top of page',
   },
 
   stats: {
@@ -348,6 +371,7 @@ export const portfolio = {
     techStackHeading: 'Tech stack',
     screenshotsHeading: 'Screenshots',
     featuresHeading: 'Key features',
+    featureGridHeading: 'Features',
     bentoGridAriaLabel: 'Project overview and case study',
     showcaseProgressAriaLabelPrefix: 'Current screen:',
     showcaseJumpToSlideLabel: 'Go to screenshot',
@@ -448,7 +472,7 @@ export const portfolio = {
       title: 'OLFU Academic Hub',
       kind: 'website',
       description:
-        'A collaborative academic resource platform for Our Lady of Fatima University students. Features study material uploads, XP-based leveling & leaderboards, student profiles, bookmarks, file requests, room/chat areas, moderation tools, notifications, and Google Sign-In restricted to school email domains.',
+        'A collaborative academic resource platform for Our Lady of Fatima University students. It combines moderated study uploads with XP, leaderboards, profiles, bookmarks, program rooms, and Google Sign-In limited to school email domains.',
       projectType: 'EdTech, Web App',
       duration: '6 Months',
       highlight: '200+ students onboarded in the first month',
@@ -459,25 +483,61 @@ export const portfolio = {
       },
       heroImage: imgAcademicHubDesktop,
       links: [
-        { label: 'View live demo', href: 'https://academic-hub.example.com', variant: 'live' },
+        { label: 'View live demo', href: 'https://community-hub-rouge.vercel.app', variant: 'live' },
         { label: 'Repository', href: 'https://github.com/example/olfu-academic-hub', variant: 'github' },
       ],
       techStack: [
         {
-          heading: 'Frontend',
-          items: ['React', 'TypeScript', 'Tailwind CSS', 'React Router'],
+          heading: 'Framework',
+          items: ['Next.js', 'React', 'TypeScript'],
         },
         {
-          heading: 'Backend',
-          items: ['Supabase', 'Edge Functions', 'PostgreSQL Row Level Security'],
+          heading: 'Styling & UI',
+          items: ['Tailwind CSS', 'shadcn', 'Lucide'],
         },
         {
-          heading: 'Auth & integrations',
-          items: ['Google OAuth', 'Firebase Cloud Messaging'],
+          heading: 'Data & auth',
+          items: ['Supabase', 'PostgreSQL', 'TanStack React Query'],
+        },
+        {
+          heading: 'Quality & delivery',
+          items: ['Zod', 'react-pdf', 'Resend', 'next-themes'],
         },
         {
           heading: 'DevOps',
-          items: ['Vercel', 'GitHub Actions'],
+          items: ['Vercel', 'Git'],
+        },
+      ],
+      bentoFeatureQuadrant: [
+        {
+          title: 'Upload',
+          description:
+            'Submit study files with rich metadata (course, category, program, year, semester, and more). Daily upload limits and a moderation path keep new items pending until staff approve.',
+        },
+        {
+          title: 'Search',
+          description:
+            'Browse the library of approved materials with keyword search, filters (program, year, semester, category), sorts, and pagination—plus server-side search analytics and a realtime refresh helper in the UI.',
+        },
+        {
+          title: 'Leaderboard',
+          description:
+            'All-time rankings (top ~100), a weekly snapshot tab, and a followings-only view so recognition stays visible without overwhelming the feed.',
+        },
+        {
+          title: 'Chatroom',
+          description:
+            'Program-scoped room directory (plus global rooms), threaded messaging with pinned posts, chat media uploads, and announcement-style rooms with admin-managed writer lists.',
+        },
+        {
+          title: 'Moderation',
+          description:
+            'Staff queue for pending uploads and file versions, content and abuse report pipelines, and user sanctions (upload bans, chat restrictions, roles, and program assignment).',
+        },
+        {
+          title: 'Request',
+          description:
+            'Students post material requests; peers fulfill them; cancellations and staff approval of fulfillments are tracked, with XP rewards for helpers.',
         },
       ],
       caseStudy: {
@@ -488,41 +548,19 @@ export const portfolio = {
         solution:
           'We introduced a moderated upload pipeline with material categories and reporting, bookmarks and file-request flows tied to moderation queues, XP and leaderboards to encourage uploads, rooms for focused discussion, and Google Sign-In limited to validated school domains.',
         results:
-          'Over 200 students joined in month one with steady weekly uploads after launch. Moderation tooling cut duplicate spam reports substantially, while leaderboards noticeably increased revisits ahead of examinations (placeholder narrative—replace with your real metrics).',
+          'Steady weekly uploads after launch, fewer duplicate spam reports thanks to moderation tooling, and stronger revisits ahead of examinations driven by leaderboards.',
+        resultMetrics: [
+          { value: '200+', label: 'Students (month one)' },
+          { value: '5,000+', label: 'Library uploads' },
+          { value: '50,000+', label: 'File downloads' },
+        ],
       },
-      features: [
-        {
-          title: 'XP & Leveling',
-          description:
-            'Earn XP for uploads, downloads, and activity. Unlock academic titles from Freshman Scholar to Fatima Scholar, tracked on a public and followings-only leaderboard.',
-        },
-        {
-          title: 'Moderated Upload Pipeline',
-          description:
-            'Study files go through a staff review queue before reaching the library. Versioning, replacement requests, and rejection flows keep content quality high.',
-        },
-        {
-          title: 'Room-based Chat',
-          description:
-            'Program-scoped chat rooms with pinned messages, announcement channels with writer controls, and in-room file sharing for contextual study discussion.',
-        },
-        {
-          title: 'File Requests & Fulfillment',
-          description:
-            'Students flag missing materials; helpers who fulfill requests earn XP. Staff approve fulfillments before credit is awarded, creating a moderated supply loop.',
-        },
-        {
-          title: 'Google SSO with Domain Lock',
-          description:
-            'Sign-in is restricted to validated school email addresses via a configurable domain allowlist, so only enrolled students can access the platform.',
-        },
-      ],
       pageImages: [
-        { src: imgAcademicHubDesktop, alt: 'Academic Hub — Home page' },
-        { src: imgAcademicHubDesktop, alt: 'Academic Hub — Materials library' },
-        { src: imgAcademicHubDesktop, alt: 'Academic Hub — Student profile' },
-        { src: imgAcademicHubDesktop, alt: 'Academic Hub — Leaderboard' },
-        { src: imgAcademicHubDesktop, alt: 'Academic Hub — Room chat' },
+        { src: imgAhCaseStudy01, title: 'Screenshot 01' },
+        { src: imgAhCaseStudy02, title: 'Screenshot 02' },
+        { src: imgAhCaseStudy03, title: 'Screenshot 03' },
+        { src: imgAhCaseStudy04, title: 'Screenshot 04' },
+        { src: imgAhCaseStudy05, title: 'Screenshot 05' },
       ],
     },
     {
@@ -546,15 +584,15 @@ export const portfolio = {
       techStack: [
         {
           heading: 'Mobile',
-          items: ['React Native', 'Expo', 'TypeScript', 'Expo Router'],
+          items: ['React Native', 'Expo', 'TypeScript'],
         },
         {
-          heading: 'Data & persistence',
-          items: ['Expo SQLite', 'Local file attachments', 'Reminders APIs'],
+          heading: 'Local Database',
+          items: ['Expo SQLite'],
         },
         {
-          heading: 'Experience',
-          items: ['Local-first UX', 'PDF & image capture'],
+          heading: 'Cloud Database',
+          items: ['Supabase', 'PostgreSQL'],
         },
       ],
       caseStudy: {
@@ -565,7 +603,7 @@ export const portfolio = {
         solution:
           'We built inbox, timeline, and vault views anchored on SQLite with files stored on-device, plus categories and reminders for due dates that stay local-only. Screens reduce cognitive load—one capture flow, deterministic sorting, predictable exports when the user chooses to share.',
         results:
-          'Pilot feedback highlighted faster capture time vs. spreadsheets and clearer confidence that sensitive PDFs stayed off the cloud unless explicitly exported (placeholder—replace after user testing summaries).',
+          'Pilot feedback highlighted faster capture time vs. spreadsheets and clearer confidence that sensitive PDFs stayed off the cloud unless explicitly exported.',
       },
       features: [
         { title: 'Local-first storage', description: 'SQLite and on-device files keep proofs and reminders under your control by default.' },
@@ -574,13 +612,7 @@ export const portfolio = {
         { title: 'Photo & PDF capture', description: 'Capture proof in-line with tasks so evidence stays next to the commitment.' },
         { title: 'Timeline view', description: 'Chronological scan of what is due and what changed so nothing slips between apps.' },
       ],
-      pageImages: [
-        { src: imgAdminoPhone, alt: 'Admino — Inbox view' },
-        { src: imgAdminoPhone, alt: 'Admino — Timeline view' },
-        { src: imgAdminoPhone, alt: 'Admino — Vault view' },
-        { src: imgAdminoPhone, alt: 'Admino — Task detail' },
-        { src: imgAdminoPhone, alt: 'Admino — Capture screen' },
-      ],
+      pageImages: [{ src: imgAdminoCaseStudy01, title: 'Screenshot 01' }],
     },
   ] satisfies Readonly<Project[]>,
 

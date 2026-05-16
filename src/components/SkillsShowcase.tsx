@@ -1,4 +1,3 @@
-import { Boxes, Cpu, Database, Webhook } from 'lucide-react'
 import {
   type CSSProperties,
   useCallback,
@@ -9,8 +8,8 @@ import {
   useState,
 } from 'react'
 
+import { BrandSkillLogo } from '@/components/BrandSkillLogo'
 import { portfolio } from '@/content/portfolio'
-import { skillIconUrl } from '@/lib/skillLogos'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/utils/cn'
 
@@ -27,22 +26,6 @@ function chunkPairs<T>(arr: readonly T[]): T[][] {
 const chipClass =
   'skill-chip-btn flex shrink-0 items-center rounded-md px-3 py-2 outline-none transition-[background,background-image] duration-200 ease-[cubic-bezier(0.33,_1,_0.68,_1)] hover:[background:var(--skill-chip-hover-gradient)] focus-visible:[background:var(--skill-chip-hover-gradient)] active:[background:var(--skill-chip-hover-gradient)] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none'
 
-const skillImgMono = 'skill-chip-icon size-9 shrink-0 object-contain'
-
-function FallbackLogo({ name, className }: { name: string; className?: string }) {
-  const p = cn('skill-chip-fallback size-9 shrink-0', className)
-  switch (name) {
-    case 'Webhooks':
-      return <Webhook className={p} strokeWidth={1.75} aria-hidden />
-    case 'MCP':
-      return <Cpu className={p} strokeWidth={1.75} aria-hidden />
-    case 'ExpoSQL':
-      return <Database className={p} strokeWidth={1.75} aria-hidden />
-    default:
-      return <Boxes className={p} strokeWidth={1.75} aria-hidden />
-  }
-}
-
 function SkillLogoChip({
   name,
   isSelected,
@@ -52,10 +35,6 @@ function SkillLogoChip({
   isSelected: boolean
   onSelect: () => void
 }) {
-  const url = skillIconUrl(name)
-  const [broken, setBroken] = useState(url === null)
-  const showImg = Boolean(url && !broken)
-
   return (
     <Tooltip delayDuration={120}>
       <TooltipTrigger asChild>
@@ -66,20 +45,7 @@ function SkillLogoChip({
           onClick={onSelect}
           className={cn(chipClass, isSelected && 'skill-chip-btn--active')}
         >
-          {showImg ? (
-            <img
-              src={url!}
-              alt=""
-              width={36}
-              height={36}
-              className={skillImgMono}
-              loading="lazy"
-              decoding="async"
-              onError={() => setBroken(true)}
-            />
-          ) : (
-            <FallbackLogo name={name} />
-          )}
+          <BrandSkillLogo label={name} variant="marqueeChip" />
         </button>
       </TooltipTrigger>
       <TooltipContent>{name}</TooltipContent>

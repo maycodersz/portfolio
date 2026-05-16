@@ -18,22 +18,25 @@ function buildSlides(
   images: readonly ProjectPageImage[],
   fallbackScreens: ProjectScreens,
   kind: ProjectKind,
-  title: string,
   alts: typeof portfolio.works.devicePreviewAlt,
 ): ProjectPageImage[] {
   if (images.length > 0) return [...images]
 
   if (kind === 'website') {
     if (fallbackScreens.desktop) {
-      return [{ src: fallbackScreens.desktop, alt: `${title} — ${alts.desktop}` }]
+      return [{ src: fallbackScreens.desktop, title: alts.desktop }]
     }
     return []
   }
-  return [{ src: fallbackScreens.phone, alt: `${title} — ${alts.phone}` }]
+  return [{ src: fallbackScreens.phone, title: alts.phone }]
+}
+
+function slideAlt(slide: ProjectPageImage, projectTitle: string): string {
+  return slide.alt ?? `${projectTitle} — ${slide.title}`
 }
 
 function screenLabel(slide: ProjectPageImage): string {
-  return slide.label ?? slide.alt
+  return slide.title
 }
 
 /** Document Y of element top (stable while element is in layout). */
@@ -63,8 +66,8 @@ export function ScrollDeviceShowcase({
   const reducedMotion = usePrefersReducedMotion()
 
   const slides = useMemo(
-    () => buildSlides(images, fallbackScreens, kind, projectTitle, alts),
-    [images, fallbackScreens, kind, projectTitle, alts],
+    () => buildSlides(images, fallbackScreens, kind, alts),
+    [images, fallbackScreens, kind, alts],
   )
 
   const [activeIndex, setActiveIndex] = useState(0)
@@ -161,7 +164,7 @@ export function ScrollDeviceShowcase({
               visible
               canAnimate={false}
               flat
-              desktopAlt={slides[0]!.alt}
+              desktopAlt={slideAlt(slides[0], projectTitle)}
               className="w-full max-w-[min(100%,820px)]"
             />
           ) : (
@@ -170,7 +173,7 @@ export function ScrollDeviceShowcase({
               visible
               canAnimate={false}
               flat
-              phoneAlt={slides[0]!.alt}
+              phoneAlt={slideAlt(slides[0], projectTitle)}
               className="mx-auto w-full max-w-[min(280px,88vw)]"
             />
           )}
@@ -182,7 +185,7 @@ export function ScrollDeviceShowcase({
               >
                 <img
                   src={slide.src}
-                  alt={slide.alt}
+                  alt={slideAlt(slide, projectTitle)}
                   className={cn(
                     'aspect-[9/19] w-full object-cover object-top',
                     kind === 'website' && 'aspect-video',
@@ -220,15 +223,15 @@ export function ScrollDeviceShowcase({
 
         <div className="pointer-events-none absolute left-1/2 top-0 h-[45%] w-[55%] -translate-x-1/2 rounded-full bg-primary/[0.045] blur-[90px]" aria-hidden />
 
-        <div className="sticky top-0 flex min-h-[100dvh] items-center px-[10%] py-10 md:py-14 lg:justify-center lg:gap-16">
-          <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-between lg:gap-12 xl:gap-16">
-            <div className="flex w-full flex-1 flex-col items-center lg:items-start lg:pl-[2%]">
+        <div className="sticky top-0 flex min-h-[100dvh] items-center justify-center px-[10%] py-10 md:py-14">
+          <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-16 xl:gap-20">
+            <div className="flex w-full flex-1 flex-col items-center">
               {kind === 'website' ? (
                 <MonitorFrame
                   visible
                   canAnimate={false}
                   flat
-                  desktopAlt={slides[activeIndex]?.alt ?? alts.desktop}
+                  desktopAlt={activeSlide ? slideAlt(activeSlide, projectTitle) : `${projectTitle} — ${alts.desktop}`}
                   className="w-full max-w-[min(100%,760px)]"
                 >
                   <div className="relative h-full w-full overflow-hidden">
@@ -237,7 +240,7 @@ export function ScrollDeviceShowcase({
                         <motion.img
                           key={activeIndex}
                           src={activeSlide.src}
-                          alt={activeSlide.alt}
+                          alt={slideAlt(activeSlide, projectTitle)}
                           initial={{ y: '100%', opacity: 0 }}
                           animate={{ y: 0, opacity: 1 }}
                           exit={{ y: '-20%', opacity: 0 }}
@@ -259,7 +262,7 @@ export function ScrollDeviceShowcase({
                   visible
                   canAnimate={false}
                   flat
-                  phoneAlt={slides[activeIndex]?.alt ?? alts.phone}
+                  phoneAlt={activeSlide ? slideAlt(activeSlide, projectTitle) : `${projectTitle} — ${alts.phone}`}
                   className="w-full max-w-[min(280px,88vw)] lg:max-w-[300px]"
                 >
                   <div className="relative h-full w-full overflow-hidden">
@@ -268,7 +271,7 @@ export function ScrollDeviceShowcase({
                         <motion.img
                           key={activeIndex}
                           src={activeSlide.src}
-                          alt={activeSlide.alt}
+                          alt={slideAlt(activeSlide, projectTitle)}
                           initial={{ y: '100%', opacity: 0 }}
                           animate={{ y: 0, opacity: 1 }}
                           exit={{ y: '-20%', opacity: 0 }}
@@ -289,7 +292,7 @@ export function ScrollDeviceShowcase({
             </div>
 
             <aside
-              className="flex w-full shrink-0 flex-row flex-wrap items-center justify-center gap-2 lg:w-auto lg:flex-col lg:items-stretch lg:gap-3 lg:pr-[2%]"
+              className="flex w-full shrink-0 flex-row flex-wrap items-center justify-center gap-2 lg:w-auto lg:flex-col lg:items-stretch lg:gap-3"
               aria-label={`${copy.screenshotsHeading} progress`}
             >
               {slides.map((slide, i) => (
