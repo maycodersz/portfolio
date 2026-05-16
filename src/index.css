@@ -249,17 +249,19 @@ html {
 .dark .skill-chip-icon {
   filter: invert(1);
 }
-/* Light + keyboard + touch press: invert black → white */
+/* Light + keyboard + touch press + JS-held active: invert black → white */
 .skill-chip-btn:hover .skill-chip-icon,
 .skill-chip-btn:focus-visible .skill-chip-icon,
-.skill-chip-btn:active .skill-chip-icon {
+.skill-chip-btn:active .skill-chip-icon,
+.skill-chip-btn--active .skill-chip-icon {
   filter: invert(1);
 }
 
-/* Dark + keyboard + touch press: revert to black (readable on gradient) */
+/* Dark: revert to black (readable on gradient) */
 .dark .skill-chip-btn:hover .skill-chip-icon,
 .dark .skill-chip-btn:focus-visible .skill-chip-icon,
-.dark .skill-chip-btn:active .skill-chip-icon {
+.dark .skill-chip-btn:active .skill-chip-icon,
+.dark .skill-chip-btn--active .skill-chip-icon {
   filter: none;
 }
 
@@ -273,13 +275,20 @@ html {
 }
 .skill-chip-btn:hover .skill-chip-fallback,
 .skill-chip-btn:focus-visible .skill-chip-fallback,
-.skill-chip-btn:active .skill-chip-fallback {
+.skill-chip-btn:active .skill-chip-fallback,
+.skill-chip-btn--active .skill-chip-fallback {
   color: #fff;
 }
 .dark .skill-chip-btn:hover .skill-chip-fallback,
 .dark .skill-chip-btn:focus-visible .skill-chip-fallback,
-.dark .skill-chip-btn:active .skill-chip-fallback {
+.dark .skill-chip-btn:active .skill-chip-fallback,
+.dark .skill-chip-btn--active .skill-chip-fallback {
   color: #000;
+}
+
+/* JS-held active state: keep gradient background while pointer is down */
+.skill-chip-btn--active {
+  background: var(--skill-chip-hover-gradient) !important;
 }
 
 /* Chip label text color */
@@ -291,12 +300,14 @@ html {
 }
 .skill-chip-btn:hover,
 .skill-chip-btn:focus-visible,
-.skill-chip-btn:active {
+.skill-chip-btn:active,
+.skill-chip-btn--active {
   color: #fff;
 }
 .dark .skill-chip-btn:hover,
 .dark .skill-chip-btn:focus-visible,
-.dark .skill-chip-btn:active {
+.dark .skill-chip-btn:active,
+.dark .skill-chip-btn--active {
   color: #000;
 }
 
@@ -663,6 +674,47 @@ html.theme-transitioning *::after {
     opacity: 1 !important;
     filter: none !important;
     transform: none !important;
+  }
+}
+
+/*
+ * ── Mobile animation speed-up ───────────────────────────────────────────────
+ * Touch/coarse-pointer devices feel laggy with long 1s+ entrance durations.
+ * Scale all entrance animations to ~55–65% of their desktop duration.
+ */
+@media (pointer: coarse) {
+  .animate-hero-roll {
+    animation-duration: 0.38s !important;
+  }
+
+  .animate-hero-fade-left {
+    animation-duration: 0.62s !important;
+  }
+
+  .animate-stat-pop-in {
+    animation-duration: 0.62s !important;
+  }
+
+  .animate-stat-content-rise {
+    animation-duration: 0.28s !important;
+  }
+
+  .animate-stats-eyebrow-in {
+    animation-duration: 0.5s !important;
+  }
+
+  .animate-stats-headline-in {
+    animation-duration: 0.7s !important;
+  }
+
+  .animate-stats-support-in {
+    animation-duration: 0.55s !important;
+  }
+
+  .animate-device-rise,
+  .animate-device-enter-right,
+  .animate-device-enter-left {
+    animation-duration: 0.68s !important;
   }
 }
 

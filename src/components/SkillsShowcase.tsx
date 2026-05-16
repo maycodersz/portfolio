@@ -2,6 +2,7 @@ import { Boxes, Cpu, Database, Webhook } from 'lucide-react'
 import {
   type CSSProperties,
   useCallback,
+  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -42,10 +43,17 @@ function FallbackLogo({ name, className }: { name: string; className?: string })
   }
 }
 
-function SkillLogoChip({ name }: { name: string }) {
+function SkillLogoChip({
+  name,
+  isSelected,
+  onSelect,
+}: {
+  name: string
+  isSelected: boolean
+  onSelect: () => void
+}) {
   const url = skillIconUrl(name)
   const [broken, setBroken] = useState(url === null)
-
   const showImg = Boolean(url && !broken)
 
   return (
@@ -54,7 +62,9 @@ function SkillLogoChip({ name }: { name: string }) {
         <button
           type="button"
           aria-label={name}
-          className={chipClass}
+          aria-pressed={isSelected}
+          onClick={onSelect}
+          className={cn(chipClass, isSelected && 'skill-chip-btn--active')}
         >
           {showImg ? (
             <img
@@ -88,19 +98,25 @@ const APPROX_CHIP_PX = 96
 
 /** Repeat full `items` groups per half so the track is wider than the window; halves match for seamless -50% loop */
 function SkillGroupMarquee({ items }: { items: readonly string[] }) {
+  const containerRef = useRef<HTMLDivElement>(null)
   const viewportRef = useRef<HTMLDivElement>(null)
   const [loopsInHalf, setLoopsInHalf] = useState(2)
-  /** True while finger/stylus is down on a chip — keeps marquee paused after :active ends only until pointerup on window */
-  const [interactionPause, setInteractionPause] = useState(false)
+  /** Index of the currently selected (locked-hover) chip, or null for none */
+  const [selectedIdx, setSelectedIdx] = useState<number | null>(null)
 
-  const handleViewportPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    const target = e.target
-    if (!(target instanceof Element)) return
-    if (!target.closest('.skill-chip-btn')) return
-    setInteractionPause(true)
-    const clear = () => setInteractionPause(false)
-    window.addEventListener('pointerup', clear, { once: true })
-    window.addEventListener('pointercancel', clear, { once: true })
+  const handleChipSelect = useCallback((idx: number) => {
+    setSelectedIdx((prev) => (prev === idx ? null : idx))
+  }, [])
+
+  /** Tap/click outside this marquee block clears the selection */
+  useEffect(() => {
+    const onOutsidePointerDown = (e: PointerEvent) => {
+      const el = containerRef.current
+      if (!el || !(e.target instanceof Node)) return
+      if (!el.contains(e.target)) setSelectedIdx(null)
+    }
+    document.addEventListener('pointerdown', onOutsidePointerDown)
+    return () => document.removeEventListener('pointerdown', onOutsidePointerDown)
   }, [])
 
   useLayoutEffect(() => {
@@ -125,25 +141,30 @@ function SkillGroupMarquee({ items }: { items: readonly string[] }) {
   const tracks = useMemo(() => [...half, ...half], [half])
 
   const durationSec = Math.max(10, Math.round(half.length * 1.4))
+  const isPaused = selectedIdx !== null
 
   return (
-    <div className="relative isolate min-h-[3.75rem] min-w-0 w-full select-none rounded-md bg-background">
+    <div ref={containerRef} className="relative isolate min-h-[3.75rem] min-w-0 w-full select-none rounded-md bg-background">
       <div aria-hidden className={fadeLeftClass} />
       <div aria-hidden className={fadeRightClass} />
 
       <div
         ref={viewportRef}
         role="presentation"
-        onPointerDownCapture={handleViewportPointerDown}
         className={cn(
           'skills-marquee-row relative z-[1] w-full max-w-full overflow-hidden rounded-md sm:min-w-0',
-          interactionPause && 'skills-marquee-row--interaction-pause',
+          isPaused && 'skills-marquee-row--interaction-pause',
         )}
         style={{ '--skill-marquee-duration': `${durationSec}s` } as CSSProperties}
       >
         <div className="skill-marquee-track flex items-center gap-6 px-4 py-2 sm:gap-7 sm:px-5 sm:py-3">
           {tracks.map((skill, i) => (
-            <SkillLogoChip key={`${skill}-${i}`} name={skill} />
+            <SkillLogoChip
+              key={`${skill}-${i}`}
+              name={skill}
+              isSelected={selectedIdx === i}
+              onSelect={() => handleChipSelect(i)}
+            />
           ))}
         </div>
       </div>

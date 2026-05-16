@@ -57,28 +57,37 @@ type DesktopNavProps = {
   locationHash: string
 }
 
-function DesktopNav({ items, locationHash }: DesktopNavProps) {
-  const { links, ctas } = useMemo(() => partitionNavItems(items), [items])
+/** Section links — centered in the middle column on md+ */
+function DesktopNavLinks({ items, locationHash }: DesktopNavProps) {
+  const { links } = useMemo(() => partitionNavItems(items), [items])
+
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-1.5">
+      {links.map((item) => {
+        const active = hrefHashMatchesLocation(item.href, locationHash)
+        return (
+          <Link
+            key={item.id}
+            href={item.href}
+            className={cn(navLinkBase, active && navLinkActiveClass)}
+            aria-current={active ? 'page' : undefined}
+          >
+            {item.label}
+          </Link>
+        )
+      })}
+    </div>
+  )
+}
+
+/** Theme toggle + Hire me — right column on md+ */
+function DesktopNavTrailing({ items }: { items: ReadonlyArray<NavbarItem> }) {
+  const { ctas } = useMemo(() => partitionNavItems(items), [items])
 
   return (
     <div className="flex items-center gap-1.5 sm:gap-2">
-      <div className="flex items-center gap-1 sm:gap-1.5">
-        {links.map((item) => {
-          const active = hrefHashMatchesLocation(item.href, locationHash)
-          return (
-            <Link
-              key={item.id}
-              href={item.href}
-              className={cn(navLinkBase, active && navLinkActiveClass)}
-              aria-current={active ? 'page' : undefined}
-            >
-              {item.label}
-            </Link>
-          )
-        })}
-      </div>
-
-      {ctas.length > 0 && (
+      <ThemeToggleDesktop />
+      {ctas.length > 0 ? (
         <>
           <span className={dividerClass} aria-hidden />
           <div className="flex items-center gap-1.5">
@@ -95,8 +104,7 @@ function DesktopNav({ items, locationHash }: DesktopNavProps) {
             ))}
           </div>
         </>
-      )}
-      <ThemeToggleDesktop />
+      ) : null}
     </div>
   )
 }
@@ -114,10 +122,10 @@ function ThemeToggleMobile() {
         {theme === 'dark' ? 'Dark mode' : 'Light mode'}
       </span>
       <Button
-        variant="ghost"
+        variant="secondary"
         size="icon"
+        type="button"
         onClick={toggleTheme}
-        className="rounded-xl text-[var(--glass-text)] hover:bg-[var(--glass-bg)] hover:text-[var(--glass-text-hover)]"
         aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
       >
         {theme === 'dark' ? <Sun className="size-5" /> : <Moon className="size-5" />}
@@ -129,18 +137,16 @@ function ThemeToggleMobile() {
 function ThemeToggleDesktop() {
   const { theme, toggleTheme } = useTheme()
   return (
-    <>
-      <span className={dividerClass} aria-hidden />
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={toggleTheme}
-        className="rounded-xl text-[var(--glass-text)] hover:bg-[var(--glass-bg)] hover:text-[var(--glass-text-hover)]"
-        aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-      >
-        {theme === 'dark' ? <Sun className="size-4" /> : <Moon className="size-4" />}
-      </Button>
-    </>
+    <Button
+      variant="secondary"
+      size="icon"
+      type="button"
+      onClick={toggleTheme}
+      className="shrink-0"
+      aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+    >
+      {theme === 'dark' ? <Sun className="size-4" /> : <Moon className="size-4" />}
+    </Button>
   )
 }
 
@@ -176,6 +182,8 @@ function MobileNav({ items, onNavigate, locationHash }: MobileNavProps) {
         )
       })}
 
+      <ThemeToggleMobile />
+
       {ctas.length > 0 && (
         <div className="mt-3 border-t border-[var(--glass-divider)] pt-4">
           {ctas.map((item, i) => (
@@ -199,7 +207,6 @@ function MobileNav({ items, onNavigate, locationHash }: MobileNavProps) {
           ))}
         </div>
       )}
-      <ThemeToggleMobile />
     </div>
   )
 }
@@ -237,7 +244,8 @@ export default function NavBar({
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.4, ease: [0.33, 1, 0.68, 1] }}
           className={cn(
-            'flex items-center justify-between gap-3 py-3.5 pl-6 pr-5 sm:gap-5 sm:py-4 sm:pl-7 sm:pr-6',
+            'flex items-center gap-3 py-3.5 pl-6 pr-5 sm:gap-5 sm:py-4 sm:pl-7 sm:pr-6 max-md:justify-between',
+            'md:grid md:grid-cols-[auto_minmax(0,1fr)_auto] md:items-center md:gap-x-6 md:justify-normal',
             frostedPanelBase,
             scrolled && frostedPanelScrolled,
           )}
@@ -247,31 +255,39 @@ export default function NavBar({
             animate={{ scale: 1 }}
             transition={{ duration: 0.28, ease: [0.33, 1, 0.68, 1] }}
             whileHover={{ scale: 1.03 }}
-            className="shrink-0"
+            className="shrink-0 md:justify-self-start"
           >
             <Link href={brandHref} className={brandClass}>
               {brandName}
             </Link>
           </motion.div>
 
-          <nav className="hidden min-w-0 md:block" aria-label="Primary">
-            <DesktopNav items={items} locationHash={locationHash} />
+          <nav
+            aria-label="Primary"
+            className="hidden min-w-0 w-full md:flex md:justify-center md:justify-self-center md:px-2"
+          >
+            <DesktopNavLinks items={items} locationHash={locationHash} />
           </nav>
 
-          <motion.div className="flex md:hidden" whileTap={{ scale: 0.95 }}>
-            <Button
-              variant="ghost"
-              size="icon"
-              type="button"
-              aria-expanded={menuOpen}
-              aria-controls="mobile-nav-overlay"
-              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-              onClick={() => setMenuOpen((o) => !o)}
-              className="rounded-lg text-[var(--glass-text-hover)] hover:bg-[var(--glass-bg)] hover:text-foreground"
-            >
-              <Menu className="size-6" />
-            </Button>
-          </motion.div>
+          <div className="flex shrink-0 items-center justify-end gap-2 md:justify-self-end">
+            <div className="hidden md:flex md:items-center">
+              <DesktopNavTrailing items={items} />
+            </div>
+            <motion.div className="flex md:hidden" whileTap={{ scale: 0.95 }}>
+              <Button
+                variant="ghost"
+                size="icon"
+                type="button"
+                aria-expanded={menuOpen}
+                aria-controls="mobile-nav-overlay"
+                aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+                onClick={() => setMenuOpen((o) => !o)}
+                className="rounded-lg text-[var(--glass-text-hover)] hover:bg-[var(--glass-bg)] hover:text-foreground"
+              >
+                <Menu className="size-6" />
+              </Button>
+            </motion.div>
+          </div>
         </motion.div>
       </div>
 
