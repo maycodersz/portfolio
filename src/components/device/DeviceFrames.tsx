@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react'
+
 import { cn } from '@/utils/cn'
 
 const TILT_TRANSITION =
@@ -9,17 +11,37 @@ export type DeviceFrameAltText = {
   phone: string
 }
 
-export function MonitorFrame({
-  src,
-  visible,
-  canAnimate = true,
-  desktopAlt,
-}: {
-  src: string
+type MonitorFrameBase = {
   visible: boolean
   canAnimate?: boolean
   desktopAlt: string
-}) {
+  flat?: boolean
+  className?: string
+}
+
+type MonitorFrameWithSrc = MonitorFrameBase & {
+  src: string
+  children?: undefined
+}
+
+type MonitorFrameWithChildren = MonitorFrameBase & {
+  src?: undefined
+  children: ReactNode
+}
+
+export type MonitorFrameProps = MonitorFrameWithSrc | MonitorFrameWithChildren
+
+export function MonitorFrame({
+  src,
+  children,
+  visible,
+  canAnimate = true,
+  desktopAlt,
+  flat = false,
+  className,
+}: MonitorFrameProps) {
+  const hasChildren = children != null
+
   return (
     <div
       className={cn(
@@ -29,23 +51,37 @@ export function MonitorFrame({
             ? 'animate-device-rise [animation-delay:320ms]'
             : 'opacity-100'
           : 'opacity-0',
+        className,
       )}
     >
       <div
         className={cn(
-          '[transform:rotateY(-3deg)]',
-          TILT_TRANSITION,
-          'hover:[transform:rotateY(-6deg)_rotateZ(1.5deg)_scale(1.02)]',
+          flat
+            ? undefined
+            : cn(
+                '[transform:rotateY(-3deg)]',
+                TILT_TRANSITION,
+                'hover:[transform:rotateY(-6deg)_rotateZ(1.5deg)_scale(1.02)]',
+              ),
         )}
       >
         <div className="overflow-hidden rounded-[10px] border border-primary/22 bg-[var(--device-frame-bg)] p-[6px] shadow-[0_0_0_1px_rgb(124_79_226/32%),0_32px_80px_-12px_rgba(0,0,0,0.85),inset_0_1px_0_rgb(124_79_226/10%)]">
-          <div className="overflow-hidden rounded-[6px]">
-            <img
-              src={src}
-              alt={desktopAlt}
-              className="block w-full object-cover object-top"
-              draggable={false}
-            />
+          <div
+            className={cn(
+              'overflow-hidden rounded-[6px]',
+              hasChildren && 'relative aspect-video bg-muted',
+            )}
+          >
+            {hasChildren ? (
+              children
+            ) : (
+              <img
+                src={src}
+                alt={desktopAlt}
+                className="block w-full object-cover object-top"
+                draggable={false}
+              />
+            )}
           </div>
         </div>
         <div className="mx-auto h-[clamp(18px,2.2vw,28px)] w-[8%] bg-gradient-to-b from-[var(--device-frame-stand-from)] to-[var(--device-frame-stand-to)]" />
@@ -100,17 +136,37 @@ export function TabletFrame({
   )
 }
 
-export function PhoneFrame({
-  src,
-  visible,
-  canAnimate = true,
-  phoneAlt,
-}: {
-  src: string
+type PhoneFrameBase = {
   visible: boolean
   canAnimate?: boolean
   phoneAlt: string
-}) {
+  flat?: boolean
+  className?: string
+}
+
+type PhoneFrameWithSrc = PhoneFrameBase & {
+  src: string
+  children?: undefined
+}
+
+type PhoneFrameWithChildren = PhoneFrameBase & {
+  src?: undefined
+  children: ReactNode
+}
+
+export type PhoneFrameProps = PhoneFrameWithSrc | PhoneFrameWithChildren
+
+export function PhoneFrame({
+  src,
+  children,
+  visible,
+  canAnimate = true,
+  phoneAlt,
+  flat = false,
+  className,
+}: PhoneFrameProps) {
+  const hasChildren = children != null
+
   return (
     <div
       className={cn(
@@ -120,6 +176,7 @@ export function PhoneFrame({
             ? 'animate-device-enter-left [animation-delay:120ms]'
             : 'opacity-100'
           : 'opacity-0',
+        className,
       )}
     >
       <div className="pointer-events-none absolute -right-[3px] top-[22%] h-[14%] w-[3px] rounded-r-sm bg-[var(--device-frame-button)]" />
@@ -127,20 +184,33 @@ export function PhoneFrame({
       <div className="pointer-events-none absolute -left-[3px] top-[30%] h-[12%] w-[3px] rounded-l-sm bg-[var(--device-frame-button)]" />
       <div
         className={cn(
-          '[transform:rotateY(5deg)_rotateZ(-1deg)]',
-          TILT_TRANSITION,
-          'hover:[transform:rotateY(2deg)_rotateZ(-3deg)_scale(1.03)]',
+          flat
+            ? undefined
+            : cn(
+                '[transform:rotateY(5deg)_rotateZ(-1deg)]',
+                TILT_TRANSITION,
+                'hover:[transform:rotateY(2deg)_rotateZ(-3deg)_scale(1.03)]',
+              ),
         )}
       >
         <div className="relative overflow-hidden rounded-[clamp(20px,3vw,32px)] border border-primary/20 bg-[var(--device-frame-bg)] p-[5px] shadow-[0_0_0_1px_rgb(124_79_226/28%),0_20px_50px_-8px_rgba(0,0,0,0.9),inset_0_1px_0_rgb(124_79_226/8%)]">
           <div className="absolute left-1/2 top-[6px] z-[1] h-[8px] w-[28%] -translate-x-1/2 rounded-full bg-[var(--device-frame-notch)] shadow-[inset_0_1px_2px_rgba(0,0,0,0.8)]" />
-          <div className="overflow-hidden rounded-[clamp(16px,2.5vw,26px)]">
-            <img
-              src={src}
-              alt={phoneAlt}
-              className="block w-full object-cover object-top"
-              draggable={false}
-            />
+          <div
+            className={cn(
+              'overflow-hidden rounded-[clamp(16px,2.5vw,26px)]',
+              hasChildren && 'relative aspect-[9/19] w-full max-w-[280px] bg-muted',
+            )}
+          >
+            {hasChildren ? (
+              children
+            ) : (
+              <img
+                src={src}
+                alt={phoneAlt}
+                className="block w-full object-cover object-top"
+                draggable={false}
+              />
+            )}
           </div>
         </div>
       </div>

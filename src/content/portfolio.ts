@@ -50,6 +50,11 @@ export type TechStackCategory = {
   items: readonly string[]
 }
 
+export type ProjectFeature = {
+  title: string
+  description: string
+}
+
 export type CaseStudy = {
   overview: string
   problem: string
@@ -77,6 +82,7 @@ export type Project = {
   techStack?: readonly TechStackCategory[]
   caseStudy?: CaseStudy
   pageImages?: readonly ProjectPageImage[]
+  features?: readonly ProjectFeature[]
 }
 
 /* ─── Automation project types ───────────────────────────────────────────── */
@@ -341,11 +347,15 @@ export const portfolio = {
     resultsHeading: 'Results & impact',
     techStackHeading: 'Tech stack',
     screenshotsHeading: 'Screenshots',
+    featuresHeading: 'Key features',
+    bentoGridAriaLabel: 'Project overview and case study',
+    showcaseProgressAriaLabelPrefix: 'Current screen:',
+    showcaseJumpToSlideLabel: 'Go to screenshot',
+    showcaseReducedMotionHint: 'All screens are shown below. Scroll-linked animation is reduced when reduced motion is on.',
     visitLiveLabel: 'Live site',
     visitGithubLabel: 'Source code',
     visitAppstoreLabel: 'Download',
-    carouselPrevLabel: 'Previous screenshot',
-    carouselNextLabel: 'Next screenshot',
+    linksHeading: 'Links',
     notFoundHeading: 'Project not found',
     notFoundMessage: 'This project does not exist or the link may be outdated.',
   },
@@ -480,6 +490,33 @@ export const portfolio = {
         results:
           'Over 200 students joined in month one with steady weekly uploads after launch. Moderation tooling cut duplicate spam reports substantially, while leaderboards noticeably increased revisits ahead of examinations (placeholder narrative—replace with your real metrics).',
       },
+      features: [
+        {
+          title: 'XP & Leveling',
+          description:
+            'Earn XP for uploads, downloads, and activity. Unlock academic titles from Freshman Scholar to Fatima Scholar, tracked on a public and followings-only leaderboard.',
+        },
+        {
+          title: 'Moderated Upload Pipeline',
+          description:
+            'Study files go through a staff review queue before reaching the library. Versioning, replacement requests, and rejection flows keep content quality high.',
+        },
+        {
+          title: 'Room-based Chat',
+          description:
+            'Program-scoped chat rooms with pinned messages, announcement channels with writer controls, and in-room file sharing for contextual study discussion.',
+        },
+        {
+          title: 'File Requests & Fulfillment',
+          description:
+            'Students flag missing materials; helpers who fulfill requests earn XP. Staff approve fulfillments before credit is awarded, creating a moderated supply loop.',
+        },
+        {
+          title: 'Google SSO with Domain Lock',
+          description:
+            'Sign-in is restricted to validated school email addresses via a configurable domain allowlist, so only enrolled students can access the platform.',
+        },
+      ],
       pageImages: [
         { src: imgAcademicHubDesktop, alt: 'Academic Hub — Home page' },
         { src: imgAcademicHubDesktop, alt: 'Academic Hub — Materials library' },
@@ -530,6 +567,13 @@ export const portfolio = {
         results:
           'Pilot feedback highlighted faster capture time vs. spreadsheets and clearer confidence that sensitive PDFs stayed off the cloud unless explicitly exported (placeholder—replace after user testing summaries).',
       },
+      features: [
+        { title: 'Local-first storage', description: 'SQLite and on-device files keep proofs and reminders under your control by default.' },
+        { title: 'Smart reminders', description: 'Due dates funnel into familiar OS reminder surfaces without shipping data upstream.' },
+        { title: 'Vault view', description: 'Dedicated surface for IDs and sensitive documents with quick scan-in and attachment links.' },
+        { title: 'Photo & PDF capture', description: 'Capture proof in-line with tasks so evidence stays next to the commitment.' },
+        { title: 'Timeline view', description: 'Chronological scan of what is due and what changed so nothing slips between apps.' },
+      ],
       pageImages: [
         { src: imgAdminoPhone, alt: 'Admino — Inbox view' },
         { src: imgAdminoPhone, alt: 'Admino — Timeline view' },

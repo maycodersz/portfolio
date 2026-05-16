@@ -1,16 +1,14 @@
+import { ArrowLeft } from 'lucide-react'
 import { useParams } from 'react-router-dom'
 
 import { AppShell } from '@/components/AppShell'
-import {
-  ProjectCaseStudyPair,
-  ProjectCaseStudySingle,
-} from '@/components/project/ProjectCaseStudy'
-import { ProjectInfoSection } from '@/components/project/ProjectInfoSection'
-import { ProjectScreenshotCarousel } from '@/components/project/ProjectScreenshotCarousel'
+import { ProjectBentoGrid } from '@/components/project/ProjectBentoGrid'
+import { ScrollDeviceShowcase } from '@/components/project/ScrollDeviceShowcase'
 import { Button } from '@/components/ui/button'
 import Link from '@/components/ui/link'
 import NavBar from '@/components/ui/navbar'
 import { portfolio } from '@/content/portfolio'
+import { cn } from '@/utils/cn'
 
 export default function ProjectPage() {
   const { id } = useParams<{ id: string }>()
@@ -32,49 +30,43 @@ export default function ProjectPage() {
     )
   }
 
-  const cs = matched.caseStudy
   const pageImages = matched.pageImages ?? []
 
   return (
     <AppShell>
       <NavBar />
-      <article className="pb-20">
-        {/* Screenshots carousel — hero visual at top */}
-        <ProjectScreenshotCarousel
-          images={pageImages}
-          fallbackScreens={matched.screens}
-          kind={matched.kind}
-          projectTitle={matched.title}
-        />
-
-        {/* Project details (left) + Tech stack (right) */}
-        <ProjectInfoSection project={matched} />
-
-        {/* Problem (left) + Solution (right) */}
-        {cs?.problem && cs?.solution ? (
-          <ProjectCaseStudyPair
-            left={{ title: pdp.problemHeading, body: cs.problem }}
-            right={{ title: pdp.solutionHeading, body: cs.solution }}
-          />
-        ) : cs?.problem ? (
-          <ProjectCaseStudySingle title={pdp.problemHeading} body={cs.problem} />
-        ) : cs?.solution ? (
-          <ProjectCaseStudySingle title={pdp.solutionHeading} body={cs.solution} />
-        ) : null}
-
-        {/* Results — full width */}
-        {cs?.results ? (
-          <ProjectCaseStudySingle title={pdp.resultsHeading} body={cs.results} />
-        ) : null}
-
-        <footer className="border-t border-border bg-background px-[10%] pt-14 pb-8">
-          <div className="mx-auto max-w-3xl text-center">
-            <Button variant="accent" size="sm" asChild className="rounded-xl">
-              <Link href={pdp.backHref}>{pdp.backLabel}</Link>
+      <div className="relative">
+        {/* Fixed below nav — stays pinned while scrolling the case study */}
+        <div
+          className={cn(
+            'pointer-events-none fixed left-[10%] z-30 max-w-[calc(100%-5rem)] sm:left-[max(2.5rem,10%-1rem)]',
+            'top-[calc(var(--navbar-height)+0.75rem)]',
+          )}
+        >
+          <div className="pointer-events-auto">
+            <Button variant="accentSecondary" size="sm" className="rounded-xl border border-border bg-background/90 shadow-md backdrop-blur-sm" asChild>
+              <Link href={pdp.backHref}>
+                <span className="inline-flex items-center gap-2">
+                  <ArrowLeft className="size-4 shrink-0 opacity-90" aria-hidden />
+                  {pdp.backLabel}
+                </span>
+              </Link>
             </Button>
           </div>
-        </footer>
-      </article>
+        </div>
+
+        <article className="pb-20">
+          <ScrollDeviceShowcase
+            key={matched.id}
+            images={pageImages}
+            fallbackScreens={matched.screens}
+            kind={matched.kind}
+            projectTitle={matched.title}
+          />
+
+          <ProjectBentoGrid project={matched} />
+        </article>
+      </div>
     </AppShell>
   )
 }
