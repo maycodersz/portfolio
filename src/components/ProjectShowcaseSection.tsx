@@ -5,15 +5,22 @@ import {
 } from '@/components/device/DeviceFrames'
 import { portfolio } from '@/content/portfolio'
 import { useRevealOnView } from '@/hooks/useRevealOnView'
+import { useSectionAnimState } from '@/hooks/useSectionAnimState'
+import { useScrollDirection } from '@/hooks/useScrollDirection'
 import { cn } from '@/utils/cn'
 
 const DEVICE_STAGE_SPACER_FEATURED = 'h-[clamp(300px,60vw,700px)]'
 
 export function ProjectShowcaseSection() {
+  const scrollDir = useScrollDirection()
+  const suppress = scrollDir === 'up'
   const [sectionRef, visible, revealKey] = useRevealOnView<HTMLElement>({
     threshold: 0.14,
     rootMargin: '0px 0px -12% 0px',
+    suppress,
   })
+  const animState = useSectionAnimState(visible, scrollDir)
+  const canAnimate = animState === 'animating'
   const { devicePreviewAlt } = portfolio.works
 
   return (
@@ -39,15 +46,15 @@ export function ProjectShowcaseSection() {
         )}
       >
         <div className="absolute left-1/2 top-0 z-[1] w-[58%] -translate-x-1/2">
-          <MonitorFrame visible={visible} desktopAlt={devicePreviewAlt.desktop} />
+          <MonitorFrame visible={visible} canAnimate={canAnimate} desktopAlt={devicePreviewAlt.desktop} />
         </div>
 
         <div className="absolute right-[0%] top-[8%] z-[5] w-[34%]">
-          <TabletFrame visible={visible} tabletAlt={devicePreviewAlt.tablet} />
+          <TabletFrame visible={visible} canAnimate={canAnimate} tabletAlt={devicePreviewAlt.tablet} />
         </div>
 
         <div className="absolute left-[1%] top-[18%] z-10 w-[17%]">
-          <PhoneFrame visible={visible} phoneAlt={devicePreviewAlt.phone} />
+          <PhoneFrame visible={visible} canAnimate={canAnimate} phoneAlt={devicePreviewAlt.phone} />
         </div>
 
         <div className={DEVICE_STAGE_SPACER_FEATURED} aria-hidden />

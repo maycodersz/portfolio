@@ -29,6 +29,8 @@ import {
   portfolio,
 } from '@/content/portfolio'
 import { useRevealOnView } from '@/hooks/useRevealOnView'
+import { useSectionAnimState } from '@/hooks/useSectionAnimState'
+import { useScrollDirection } from '@/hooks/useScrollDirection'
 import { cn } from '@/utils/cn'
 
 const c = portfolio.contact
@@ -105,10 +107,15 @@ const initialForm: FormState = {
 }
 
 export function ContactSection() {
+  const scrollDir = useScrollDirection()
+  const suppress = scrollDir === 'up'
   const [sectionRef, isInView] = useRevealOnView<HTMLElement>({
     threshold: 0.14,
     rootMargin: '0px 0px -12% 0px',
+    suppress,
   })
+  const animState = useSectionAnimState(isInView, scrollDir)
+  const canAnim = animState === 'animating'
 
   const [form, setForm] = useState<FormState>(initialForm)
   const [sending, setSending] = useState(false)
@@ -192,7 +199,7 @@ export function ContactSection() {
               <p
                 className={cn(
                   'text-[11px] font-bold uppercase tracking-[0.38em] text-accent-foreground motion-reduce:animate-none',
-                  isInView ? 'animate-stats-eyebrow-in' : 'opacity-0',
+                  canAnim ? 'animate-stats-eyebrow-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
                 )}
               >
                 {c.eyebrow}
@@ -201,9 +208,9 @@ export function ContactSection() {
               <h2
                 className={cn(
                   'text-gradient-brand px-px py-px text-[clamp(2.5rem,5vw,3.75rem)] font-extrabold leading-[1.1] tracking-[-0.04em] motion-reduce:animate-none',
-                  isInView ? 'animate-stats-headline-in' : 'opacity-0',
+                  canAnim ? 'animate-stats-headline-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
                 )}
-                style={{ animationDelay: isInView ? '0.12s' : undefined }}
+                style={{ animationDelay: canAnim ? '0.12s' : undefined }}
               >
                 {c.title}
               </h2>
@@ -211,9 +218,9 @@ export function ContactSection() {
               <p
                 className={cn(
                   'text-sm leading-relaxed text-muted-foreground motion-reduce:animate-none sm:text-[15px]',
-                  isInView ? 'animate-stats-support-in' : 'opacity-0',
+                  canAnim ? 'animate-stats-support-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
                 )}
-                style={{ animationDelay: isInView ? '0.36s' : undefined }}
+                style={{ animationDelay: canAnim ? '0.36s' : undefined }}
               >
                 {c.description}
               </p>
@@ -221,9 +228,9 @@ export function ContactSection() {
               <form
                 className={cn(
                   'flex flex-col gap-4 motion-reduce:animate-none',
-                  isInView ? 'animate-stats-support-in' : 'opacity-0',
+                  canAnim ? 'animate-stats-support-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
                 )}
-                style={{ animationDelay: isInView ? '0.52s' : undefined }}
+                style={{ animationDelay: canAnim ? '0.52s' : undefined }}
                 onSubmit={handleSubmit}
                 noValidate
               >
@@ -324,9 +331,9 @@ export function ContactSection() {
             <div
               className={cn(
                 'flex w-full min-w-0 flex-col gap-8 lg:max-w-md motion-reduce:animate-none',
-                isInView ? 'animate-stats-support-in' : 'opacity-0',
+                canAnim ? 'animate-stats-support-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
               )}
-              style={{ animationDelay: isInView ? '0.68s' : undefined }}
+              style={{ animationDelay: canAnim ? '0.68s' : undefined }}
             >
               <div>
                 <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.38em] text-accent-foreground">

@@ -2,6 +2,8 @@ import { Check } from 'lucide-react'
 
 import { type PricingPlan, portfolio } from '@/content/portfolio'
 import { useRevealOnView } from '@/hooks/useRevealOnView'
+import { useSectionAnimState } from '@/hooks/useSectionAnimState'
+import { useScrollDirection } from '@/hooks/useScrollDirection'
 import { cn } from '@/utils/cn'
 
 const p = portfolio.pricing
@@ -59,10 +61,12 @@ function PricingCard({
   plan,
   delay,
   inView,
+  canAnim,
 }: {
   plan: PricingPlan
   delay: string
   inView: boolean
+  canAnim: boolean
 }) {
   const isPopular = !!plan.isPopular
 
@@ -70,9 +74,9 @@ function PricingCard({
     <div
       className={cn(
         'motion-reduce:animate-none',
-        inView ? 'animate-stats-support-in' : 'opacity-0',
+        canAnim ? 'animate-stats-support-in' : inView ? 'opacity-100' : 'opacity-0',
       )}
-      style={{ animationDelay: inView ? delay : undefined }}
+      style={{ animationDelay: canAnim ? delay : undefined }}
     >
       <PopularGradientBorderShell active={isPopular}>
         <div
@@ -146,10 +150,15 @@ function PricingCard({
 /* ── Section ────────────────────────────────────────────────────────────── */
 
 export function PricingSection() {
+  const scrollDir = useScrollDirection()
+  const suppress = scrollDir === 'up'
   const [sectionRef, isInView] = useRevealOnView<HTMLElement>({
     threshold: 0.14,
     rootMargin: '0px 0px -12% 0px',
+    suppress,
   })
+  const animState = useSectionAnimState(isInView, scrollDir)
+  const canAnim = animState === 'animating'
 
   const cardDelays = ['0.36s', '0.52s', '0.68s']
 
@@ -170,7 +179,7 @@ export function PricingSection() {
           <p
             className={cn(
               'text-[11px] font-bold uppercase tracking-[0.38em] text-accent-foreground motion-reduce:animate-none',
-              isInView ? 'animate-stats-eyebrow-in' : 'opacity-0',
+              canAnim ? 'animate-stats-eyebrow-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
             )}
           >
             {p.eyebrow}
@@ -179,9 +188,9 @@ export function PricingSection() {
           <h2
             className={cn(
               'text-gradient-brand text-[clamp(2.4rem,5vw,3.5rem)] font-extrabold leading-[1.1] tracking-[-0.04em] motion-reduce:animate-none',
-              isInView ? 'animate-stats-headline-in' : 'opacity-0',
+              canAnim ? 'animate-stats-headline-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
             )}
-            style={{ animationDelay: isInView ? '0.12s' : undefined }}
+            style={{ animationDelay: canAnim ? '0.12s' : undefined }}
           >
             {p.title}
           </h2>
@@ -193,7 +202,8 @@ export function PricingSection() {
               key={plan.id}
               plan={plan}
               delay={cardDelays[i] ?? '0.48s'}
-              inView={isInView}
+              inView={animState !== 'hidden'}
+              canAnim={canAnim}
             />
           ))}
         </div>
@@ -201,9 +211,9 @@ export function PricingSection() {
         <div
           className={cn(
             'mt-14 flex flex-col items-center gap-3 text-center motion-reduce:animate-none',
-            isInView ? 'animate-stats-support-in' : 'opacity-0',
+            canAnim ? 'animate-stats-support-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
           )}
-          style={{ animationDelay: isInView ? '0.88s' : undefined }}
+          style={{ animationDelay: canAnim ? '0.88s' : undefined }}
         >
           <p className="text-sm text-muted-foreground">{p.disclaimer}</p>
           <a

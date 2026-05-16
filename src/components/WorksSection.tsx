@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 
+import { Button } from '@/components/ui/button'
 import { WithCursorFollow } from '@/components/CursorFollowButton'
 import {
   MonitorFrame,
@@ -8,6 +9,8 @@ import {
 } from '@/components/device/DeviceFrames'
 import { type Project, portfolio } from '@/content/portfolio'
 import { useRevealOnView } from '@/hooks/useRevealOnView'
+import { useSectionAnimState } from '@/hooks/useSectionAnimState'
+import { useScrollDirection } from '@/hooks/useScrollDirection'
 import { cn } from '@/utils/cn'
 
 /* ─── Device stage layouts ───────────────────────────────────────────────── */
@@ -22,22 +25,24 @@ const DEVICE_STAGE_SPACER_CLASS = 'h-[clamp(160px,32vw,380px)]'
 function WebsiteDeviceStage({
   screens,
   visible,
+  canAnimate,
   alts,
 }: {
   screens: Project['screens']
   visible: boolean
+  canAnimate: boolean
   alts: typeof portfolio.works.devicePreviewAlt
 }) {
   return (
     <div className={DEVICE_STAGE_CLASS}>
       <div className="absolute left-1/2 top-0 z-[1] w-[58%] -translate-x-1/2">
-        <MonitorFrame src={screens.desktop} visible={visible} desktopAlt={alts.desktop} />
+        <MonitorFrame src={screens.desktop} visible={visible} canAnimate={canAnimate} desktopAlt={alts.desktop} />
       </div>
       <div className="absolute right-[0%] top-[8%] z-[5] w-[34%]">
-        <TabletFrame src={screens.tablet} visible={visible} tabletAlt={alts.tablet} />
+        <TabletFrame src={screens.tablet} visible={visible} canAnimate={canAnimate} tabletAlt={alts.tablet} />
       </div>
       <div className="absolute left-[1%] top-[18%] z-10 w-[17%]">
-        <PhoneFrame src={screens.phone} visible={visible} phoneAlt={alts.phone} />
+        <PhoneFrame src={screens.phone} visible={visible} canAnimate={canAnimate} phoneAlt={alts.phone} />
       </div>
       <div className={DEVICE_STAGE_SPACER_CLASS} aria-hidden />
     </div>
@@ -47,19 +52,21 @@ function WebsiteDeviceStage({
 function MobileDeviceStage({
   screens,
   visible,
+  canAnimate,
   alts,
 }: {
   screens: Project['screens']
   visible: boolean
+  canAnimate: boolean
   alts: typeof portfolio.works.devicePreviewAlt
 }) {
   return (
     <div className={DEVICE_STAGE_CLASS}>
       <div className="absolute right-[20%] top-[8%] z-[5] w-[34%]">
-        <TabletFrame src={screens.tablet} visible={visible} tabletAlt={alts.tablet} />
+        <TabletFrame src={screens.tablet} visible={visible} canAnimate={canAnimate} tabletAlt={alts.tablet} />
       </div>
       <div className="absolute left-[25%] top-[18%] z-10 w-[17%]">
-        <PhoneFrame src={screens.phone} visible={visible} phoneAlt={alts.phone} />
+        <PhoneFrame src={screens.phone} visible={visible} canAnimate={canAnimate} phoneAlt={alts.phone} />
       </div>
       <div className={DEVICE_STAGE_SPACER_CLASS} aria-hidden />
     </div>
@@ -69,7 +76,14 @@ function MobileDeviceStage({
 /* ─── Single project card ────────────────────────────────────────────────── */
 
 function ProjectCard({ project }: { project: Project }) {
-  const [sectionRef, visible, revealKey] = useRevealOnView<HTMLElement>({ threshold: 0.1 })
+  const scrollDir = useScrollDirection()
+  const suppress = scrollDir === 'up'
+  const [sectionRef, visible, revealKey] = useRevealOnView<HTMLElement>({
+    threshold: 0.1,
+    suppress,
+  })
+  const animState = useSectionAnimState(visible, scrollDir)
+  const canAnimate = animState === 'animating'
   const navigate = useNavigate()
   const { devicePreviewAlt, metaDurationLabel, metaProjectTypeLabel, viewWorkCursorLabel } =
     portfolio.works
@@ -106,6 +120,7 @@ function ProjectCard({ project }: { project: Project }) {
               key={revealKey}
               screens={project.screens}
               visible={visible}
+              canAnimate={canAnimate}
               alts={devicePreviewAlt}
             />
           ) : (
@@ -113,6 +128,7 @@ function ProjectCard({ project }: { project: Project }) {
               key={revealKey}
               screens={project.screens}
               visible={visible}
+              canAnimate={canAnimate}
               alts={devicePreviewAlt}
             />
           )}
@@ -159,6 +175,17 @@ function ProjectCard({ project }: { project: Project }) {
                 <p className="mt-1 text-sm text-muted-foreground">{project.duration}</p>
               </div>
             </div>
+          </div>
+
+          {/* Mobile-only View Work button */}
+          <div className="flex justify-center pt-2 lg:hidden">
+            <Button
+              variant="accent"
+              size="sm"
+              onClick={() => navigate(`/work/${project.id}`)}
+            >
+              {viewWorkCursorLabel} →
+            </Button>
           </div>
         </div>
       </WithCursorFollow>

@@ -1,6 +1,8 @@
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { type CSSProperties, useState } from 'react'
 
 import { AutomationModal } from '@/components/AutomationModal'
+import { Button } from '@/components/ui/button'
 import { WithCursorFollow } from '@/components/CursorFollowButton'
 import {
   type AutomationCategory,
@@ -8,6 +10,8 @@ import {
   portfolio,
 } from '@/content/portfolio'
 import { useInView } from '@/hooks/useInView'
+import { useSectionAnimState } from '@/hooks/useSectionAnimState'
+import { useScrollDirection } from '@/hooks/useScrollDirection'
 import { useScrollRevealGate } from '@/hooks/useScrollRevealGate'
 import { CARD_DECK_STAGE_STYLE } from '@/utils/cardDeckStage'
 import { cn } from '@/utils/cn'
@@ -226,6 +230,9 @@ function CardDeckCarousel({
   const total = projects.length
   const { carouselAria } = auto
 
+  const goPrev = () => setActive((active - 1 + total) % total)
+  const goNext = () => setActive((active + 1) % total)
+
   if (total === 0) {
     return (
       <div className="flex items-center justify-center py-24 text-muted-foreground" role="status">
@@ -236,56 +243,94 @@ function CardDeckCarousel({
 
   return (
     <div className="flex w-full max-w-[80vw] flex-col items-center gap-6 sm:max-w-[70vw] lg:max-w-none">
-      {/* Fan stage */}
-      <div
-        className="relative aspect-[4/5] w-full"
-        style={CARD_DECK_STAGE_STYLE}
-      >
-        {[...projects].map((project, i) => {
-          const slot = fanSlot(i, active, total)
-          return (
-            <FanCard
-              key={project.id}
-              project={project}
-              slot={slot}
-              total={total}
-              onClickCenter={() => onOpen(project)}
-              onClickSide={() =>
-                slot === 'left'
-                  ? setActive((active - 1 + total) % total)
-                  : setActive((active + 1) % total)
-              }
-              sectionInView={sectionInView}
-              scrollReveal={scrollReveal}
-            />
-          )
-        })}
+      {/* Fan stage with mobile arrows */}
+      <div className="relative w-full">
+        {/* Left arrow — mobile only */}
+        <button
+          type="button"
+          onClick={goPrev}
+          aria-label="Previous project"
+          className="absolute -left-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background/80 text-muted-foreground shadow-md backdrop-blur-sm transition-colors hover:text-foreground active:scale-90 sm:-left-5 lg:hidden"
+        >
+          <ChevronLeft className="size-5" />
+        </button>
+
+        {/* Right arrow — mobile only */}
+        <button
+          type="button"
+          onClick={goNext}
+          aria-label="Next project"
+          className="absolute -right-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background/80 text-muted-foreground shadow-md backdrop-blur-sm transition-colors hover:text-foreground active:scale-90 sm:-right-5 lg:hidden"
+        >
+          <ChevronRight className="size-5" />
+        </button>
+
+        <div
+          className="relative aspect-[4/5] w-full"
+          style={CARD_DECK_STAGE_STYLE}
+        >
+          {[...projects].map((project, i) => {
+            const slot = fanSlot(i, active, total)
+            return (
+              <FanCard
+                key={project.id}
+                project={project}
+                slot={slot}
+                total={total}
+                onClickCenter={() => onOpen(project)}
+                onClickSide={() =>
+                  slot === 'left'
+                    ? goPrev()
+                    : goNext()
+                }
+                sectionInView={sectionInView}
+                scrollReveal={scrollReveal}
+              />
+            )
+          })}
+        </div>
       </div>
 
-      <nav
-        aria-label={`${auto.sectionAriaLabel} pagination`}
-        className="flex items-center justify-center gap-2"
-      >
-        {projects.map((_, i) => (
-          <button
-            key={i}
-            type="button"
-            onClick={() => setActive(i)}
-            aria-label={`${carouselAria.goToCardPrefix} ${i + 1}`}
-            aria-current={i === active ? 'step' : undefined}
-            className="flex min-h-11 min-w-11 items-center justify-center"
-          >
-            <span
-              className={cn(
-                'rounded-full transition-all duration-300',
-                i === active
-                  ? 'h-2 w-6 bg-primary'
-                  : 'h-2 w-2 bg-muted-foreground/40 hover:bg-accent-foreground/50',
-              )}
-            />
-          </button>
-        ))}
-      </nav>
+      {/* Pagination dots + mobile View Work */}
+      <div className="flex flex-col items-center gap-3">
+        <nav
+          aria-label={`${auto.sectionAriaLabel} pagination`}
+          className="flex items-center justify-center gap-2"
+        >
+          {projects.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => setActive(i)}
+              aria-label={`${carouselAria.goToCardPrefix} ${i + 1}`}
+              aria-current={i === active ? 'step' : undefined}
+              className="flex min-h-11 min-w-11 items-center justify-center"
+            >
+              <span
+                className={cn(
+                  'rounded-full transition-all duration-300',
+                  i === active
+                    ? 'h-2 w-6 bg-primary'
+                    : 'h-2 w-2 bg-muted-foreground/40 hover:bg-accent-foreground/50',
+                )}
+              />
+            </button>
+          ))}
+        </nav>
+
+        {/* View Work — mobile only */}
+        <Button
+          variant="accent"
+          size="sm"
+          className="lg:hidden"
+          onClick={() => {
+            const current = projects[active]
+            if (current) onOpen(current)
+          }}
+        >
+          {auto.viewWorkCursorLabel} →
+        </Button>
+      </div>
     </div>
   )
 }
@@ -296,11 +341,16 @@ export function AutomationSection() {
   const [activeCategory, setActiveCategory] = useState<AutomationCategory>('all')
   const [modalProject, setModalProject] = useState<AutomationProject | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
+  const scrollDir = useScrollDirection()
+  const suppress = scrollDir === 'up'
+
   const [sectionRef, isInView] = useInView<HTMLElement>({
     threshold: 0.14,
     rootMargin: '0px 0px -12% 0px',
   })
-  const scrollReveal = useScrollRevealGate(isInView, 1820)
+  const scrollReveal = useScrollRevealGate(isInView, 1820, suppress)
+  const animState = useSectionAnimState(isInView, scrollDir)
+  const canAnim = animState === 'animating'
 
   const filteredProjects =
     activeCategory === 'all'
@@ -333,7 +383,7 @@ export function AutomationSection() {
             <p
               className={cn(
                 'text-[11px] font-bold uppercase tracking-[0.38em] text-accent-foreground motion-reduce:animate-none',
-                isInView ? 'animate-stats-eyebrow-in' : 'opacity-0',
+                canAnim ? 'animate-stats-eyebrow-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
               )}
             >
               {auto.eyebrow}
@@ -342,9 +392,9 @@ export function AutomationSection() {
             <h2
               className={cn(
                 'text-gradient-brand px-px py-px text-[clamp(2.5rem,5vw,3.75rem)] font-extrabold leading-[1.1] tracking-[-0.04em] motion-reduce:animate-none',
-                isInView ? 'animate-stats-headline-in' : 'opacity-0',
+                canAnim ? 'animate-stats-headline-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
               )}
-              style={{ animationDelay: isInView ? '0.12s' : undefined }}
+              style={{ animationDelay: canAnim ? '0.12s' : undefined }}
             >
               {auto.title}
             </h2>
@@ -353,9 +403,9 @@ export function AutomationSection() {
               <p
                 className={cn(
                   'text-sm leading-relaxed text-muted-foreground motion-reduce:animate-none sm:text-[15px]',
-                  isInView ? 'animate-stats-support-in' : 'opacity-0',
+                  canAnim ? 'animate-stats-support-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
                 )}
-                style={{ animationDelay: isInView ? '0.48s' : undefined }}
+                style={{ animationDelay: canAnim ? '0.48s' : undefined }}
               >
                 {auto.description}
               </p>
@@ -364,9 +414,9 @@ export function AutomationSection() {
                 <div
                   className={cn(
                     'motion-reduce:animate-none',
-                    isInView ? 'animate-stats-support-in' : 'opacity-0',
+                    canAnim ? 'animate-stats-support-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
                   )}
-                  style={{ animationDelay: isInView ? '0.72s' : undefined }}
+                  style={{ animationDelay: canAnim ? '0.72s' : undefined }}
                 >
                   <CategoryPills active={activeCategory} onChange={setActiveCategory} />
                 </div>

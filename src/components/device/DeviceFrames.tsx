@@ -15,17 +15,23 @@ export type DeviceFrameAltText = {
 export function MonitorFrame({
   src,
   visible,
+  canAnimate = true,
   desktopAlt,
 }: {
   src?: string
   visible: boolean
+  canAnimate?: boolean
   desktopAlt: string
 }) {
   return (
     <div
       className={cn(
         'device-animated will-change-transform',
-        visible ? 'animate-device-rise [animation-delay:320ms]' : 'opacity-0',
+        visible
+          ? canAnimate
+            ? 'animate-device-rise [animation-delay:320ms]'
+            : 'opacity-100'
+          : 'opacity-0',
       )}
     >
       <div
@@ -55,17 +61,23 @@ export function MonitorFrame({
 export function TabletFrame({
   src,
   visible,
+  canAnimate = true,
   tabletAlt,
 }: {
   src?: string
   visible: boolean
+  canAnimate?: boolean
   tabletAlt: string
 }) {
   return (
     <div
       className={cn(
         'device-animated will-change-transform',
-        visible ? 'animate-device-enter-right [animation-delay:460ms]' : 'opacity-0',
+        visible
+          ? canAnimate
+            ? 'animate-device-enter-right [animation-delay:460ms]'
+            : 'opacity-100'
+          : 'opacity-0',
       )}
     >
       <div
@@ -94,17 +106,23 @@ export function TabletFrame({
 export function PhoneFrame({
   src,
   visible,
+  canAnimate = true,
   phoneAlt,
 }: {
   src?: string
   visible: boolean
+  canAnimate?: boolean
   phoneAlt: string
 }) {
   return (
     <div
       className={cn(
         'device-animated relative will-change-transform',
-        visible ? 'animate-device-enter-left [animation-delay:120ms]' : 'opacity-0',
+        visible
+          ? canAnimate
+            ? 'animate-device-enter-left [animation-delay:120ms]'
+            : 'opacity-100'
+          : 'opacity-0',
       )}
     >
       <div className="pointer-events-none absolute -right-[3px] top-[22%] h-[14%] w-[3px] rounded-r-sm bg-[var(--device-frame-button)]" />

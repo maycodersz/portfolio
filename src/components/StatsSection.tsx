@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { portfolio, type StatItem } from '@/content/portfolio'
 import { useCountUp } from '@/hooks/useCountUp'
 import { useInView } from '@/hooks/useInView'
+import { useSectionAnimState } from '@/hooks/useSectionAnimState'
+import { useScrollDirection } from '@/hooks/useScrollDirection'
 import { useScrollRevealGate } from '@/hooks/useScrollRevealGate'
 import { CARD_DECK_STAGE_STYLE } from '@/utils/cardDeckStage'
 import { cn } from '@/utils/cn'
@@ -220,11 +222,16 @@ function CardDeck({
 
 export function StatsSection() {
   const { stats } = portfolio
+  const scrollDir = useScrollDirection()
+  const suppress = scrollDir === 'up'
+
   const [sectionRef, isInView] = useInView<HTMLElement>({
     threshold: 0.14,
     rootMargin: '0px 0px -12% 0px',
   })
-  const scrollReveal = useScrollRevealGate(isInView, 1820)
+  const scrollReveal = useScrollRevealGate(isInView, 1820, suppress)
+  const animState = useSectionAnimState(isInView, scrollDir)
+  const canAnim = animState === 'animating'
 
   return (
     <section
@@ -239,7 +246,7 @@ export function StatsSection() {
             <p
               className={cn(
                 'text-[11px] font-bold uppercase tracking-[0.38em] text-accent-foreground motion-reduce:animate-none',
-                isInView ? 'animate-stats-eyebrow-in' : 'opacity-0',
+                canAnim ? 'animate-stats-eyebrow-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
               )}
             >
               {stats.eyebrow}
@@ -247,9 +254,9 @@ export function StatsSection() {
             <h2
               className={cn(
                 'mt-5 text-gradient-brand px-px py-px text-[clamp(1.75rem,4vw,2.65rem)] font-extrabold leading-[1.12] tracking-[-0.035em] motion-reduce:animate-none sm:text-[clamp(2rem,4.2vw,3rem)]',
-                isInView ? 'animate-stats-headline-in' : 'opacity-0',
+                canAnim ? 'animate-stats-headline-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
               )}
-              style={{ animationDelay: isInView ? '0.11s' : undefined }}
+              style={{ animationDelay: canAnim ? '0.11s' : undefined }}
             >
               {stats.sectionQuestion}
             </h2>
