@@ -254,7 +254,7 @@ export const portfolio = {
       {
         id: 'web-dev',
         title: 'Website',
-        startingPrice: '$350',
+        startingPrice: '$149',
         inclusions: [
           'Responsive, pixel-perfect design',
           'Maintainable Code',
@@ -267,7 +267,7 @@ export const portfolio = {
       {
         id: 'mobile-app',
         title: 'Mobile App',
-        startingPrice: '$500',
+        startingPrice: '$199',
         isPopular: true,
         inclusions: [
           'iOS & Android',
@@ -281,7 +281,7 @@ export const portfolio = {
       {
         id: 'automation',
         title: 'Automation & AI',
-        startingPrice: '$1500',
+        startingPrice: '$799',
         inclusions: [
           'n8n workflow',
           'API / webhook integrations',
