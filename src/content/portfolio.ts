@@ -626,10 +626,10 @@ export const portfolio = {
       title: 'Jarvis AI Agent',
       categories: ['ai', 'automation'],
       description:
-        'A personal AI assistant on Telegram that delegates tasks to specialized sub-agents. The Email Agent handles all Gmail operations, while the Calendar Agent manages Google Calendar events — all orchestrated through n8n with PostgreSQL for persistent memory.',
-      tags: ['n8n', 'Telegram', 'Gmail', 'Google Calendar', 'PostgreSQL'],
+        'A personal AI assistant on Telegram that gets the contact details from Google Sheets and delegates tasks to specialized sub-agents, and searches the web for information. The Email Agent handles all Gmail operations, while the Calendar Agent manages Google Calendar events — all orchestrated through n8n with PostgreSQL for persistent memory.',
+      tags: ['n8n', 'Telegram', 'Gmail', 'Google Calendar', 'Tavily'],
       image: imgAutomationJarvis,
-      databases: ['PostgreSQL'],
+      databases: ['PostgreSQL', 'Google Sheets'],
       link: null,
     },
     {
@@ -638,7 +638,7 @@ export const portfolio = {
       categories: ['ai', 'automation'],
       description:
         'Send a receipt photo to Telegram and this bot automatically processes it using AI vision — extracting items, quantities, and prices, then logging everything to Google Sheets and saving the original receipt image to Google Drive. Zero manual data entry.',
-      tags: ['n8n', 'Telegram', 'OpenAI', 'Google Sheets', 'Google Drive'],
+      tags: ['n8n', 'Telegram', 'OpenAI'],
       image: imgAutomationReceipt,
       databases: ['Google Sheets', 'Google Drive'],
       link: null,
@@ -649,9 +649,9 @@ export const portfolio = {
       categories: ['ai', 'automation'],
       description:
         'A feature-rich Telegram bot for small business management. Log sales and expenses instantly, scan handwritten records with AI image recognition, and pull daily, weekly, monthly, or custom-range financial reports. Includes void/undo support and CSV export.',
-      tags: ['n8n', 'Telegram', 'OpenAI', 'PostgreSQL', 'Google Sheets'],
+      tags: ['n8n', 'Telegram', 'OpenAI', 'Google Sheets'],
       image: imgAutomationSales,
-      databases: ['PostgreSQL', 'Google Sheets'],
+      databases: ['PostgreSQL'],
       link: null,
     },
     {
@@ -660,7 +660,7 @@ export const portfolio = {
       categories: ['ai', 'automation'],
       description:
         'An AI-powered n8n automation that handles all Gmail tasks — reading, summarizing, drafting, and organizing emails on command. Uses PostgreSQL for conversation memory and Google Sheets as a lightweight log, triggered via webhook.',
-      tags: ['n8n', 'Gmail', 'OpenAI', 'Google Sheets', 'PostgreSQL'],
+      tags: ['n8n', 'Gmail', 'OpenAI'],
       image: imgAutomationEmail,
       databases: ['PostgreSQL', 'Google Sheets'],
       link: null,
@@ -671,7 +671,7 @@ export const portfolio = {
       categories: ['automation'],
       description:
         'A dedicated n8n automation agent for Google Calendar management — create, update, query, and delete events on behalf of the user through natural language. Pairs with the Jarvis AI Agent as a specialized sub-agent for scheduling tasks.',
-      tags: ['n8n', 'Google Calendar', 'Google Sheets', 'PostgreSQL'],
+      tags: ['n8n', 'Google Calendar'],
       image: imgAutomationCalendar,
       databases: ['PostgreSQL', 'Google Sheets'],
       link: null,
