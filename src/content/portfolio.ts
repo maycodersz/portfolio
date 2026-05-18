@@ -231,7 +231,7 @@ export const portfolio = {
     items: [
       { id: 'projects', value: 12, suffix: '+', label: 'Projects Built', icon: 'Layers' },
       { id: 'apis', value: 30, suffix: '+', label: 'APIs & Tools Integrated', icon: 'Plug' },
-      { id: 'platforms', value: 8, suffix: '', label: 'Platforms', icon: 'Monitor' },
+      { id: 'platforms', value: 3, suffix: '', label: 'Platforms', icon: 'Monitor' },
     ] as const satisfies Readonly<StatItem[]>,
   },
 
