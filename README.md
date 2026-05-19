@@ -1,73 +1,80 @@
-# React + TypeScript + Vite
+# Maycoder — Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A personal portfolio website built with React, TypeScript, and Tailwind CSS. Showcases web development, mobile app, and automation projects with smooth animations, a dark/light theme, and responsive layouts.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+| Layer | Technology |
+|---|---|
+| Framework | React 19 + Vite 8 |
+| Language | TypeScript 6 |
+| Styling | Tailwind CSS 4 |
+| Animation | Motion (Framer Motion) |
+| Routing | React Router 7 |
+| UI Primitives | Radix UI (Dialog, Tooltip, Slot) |
+| Icons | Lucide React, React Icons |
+| Components | shadcn/ui |
 
-## React Compiler
+## Getting Started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Prerequisites
 
-## Expanding the ESLint configuration
+- Node.js 18+
+- npm / pnpm / yarn
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Install & Run
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+```bash
+# Install dependencies
+npm install
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+# Start dev server
+npm run dev
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Project Structure
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+src/
+├── assets/          # Images and static assets
+├── components/      # Reusable UI components
+│   ├── ui/          # Base UI primitives (button, dialog, navbar…)
+│   ├── device/      # Device frame components
+│   └── project/     # Project showcase components
+├── content/
+│   └── portfolio.ts # All editable content lives here
+├── contexts/        # React context providers (theme, cursor)
+├── hooks/           # Custom React hooks
+├── lib/             # Utility libraries
+├── pages/           # Route-level page components
+└── utils/           # Helper functions
+```
+
+## Customization
+
+All site content — headings, project details, pricing, stats, contact links — is centralized in a single file:
+
+```
+src/content/portfolio.ts
+```
+
+Edit that file to update any text, add projects, or change links without touching component code.
+
+## Environment Variables
+
+Create a `.env.local` file at the root for any environment-specific values (not committed to git):
+
+```bash
+# Example — add your own as needed
+VITE_CONTACT_EMAIL=your@email.com
+```
+
+## License
+
+MIT

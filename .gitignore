@@ -1,4 +1,31 @@
-# Logs
+# ── Build outputs ──────────────────────────────────────────────────────────────
+dist
+dist-ssr
+*.local
+
+# ── Dependencies ───────────────────────────────────────────────────────────────
+node_modules
+
+# ── Environment & secrets ──────────────────────────────────────────────────────
+.env
+.env.*
+.env.local
+.env.*.local
+
+# ── Deployment configs (may contain tokens/keys) ───────────────────────────────
+.vercel
+.netlify
+.firebase
+firebase.json
+.firebaserc
+
+# ── IDE & AI tool folders ──────────────────────────────────────────────────────
+# Cursor IDE workspace settings (local to your machine)
+.cursor/
+# Claude AI local settings & plugin data
+.claude/
+
+# ── Logs ───────────────────────────────────────────────────────────────────────
 logs
 *.log
 npm-debug.log*
@@ -7,18 +34,29 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# ── OS artifacts ───────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
 
-# Editor directories and files
+# ── Editor artifacts ───────────────────────────────────────────────────────────
 .vscode/*
 !.vscode/extensions.json
 .idea
-.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# ── TypeScript build cache ─────────────────────────────────────────────────────
+*.tsbuildinfo
+
+# ── Python bytecode (from AI skill scripts) ────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ── Test & coverage output ─────────────────────────────────────────────────────
+coverage/
+.nyc_output/
