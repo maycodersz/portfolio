@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 
+import { DeviceScreenPlaceholder } from '@/components/device/DeviceScreenPlaceholder'
 import { MonitorFrame, PhoneFrame } from '@/components/device/DeviceFrames'
 import { portfolio, type ProjectKind, type ProjectPageImage, type ProjectScreens } from '@/content/portfolio'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
@@ -11,6 +12,7 @@ type ScrollDeviceShowcaseProps = {
   fallbackScreens: ProjectScreens
   kind: ProjectKind
   projectTitle: string
+  screensUsePlaceholder?: boolean
   className?: string
 }
 
@@ -19,7 +21,12 @@ function buildSlides(
   fallbackScreens: ProjectScreens,
   kind: ProjectKind,
   alts: typeof portfolio.works.devicePreviewAlt,
+  screensUsePlaceholder: boolean,
 ): ProjectPageImage[] {
+  if (screensUsePlaceholder && kind === 'mobile') {
+    return [{ src: '', title: portfolio.devicePlaceholder.label }]
+  }
+
   if (images.length > 0) return [...images]
 
   if (kind === 'website') {
@@ -58,16 +65,18 @@ export function ScrollDeviceShowcase({
   fallbackScreens,
   kind,
   projectTitle,
+  screensUsePlaceholder = false,
   className,
 }: ScrollDeviceShowcaseProps) {
   const copy = portfolio.projectDetailPage
   const alts = portfolio.works.devicePreviewAlt
+  const placeholderLabel = portfolio.devicePlaceholder.label
   const scrollRef = useRef<HTMLDivElement>(null)
   const reducedMotion = usePrefersReducedMotion()
 
   const slides = useMemo(
-    () => buildSlides(images, fallbackScreens, kind, alts),
-    [images, fallbackScreens, kind, alts],
+    () => buildSlides(images, fallbackScreens, kind, alts, screensUsePlaceholder),
+    [images, fallbackScreens, kind, alts, screensUsePlaceholder],
   )
 
   const [activeIndex, setActiveIndex] = useState(0)
@@ -167,6 +176,16 @@ export function ScrollDeviceShowcase({
               desktopAlt={slideAlt(slides[0], projectTitle)}
               className="w-full max-w-[min(100%,820px)]"
             />
+          ) : screensUsePlaceholder ? (
+            <PhoneFrame
+              visible
+              canAnimate={false}
+              flat
+              phoneAlt={`${projectTitle} — ${placeholderLabel}`}
+              className="mx-auto w-full max-w-[min(280px,88vw)]"
+            >
+              <DeviceScreenPlaceholder label={placeholderLabel} />
+            </PhoneFrame>
           ) : (
             <PhoneFrame
               src={slides[0]!.src}
@@ -183,16 +202,20 @@ export function ScrollDeviceShowcase({
                 key={`${i}-${slide.src}`}
                 className="overflow-hidden rounded-2xl border border-border bg-muted/40"
               >
-                <img
-                  src={slide.src}
-                  alt={slideAlt(slide, projectTitle)}
-                  className={cn(
-                    'aspect-[9/19] w-full object-cover object-top',
-                    kind === 'website' && 'aspect-video',
-                  )}
-                  loading={i === 0 ? 'eager' : 'lazy'}
-                  decoding="async"
-                />
+                {screensUsePlaceholder && kind === 'mobile' ? (
+                  <DeviceScreenPlaceholder label={placeholderLabel} className="aspect-[9/19] w-full" />
+                ) : (
+                  <img
+                    src={slide.src}
+                    alt={slideAlt(slide, projectTitle)}
+                    className={cn(
+                      'aspect-[9/19] w-full object-cover object-top',
+                      kind === 'website' && 'aspect-video',
+                    )}
+                    loading={i === 0 ? 'eager' : 'lazy'}
+                    decoding="async"
+                  />
+                )}
                 <figcaption className="border-t border-border px-2 py-1.5 text-center text-[10px] font-medium text-muted-foreground">
                   {screenLabel(slide)}
                 </figcaption>
@@ -257,6 +280,16 @@ export function ScrollDeviceShowcase({
                     </AnimatePresence>
                   </div>
                 </MonitorFrame>
+              ) : screensUsePlaceholder ? (
+                <PhoneFrame
+                  visible
+                  canAnimate={false}
+                  flat
+                  phoneAlt={`${projectTitle} — ${placeholderLabel}`}
+                  className="w-full max-w-[min(280px,88vw)] lg:max-w-[300px]"
+                >
+                  <DeviceScreenPlaceholder label={placeholderLabel} />
+                </PhoneFrame>
               ) : (
                 <PhoneFrame
                   visible

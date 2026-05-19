@@ -58,6 +58,7 @@ export default function ProjectPage() {
             fallbackScreens={matched.screens}
             kind={matched.kind}
             projectTitle={matched.title}
+            screensUsePlaceholder={matched.screensUsePlaceholder}
           />
 
           <ProjectBentoGrid project={matched} />

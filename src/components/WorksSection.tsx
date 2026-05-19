@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import { WithCursorFollow } from '@/components/CursorFollowButton'
+import { DeviceScreenPlaceholder } from '@/components/device/DeviceScreenPlaceholder'
 import {
   MonitorFrame,
   PhoneFrame,
@@ -51,22 +52,38 @@ function WebsiteDeviceStage({
 
 function MobileDeviceStage({
   screens,
+  screensUsePlaceholder,
   visible,
   canAnimate,
   alts,
 }: {
   screens: Project['screens']
+  screensUsePlaceholder?: boolean
   visible: boolean
   canAnimate: boolean
   alts: typeof portfolio.works.devicePreviewAlt
 }) {
+  const placeholderLabel = portfolio.devicePlaceholder.label
+
   return (
     <div className={DEVICE_STAGE_CLASS}>
       <div className="absolute right-[20%] top-[8%] z-[5] w-[34%]">
-        <TabletFrame src={screens.tablet} visible={visible} canAnimate={canAnimate} tabletAlt={alts.tablet} />
+        {screensUsePlaceholder ? (
+          <TabletFrame visible={visible} canAnimate={canAnimate} tabletAlt={alts.tablet}>
+            <DeviceScreenPlaceholder label={placeholderLabel} />
+          </TabletFrame>
+        ) : (
+          <TabletFrame src={screens.tablet} visible={visible} canAnimate={canAnimate} tabletAlt={alts.tablet} />
+        )}
       </div>
       <div className="absolute left-[25%] top-[18%] z-10 w-[17%]">
-        <PhoneFrame src={screens.phone} visible={visible} canAnimate={canAnimate} phoneAlt={alts.phone} />
+        {screensUsePlaceholder ? (
+          <PhoneFrame visible={visible} canAnimate={canAnimate} phoneAlt={alts.phone}>
+            <DeviceScreenPlaceholder label={placeholderLabel} />
+          </PhoneFrame>
+        ) : (
+          <PhoneFrame src={screens.phone} visible={visible} canAnimate={canAnimate} phoneAlt={alts.phone} />
+        )}
       </div>
       <div className={DEVICE_STAGE_SPACER_CLASS} aria-hidden />
     </div>
@@ -120,6 +137,7 @@ function ProjectCard({ project }: { project: Project }) {
             <MobileDeviceStage
               key={revealKey}
               screens={project.screens}
+              screensUsePlaceholder={project.screensUsePlaceholder}
               visible={visible}
               canAnimate={canAnimate}
               alts={devicePreviewAlt}

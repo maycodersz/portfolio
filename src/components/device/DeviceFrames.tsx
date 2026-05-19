@@ -91,17 +91,33 @@ export function MonitorFrame({
   )
 }
 
-export function TabletFrame({
-  src,
-  visible,
-  canAnimate = true,
-  tabletAlt,
-}: {
-  src: string
+type TabletFrameBase = {
   visible: boolean
   canAnimate?: boolean
   tabletAlt: string
-}) {
+}
+
+type TabletFrameWithSrc = TabletFrameBase & {
+  src: string
+  children?: undefined
+}
+
+type TabletFrameWithChildren = TabletFrameBase & {
+  src?: undefined
+  children: ReactNode
+}
+
+export type TabletFrameProps = TabletFrameWithSrc | TabletFrameWithChildren
+
+export function TabletFrame({
+  src,
+  children,
+  visible,
+  canAnimate = true,
+  tabletAlt,
+}: TabletFrameProps) {
+  const hasChildren = children != null
+
   return (
     <div
       className={cn(
@@ -122,13 +138,22 @@ export function TabletFrame({
       >
         <div className="relative overflow-hidden rounded-[12px] border border-primary/20 bg-[var(--device-frame-bg)] p-[7px] shadow-[0_0_0_1px_rgb(124_79_226/28%),0_24px_60px_-10px_rgba(0,0,0,0.9),inset_0_1px_0_rgb(124_79_226/8%)]">
           <div className="absolute left-1/2 top-[3px] h-[5px] w-[5px] -translate-x-1/2 rounded-full bg-[var(--device-frame-dot)] shadow-[inset_0_1px_2px_rgba(0,0,0,0.8)]" />
-          <div className="overflow-hidden rounded-[6px]">
-            <img
-              src={src}
-              alt={tabletAlt}
-              className="block w-full object-cover object-top"
-              draggable={false}
-            />
+          <div
+            className={cn(
+              'overflow-hidden rounded-[6px]',
+              hasChildren && 'relative aspect-[3/4] bg-muted',
+            )}
+          >
+            {hasChildren ? (
+              children
+            ) : (
+              <img
+                src={src}
+                alt={tabletAlt}
+                className="block w-full object-cover object-top"
+                draggable={false}
+              />
+            )}
           </div>
         </div>
       </div>

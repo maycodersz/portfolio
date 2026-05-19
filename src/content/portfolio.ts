@@ -3,9 +3,6 @@ import imgAutomationEmail from '@/assets/projects/automation/project-4.png'
 import imgAutomationJarvis from '@/assets/projects/automation/project-1.png'
 import imgAutomationReceipt from '@/assets/projects/automation/project-2.png'
 import imgAutomationSales from '@/assets/projects/automation/project-3.png'
-import imgAdminoPhone from '@/assets/projects/mobile/admino/phone.png'
-import imgAdminoTablet from '@/assets/projects/mobile/admino/tablet.png'
-import imgAdminoCaseStudy01 from '@/assets/projects/mobile/admino/case-study/1.png'
 import imgAcademicHubDesktop from '@/assets/projects/web/academic-hub/desktop.png'
 import imgAcademicHubPhone from '@/assets/projects/web/academic-hub/phone.png'
 import imgAcademicHubTablet from '@/assets/projects/web/academic-hub/tablet.png'
@@ -92,6 +89,8 @@ export type Project = {
   duration: string
   highlight?: string
   screens: ProjectScreens
+  /** When true, device frames show a “coming soon” placeholder instead of screen images. */
+  screensUsePlaceholder?: boolean
   heroImage?: string
   links?: readonly ProjectLink[]
   techStack?: readonly TechStackCategory[]
@@ -384,6 +383,10 @@ export const portfolio = {
     notFoundMessage: 'This project does not exist or the link may be outdated.',
   },
 
+  devicePlaceholder: {
+    label: 'Coming Soon',
+  },
+
   works: {
     viewWorkCursorLabel: 'View Work',
     metaProjectTypeLabel: 'Project Type',
@@ -556,11 +559,11 @@ export const portfolio = {
         ],
       },
       pageImages: [
-        { src: imgAhCaseStudy01, title: 'Screenshot 01' },
-        { src: imgAhCaseStudy02, title: 'Screenshot 02' },
-        { src: imgAhCaseStudy03, title: 'Screenshot 03' },
-        { src: imgAhCaseStudy04, title: 'Screenshot 04' },
-        { src: imgAhCaseStudy05, title: 'Screenshot 05' },
+        { src: imgAhCaseStudy01, title: 'Landing Page' },
+        { src: imgAhCaseStudy02, title: 'Dashboard' },
+        { src: imgAhCaseStudy03, title: 'Search' },
+        { src: imgAhCaseStudy04, title: 'File View' },
+        { src: imgAhCaseStudy05, title: 'Version Control' },
       ],
     },
     {
@@ -572,11 +575,11 @@ export const portfolio = {
       projectType: 'Utility App, Mobile App',
       duration: 'Ongoing',
       highlight: '',
+      screensUsePlaceholder: true,
       screens: {
-        tablet: imgAdminoTablet,
-        phone: imgAdminoPhone,
+        tablet: '',
+        phone: '',
       },
-      heroImage: imgAdminoPhone,
       links: [
         { label: 'App Store listing', href: 'https://apps.apple.com/example', variant: 'live' },
         { label: 'Source code', href: 'https://github.com/example/admino', variant: 'github' },
@@ -611,11 +614,6 @@ export const portfolio = {
         { title: 'Vault view', description: 'Dedicated surface for IDs and sensitive documents with quick scan-in and attachment links.' },
         { title: 'Photo & PDF capture', description: 'Capture proof in-line with tasks so evidence stays next to the commitment.' },
         { title: 'Timeline view', description: 'Chronological scan of what is due and what changed so nothing slips between apps.' },
-      ],
-      pageImages: [
-        { src: imgAdminoCaseStudy01, title: 'Screenshot 01' },
-        { src: imgAdminoCaseStudy01, title: 'Screenshot 02' },
-        { src: imgAdminoCaseStudy01, title: 'Screenshot 03' }
       ],
     },
   ] satisfies Readonly<Project[]>,
