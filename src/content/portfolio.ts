@@ -195,9 +195,9 @@ export function automationCategoryLabel(
 export const portfolio = {
   hero: {
     headlineBefore: "Let's build your",
-    rotatingTitles: ['Website', 'Mobile App', 'Automation'] as const,
+    rotatingTitles: ['Automation', 'Website', 'Mobile App'] as const,
     description:
-      'I ship full products: web dashboards, mobile apps, and bots that tie tools, data, and AI into one pipeline',
+      'I automate the Boring Stuff for E-Commerce & Marketing Teams using AI and n8n.I ship full products: web dashboards and mobile apps',
     profileAlt: 'Photo of Maycoder',
     alterEgoAlt: 'Maycoder alter ego',
     ctas: [
