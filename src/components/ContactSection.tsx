@@ -410,7 +410,7 @@ export function ContactSection() {
           if (!open) setErrorDetail(null)
         }}
       >
-        <DialogContent className="max-w-sm">
+        <DialogContent className="max-w-sm flex-col items-center justify-center space-y-4">
           <DialogHeader className="items-center text-center sm:text-center">
             <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-destructive/10">
               <AlertCircle className="h-8 w-8 text-destructive" strokeWidth={2} aria-hidden />
