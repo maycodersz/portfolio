@@ -510,7 +510,7 @@ export const portfolio = {
       },
       heroImage: imgAcademicHubDesktop,
       links: [
-        { label: 'View live demo', href: 'https://community-hub-rouge.vercel.app', variant: 'live' },
+        { label: 'View live demo', href: 'https://academy-hub-olfu.vercel.app', variant: 'live' },
         { label: 'Repository', href: 'https://github.com/example/olfu-academic-hub', variant: 'github' },
       ],
       techStack: [
