@@ -150,7 +150,10 @@ export type ContactProjectTypeId = 'web-dev' | 'mobile-app' | 'automation'
 export type ContactProjectTypeOption = {
   id: ContactProjectTypeId
   label: string
+  messagePlaceholder: string
 }
+
+export type ContactWebhookUrls = Record<ContactProjectTypeId, string>
 
 export type ContactSocialPlatform = 'facebook' | 'instagram' | 'tiktok' | 'youtube'
 
@@ -298,7 +301,11 @@ export const portfolio = {
     eyebrow: 'Contact',
     title: 'Get in Touch',
     description: "Have a project in mind? I'd love to hear about it.",
-    webhookUrl: 'https://your-n8n-webhook-url-here',
+    webhookUrls: {
+      automation: 'https://n8n.maycoder.uk/webhook/e5fe5d21-128b-4fc4-960e-344d1d803108',
+      'web-dev': 'https://your-n8n-webhook-url-here-web-dev',
+      'mobile-app': 'https://your-n8n-webhook-url-here-mobile-app',
+    } satisfies ContactWebhookUrls,
     methodsHeading: 'Direct',
     socialHeading: 'Tutorials & social',
     form: {
@@ -308,7 +315,7 @@ export const portfolio = {
       emailPlaceholder: 'johndoe@example.com',
       projectTypeLabel: 'What do you need?',
       messageLabel: 'Message',
-      messagePlaceholder: 'Tell me about your project…',
+      messagePlaceholderDefault: 'Tell me about your project…',
       submitLabel: 'Send Message',
       submittingLabel: 'Sending…',
       modalCloseLabel: 'Continue',
@@ -317,10 +324,27 @@ export const portfolio = {
       errorTitle: 'Something went wrong',
       errorMessage: 'Please try again or reach me directly by email.',
       validationMessage: 'Please fill in your name, email, pick a project type, and add a message.',
+      emailValidationMessage: 'Please enter a valid email address.',
+      webhookNotConfiguredMessage: 'This contact channel is not configured yet. Please email me directly.',
       projectTypeOptions: [
-        { id: 'web-dev', label: 'Web dev' },
-        { id: 'mobile-app', label: 'Mobile app' },
-        { id: 'automation', label: 'Automation' },
+        {
+          id: 'web-dev',
+          label: 'Web dev',
+          messagePlaceholder:
+            'Describe your website — pages, features, timeline, and any design references you have in mind…',
+        },
+        {
+          id: 'mobile-app',
+          label: 'Mobile app',
+          messagePlaceholder:
+            'Tell me about your app idea — platforms (iOS/Android), core features, and who it’s for…',
+        },
+        {
+          id: 'automation',
+          label: 'Automation',
+          messagePlaceholder:
+            'What should be automated? Which tools you use (Shopify, Gmail, CRM, etc.) and the outcome you want…',
+        },
       ] as const satisfies Readonly<ContactProjectTypeOption[]>,
     },
     methods: [

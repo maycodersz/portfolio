@@ -102,7 +102,7 @@ type FormState = {
 const initialForm: FormState = {
   name: '',
   email: '',
-  projectType: '',
+  projectType: 'automation',
   message: '',
 }
 
@@ -146,7 +146,7 @@ export function ContactSection() {
     setSending(true)
     setErrorDetail(null)
     try {
-      const res = await fetch(c.webhookUrl, {
+      const res = await fetch(c.webhookUrls[projectType], {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, projectType, message }),
@@ -306,7 +306,7 @@ export function ContactSection() {
                     name="message"
                     rows={4}
                     className={cn(inputClass, 'min-h-[7.5rem] resize-y')}
-                    placeholder={f.messagePlaceholder}
+                    placeholder={f.messagePlaceholderDefault}
                     value={form.message}
                     onChange={(e) => update('message', e.target.value)}
                   />
