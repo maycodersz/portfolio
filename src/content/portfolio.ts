@@ -302,9 +302,9 @@ export const portfolio = {
     title: 'Get in Touch',
     description: "Have a project in mind? I'd love to hear about it.",
     webhookUrls: {
-      automation: 'https://n8n.maycoder.uk/webhook/e5fe5d21-128b-4fc4-960e-344d1d803108',
-      'web-dev': 'https://your-n8n-webhook-url-here-web-dev',
-      'mobile-app': 'https://your-n8n-webhook-url-here-mobile-app',
+      automation: 'https://n8n.maycoder.uk/webhook-test/e5fe5d21-128b-4fc4-960e-344d1d803108',
+      'web-dev': 'https://n8n.maycoder.uk/webhook-test/e5fe5d21-128b-4fc4-960e-344d1d803108',
+      'mobile-app': 'https://n8n.maycoder.uk/webhook-test/e5fe5d21-128b-4fc4-960e-344d1d803108',
     } satisfies ContactWebhookUrls,
     methodsHeading: 'Direct',
     socialHeading: 'Tutorials & social',
@@ -499,10 +499,10 @@ export const portfolio = {
       title: 'OLFU Academic Hub',
       kind: 'website',
       description:
-        'A collaborative academic resource platform for Our Lady of Fatima University students. It combines moderated study uploads with XP, leaderboards, profiles, bookmarks, program rooms, and Google Sign-In limited to school email domains.',
+        'A collaborative academic resource platform for Our Lady of Fatima University students. It combines moderated study uploads with XP, leaderboards, profiles, bookmarks, program rooms, and Google Sign-In limited to school email domains. Feature-complete and ready for rollout — currently in final polish before public release.',
       projectType: 'EdTech, Web App',
-      duration: '6 Months',
-      highlight: '200+ students onboarded in the first month',
+      duration: '6 months · Pre-launch',
+      highlight: 'Feature-complete — polishing UX before public launch',
       screens: {
         desktop: imgAcademicHubDesktop,
         tablet: imgAcademicHubTablet,
@@ -510,8 +510,7 @@ export const portfolio = {
       },
       heroImage: imgAcademicHubDesktop,
       links: [
-        { label: 'View live demo', href: 'https://academy-hub-olfu.vercel.app', variant: 'live' },
-        { label: 'Repository', href: 'https://github.com/example/olfu-academic-hub', variant: 'github' },
+        { label: 'Private preview', href: 'https://academy-hub-olfu.vercel.app', variant: 'live' },
       ],
       techStack: [
         {
@@ -569,17 +568,17 @@ export const portfolio = {
       ],
       caseStudy: {
         overview:
-          'OLFU Academic Hub is an internal-facing platform aimed at consolidating study materials and community tooling for Fatima University students. The goal was to replace scattered chats and folders with something structured, moderated, and easy to onboard new cohorts.',
+          'OLFU Academic Hub is an internal-facing platform aimed at consolidating study materials and community tooling for Fatima University students. The goal was to replace scattered chats and folders with something structured, moderated, and easy to onboard new cohorts. The build is complete but not yet publicly released.',
         problem:
           'Study resources lived across group chats and ad-hoc links, which made discovery hard—especially during exam season. Volunteers could not reliably moderate uploads, duplicate files were common, and there was no clear progress loop to reward consistent contributors.',
         solution:
           'We introduced a moderated upload pipeline with material categories and reporting, bookmarks and file-request flows tied to moderation queues, XP and leaderboards to encourage uploads, rooms for focused discussion, and Google Sign-In limited to validated school domains.',
         results:
-          'Steady weekly uploads after launch, fewer duplicate spam reports thanks to moderation tooling, and stronger revisits ahead of examinations driven by leaderboards.',
+          'All core flows are built and tested internally — upload, search, moderation, XP, leaderboards, chatrooms, and file requests. The current focus is a final pass on onboarding copy, performance, and the launch checklist before opening to students.',
         resultMetrics: [
-          { value: '200+', label: 'Students (month one)' },
-          { value: '5,000+', label: 'Library uploads' },
-          { value: '50,000+', label: 'File downloads' },
+          { value: '6', label: 'Core modules' },
+          { value: '100%', label: 'Feature-complete' },
+          { value: 'Pre-launch', label: 'Status' },
         ],
       },
       pageImages: [
