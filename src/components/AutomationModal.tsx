@@ -1,9 +1,12 @@
 import type { LucideIcon } from 'lucide-react'
 import {
   Calendar,
+  ChevronLeft,
+  ChevronRight,
   Cloud,
   Database,
   ExternalLink,
+  Globe,
   Layers,
   Mail,
   Send,
@@ -11,6 +14,8 @@ import {
   Table2,
   Workflow,
 } from 'lucide-react'
+import { AnimatePresence, motion } from 'motion/react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -25,7 +30,31 @@ import {
   portfolio,
   type AutomationProject,
 } from '@/content/portfolio'
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { cn } from '@/utils/cn'
+
+const SLIDE_TRANSITION = {
+  duration: 0.5,
+  ease: [0.22, 1, 0.36, 1] as const,
+}
+
+/** 1 = next (right arrow), -1 = previous (left arrow) */
+type SlideDirection = 1 | -1
+
+const slideVariants = {
+  enter: (direction: SlideDirection) => ({
+    x: direction === 1 ? '100%' : '-100%',
+    opacity: 0,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+  },
+  exit: (direction: SlideDirection) => ({
+    x: direction === 1 ? '-100%' : '100%',
+    opacity: 0,
+  }),
+}
 
 /** Lucide-outline icons themed: brand gradient stroke in light mode, accent in dark mode. */
 function GradientStrokeIcon({
@@ -58,20 +87,28 @@ function iconForAutomationTag(tag: string): LucideIcon {
   if (t.includes('gmail') || (t.includes('mail') && t.includes('google'))) return Mail
   if (t.includes('calendar')) return Calendar
   if (t.includes('postgres')) return Database
+  if (t.includes('supabase')) return Database
   if (t.includes('sheet')) return Table2
   if (t.includes('drive')) return Cloud
-  if (t.includes('openai') || t.includes('open router')) return Sparkles
+  if (t.includes('apify')) return Globe
+  if (t.includes('openrouter') || t.includes('open router')) return Sparkles
+  if (t.includes('openai')) return Sparkles
   return Layers
 }
 
 function iconForDatabaseLine(label: string): LucideIcon {
   const t = label.toLowerCase()
   if (t.includes('postgres')) return Database
+  if (t.includes('supabase')) return Database
   if (t.includes('sheet')) return Table2
   if (t.includes('drive')) return Cloud
   if (t.includes('sqlite')) return Database
   if (t.includes('airtable')) return Table2
   return Database
+}
+
+function buildSlides(project: AutomationProject): readonly string[] {
+  return [project.image, ...(project.galleryImages ?? [])]
 }
 
 /**
@@ -117,6 +154,121 @@ function AutomationDetailBlock({
   )
 }
 
+type AutomationModalImageHeroProps = {
+  project: AutomationProject
+  imageAltFallback: string
+  previousImageLabel: string
+  nextImageLabel: string
+}
+
+function AutomationModalImageHero({
+  project,
+  imageAltFallback,
+  previousImageLabel,
+  nextImageLabel,
+}: AutomationModalImageHeroProps) {
+  const slides = useMemo(() => buildSlides(project), [project])
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [direction, setDirection] = useState<SlideDirection>(1)
+  const reducedMotion = usePrefersReducedMotion()
+  const total = slides.length
+  const hasCarousel = total > 1
+  const useSlideAnimation = hasCarousel && !reducedMotion
+
+  useEffect(() => {
+    setActiveIndex(0)
+    setDirection(1)
+  }, [project.id])
+
+  const goPrev = useCallback(() => {
+    setDirection(-1)
+    setActiveIndex((i) => (i - 1 + total) % total)
+  }, [total])
+
+  const goNext = useCallback(() => {
+    setDirection(1)
+    setActiveIndex((i) => (i + 1) % total)
+  }, [total])
+
+  useEffect(() => {
+    if (!hasCarousel) return
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault()
+        goPrev()
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault()
+        goNext()
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [hasCarousel, goPrev, goNext])
+
+  const activeSrc = slides[activeIndex] ?? project.image
+  const imageAlt = `${project.title} — ${imageAltFallback}`
+
+  return (
+    <div className="relative aspect-video w-full overflow-hidden border-b border-border bg-muted">
+      <div className="relative h-full w-full overflow-hidden">
+        {useSlideAnimation ? (
+          <AnimatePresence mode="popLayout" initial={false} custom={direction}>
+            <motion.img
+              key={activeIndex}
+              src={activeSrc}
+              alt={imageAlt}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={SLIDE_TRANSITION}
+              className="pointer-events-none absolute inset-0 h-full w-full object-cover object-top"
+              draggable={false}
+              loading={activeIndex === 0 ? 'eager' : 'lazy'}
+              decoding="async"
+            />
+          </AnimatePresence>
+        ) : (
+          <img
+            key={activeSrc}
+            src={activeSrc}
+            alt={imageAlt}
+            className="h-full w-full object-cover object-top"
+            loading={activeIndex === 0 ? 'eager' : 'lazy'}
+            decoding="async"
+          />
+        )}
+      </div>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.06)_0%,rgba(0,0,0,0)_45%,rgba(0,0,0,0.35)_100%)]"
+      />
+
+      {hasCarousel ? (
+        <>
+          <button
+            type="button"
+            onClick={goPrev}
+            aria-label={previousImageLabel}
+            className="absolute left-3 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background/80 text-muted-foreground shadow-md backdrop-blur-sm transition-colors hover:text-foreground active:scale-90"
+          >
+            <ChevronLeft className="size-5" aria-hidden />
+          </button>
+          <button
+            type="button"
+            onClick={goNext}
+            aria-label={nextImageLabel}
+            className="absolute right-3 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background/80 text-muted-foreground shadow-md backdrop-blur-sm transition-colors hover:text-foreground active:scale-90"
+          >
+            <ChevronRight className="size-5" aria-hidden />
+          </button>
+        </>
+      ) : null}
+    </div>
+  )
+}
+
 type AutomationModalProps = {
   project: AutomationProject | null
   open: boolean
@@ -157,19 +309,12 @@ export function AutomationModal({ project, open, onOpenChange }: AutomationModal
         <DialogContent className="max-w-2xl gap-0 overflow-hidden p-0 sm:max-w-2xl">
           {projectOpen ? (
             <>
-              <div className="relative aspect-video w-full overflow-hidden border-b border-border bg-muted">
-                <img
-                  src={project.image}
-                  alt={`${project.title} — ${copy.imageAltFallback}`}
-                  className="h-full w-full object-cover object-top"
-                  loading="lazy"
-                  decoding="async"
-                />
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.06)_0%,rgba(0,0,0,0)_45%,rgba(0,0,0,0.35)_100%)]"
-                />
-              </div>
+              <AutomationModalImageHero
+                project={project}
+                imageAltFallback={copy.imageAltFallback}
+                previousImageLabel={copy.previousImage}
+                nextImageLabel={copy.nextImage}
+              />
 
               <div className="flex flex-col gap-5 p-6 sm:p-7">
                 <DialogHeader className="space-y-3 text-left">

@@ -23,7 +23,7 @@ const auto = portfolio.automation
 
 function categoryCount(cat: AutomationCategory) {
   if (cat === 'all') return portfolio.automationProjects.length
-  return portfolio.automationProjects.filter((p) => p.categories.includes(cat)).length
+  return portfolio.automationProjects.filter((p) => p.categories.some((c) => c === cat)).length
 }
 
 function CategoryPills({
@@ -151,19 +151,20 @@ function FanCard({
       }}
     >
       {/* ── Image / placeholder ─────────────────────────────────── */}
-      <div className="relative w-full min-w-0 flex-[0_0_58%] overflow-hidden">
+      <div className="relative aspect-[16/10] w-full min-w-0 shrink-0 overflow-hidden bg-muted">
         {project.image ? (
           <img
             src={project.image}
             alt={project.title}
-            className="h-full w-full object-cover"
-            loading="lazy"
+            className="absolute inset-0 h-full w-full object-cover object-top"
+            loading="eager"
             decoding="async"
+            fetchPriority={isCenter ? 'high' : 'auto'}
           />
         ) : (
           <div
             aria-hidden
-            className="h-full w-full"
+            className="absolute inset-0 h-full w-full"
             style={{ background: 'var(--stat-card-surface-gradient)' }}
           />
         )}
@@ -362,7 +363,9 @@ export function AutomationSection() {
   const filteredProjects =
     activeCategory === 'all'
       ? portfolio.automationProjects
-      : portfolio.automationProjects.filter((p) => p.categories.includes(activeCategory))
+      : portfolio.automationProjects.filter((p) =>
+          p.categories.some((c) => c === activeCategory),
+        )
 
   const handleOpen = (project: AutomationProject) => {
     setModalProject(project)

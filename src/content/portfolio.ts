@@ -1,8 +1,13 @@
 import imgAutomationCalendar from '@/assets/projects/automation/project-5.png'
+import imgAutomationEmailWatcher from '@/assets/projects/automation/project-6.1.png'
+import imgAutomationEmailWatcherDigest from '@/assets/projects/automation/project-6.2.png'
+import imgAutomationEmailWatcherSpam from '@/assets/projects/automation/project-6.3.png'
 import imgAutomationEmail from '@/assets/projects/automation/project-4.png'
 import imgAutomationJarvis from '@/assets/projects/automation/project-1.png'
 import imgAutomationReceipt from '@/assets/projects/automation/project-2.png'
 import imgAutomationSales from '@/assets/projects/automation/project-3.png'
+import imgAutomationLeadQualifier from '@/assets/projects/automation/project-7.png'
+import imgAutomationMeeting from '@/assets/projects/automation/project-8.png'
 import imgAcademicHubDesktop from '@/assets/projects/web/academic-hub/desktop.png'
 import imgAcademicHubPhone from '@/assets/projects/web/academic-hub/phone.png'
 import imgAcademicHubTablet from '@/assets/projects/web/academic-hub/tablet.png'
@@ -105,7 +110,7 @@ export type Project = {
 
 /* ─── Automation project types ───────────────────────────────────────────── */
 
-export type AutomationCategory = 'all' | 'ai' | 'automation'
+export type AutomationCategory = 'all' | 'ai' | 'automation' | 'cron'
 
 export type AutomationProjectLinkVariant = 'web' | 'mobile'
 
@@ -123,6 +128,8 @@ export type AutomationProject = {
   description: string
   tags: readonly string[]
   image: string
+  /** Extra workflow screenshots shown in the detail modal (main thumbnail stays on `image`). */
+  galleryImages?: readonly string[]
   /** Stored data backends (Sheets, Postgres, Drive, etc.) — renders as chips like Tech stack */
   databases: readonly string[]
   link: AutomationProjectLink
@@ -445,6 +452,7 @@ export const portfolio = {
       { id: 'all', label: 'All' },
       { id: 'ai', label: 'AI' },
       { id: 'automation', label: 'Automation' },
+      { id: 'cron', label: 'Cron' },
     ] as const satisfies Readonly<AutomationCategoryFilter[]>,
     carouselAria: {
       previous: 'Previous',
@@ -461,6 +469,8 @@ export const portfolio = {
     openLinkLabelWeb: 'Open live site',
     openLinkLabelMobile: 'Open app link',
     imageAltFallback: 'Workflow screenshot',
+    previousImage: 'Previous image',
+    nextImage: 'Next image',
   },
 
   skillGroups: [
@@ -603,10 +613,7 @@ export const portfolio = {
         tablet: '',
         phone: '',
       },
-      links: [
-        { label: 'App Store listing', href: 'https://apps.apple.com/example', variant: 'live' },
-        { label: 'Source code', href: 'https://github.com/example/admino', variant: 'github' },
-      ],
+      links: [],
       techStack: [
         {
           heading: 'Mobile',
@@ -672,7 +679,7 @@ export const portfolio = {
         'A feature-rich Telegram bot for small business management. Log sales and expenses instantly, scan handwritten records with AI image recognition, and pull daily, weekly, monthly, or custom-range financial reports. Includes void/undo support and CSV export.',
       tags: ['n8n', 'Telegram', 'OpenAI', 'Google Sheets'],
       image: imgAutomationSales,
-      databases: ['PostgreSQL'],
+      databases: ['PostgreSQL', 'Google Sheets'],
       link: null,
     },
     {
@@ -695,6 +702,40 @@ export const portfolio = {
       tags: ['n8n', 'Google Calendar'],
       image: imgAutomationCalendar,
       databases: ['PostgreSQL', 'Google Sheets'],
+      link: null,
+    },
+    {
+      id: 'automation-email-watcher',
+      title: 'Email Watcher',
+      categories: ['ai', 'automation', 'cron'],
+      description:
+        'Watches Gmail every minute—labels mail, classifies with OpenRouter, logs to Sheets, and pings Telegram on high priority. Includes a 7 AM digest and scheduled spam cleanup.',
+      tags: ['n8n', 'Gmail', 'Telegram', 'OpenRouter'],
+      image: imgAutomationEmailWatcher,
+      galleryImages: [imgAutomationEmailWatcherDigest, imgAutomationEmailWatcherSpam],
+      databases: ['Google Sheets'],
+      link: null,
+    },
+    {
+      id: 'automation-lead-qualifier',
+      title: 'Contact Lead Qualifier',
+      categories: ['ai', 'automation'],
+      description:
+        'Hooks into this portfolio’s contact form: classifies each inquiry as hot, warm, or cold, enriches business emails via Apify, and drafts a reply grounded in your Supabase project library by service type (web, automation, or mobile). Hot and warm leads get a Gmail follow-up plus a Telegram ping; cold leads are logged to Sheets only.',
+      tags: ['n8n', 'OpenRouter', 'Gmail', 'Telegram', 'Supabase', 'Apify'],
+      image: imgAutomationLeadQualifier,
+      databases: ['Google Sheets', 'Supabase'],
+      link: null,
+    },
+    {
+      id: 'automation-meeting',
+      title: 'Automated Meeting Scheduler',
+      categories: ['ai', 'automation'],
+      description:
+        'An n8n workflow that automates the full meeting lifecycle — receives a booking request via webhook, uses AI to extract date, time, and purpose, checks Google Calendar for conflicts, creates the event with a Google Meet link, and sends a confirmation email via Gmail. A Telegram ping notifies the host instantly.',
+      tags: ['n8n', 'Google Calendar', 'Gmail', 'Google Meet', 'OpenRouter', 'Telegram'],
+      image: imgAutomationMeeting,
+      databases: ['Google Sheets'],
       link: null,
     },
   ] satisfies readonly AutomationProject[],
