@@ -729,13 +729,13 @@ export const portfolio = {
     },
     {
       id: 'automation-meeting',
-      title: 'Automated Meeting Scheduler',
+      title: 'Meeting Summarizer & Task Extractor',
       categories: ['ai', 'automation'],
       description:
-        'An n8n workflow that automates the full meeting lifecycle — receives a booking request via webhook, uses AI to extract date, time, and purpose, checks Google Calendar for conflicts, creates the event with a Google Meet link, and sends a confirmation email via Gmail. A Telegram ping notifies the host instantly.',
-      tags: ['n8n', 'Google Calendar', 'Gmail', 'Google Meet', 'OpenRouter', 'Telegram'],
+        'An n8n AI workflow built as a client demo — automatically transcribes and summarizes team meetings, then posts the summary with the meeting date directly to a Slack channel. It also extracts every action item and to-do from the discussion and pushes them as tasks into Monday.com, so the team immediately sees their pending work without any manual note-taking.',
+      tags: ['n8n', 'OpenRouter', 'Slack', 'Monday.com'],
       image: imgAutomationMeeting,
-      databases: ['Google Sheets'],
+      databases: ['Monday.com'],
       link: null,
     },
   ] satisfies readonly AutomationProject[],
