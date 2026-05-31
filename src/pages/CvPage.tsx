@@ -1,3 +1,4 @@
+import { useLayoutEffect } from 'react'
 import { ArrowLeft } from 'lucide-react'
 
 import { AppShell } from '@/components/AppShell'
@@ -16,6 +17,11 @@ import { portfolio } from '@/content/portfolio'
 
 export default function CvPage() {
   const { cv } = portfolio
+
+  // Scroll to top on mount — prevents inheriting the scroll offset from the homepage
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+  }, [])
 
   return (
     <AppShell>

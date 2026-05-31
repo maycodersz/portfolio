@@ -1,3 +1,4 @@
+import { useLayoutEffect } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { useParams } from 'react-router-dom'
 
@@ -10,6 +11,10 @@ import NavBar from '@/components/ui/navbar'
 import { portfolio } from '@/content/portfolio'
 
 export default function ProjectPage() {
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+  }, [])
+
   const { id } = useParams<{ id: string }>()
   const pdp = portfolio.projectDetailPage
   const matched = id ? portfolio.projects.find((p) => p.id === id) : undefined

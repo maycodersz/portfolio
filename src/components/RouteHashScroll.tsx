@@ -2,14 +2,29 @@ import { useLayoutEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
 /**
- * One-page sections live under `/`. After SPA navigation updates `location.hash`, scroll the
- * matching element into view (covers client render timing and overlay reveal).
+ * Handles two cases on every SPA route change:
+ *
+ * 1. Plain route (no hash) — e.g. `/cv`, `/work/:id`:
+ *    Immediately scroll to the top so the user doesn't inherit the scroll
+ *    offset from whichever section they came from.
+ *
+ * 2. Path + hash — e.g. `/#works`, `/#contact`:
+ *    Scroll the matching section element into view (handles client render
+ *    timing and overlay reveal delays).
  */
 export function RouteHashScroll() {
   const { pathname, hash } = useLocation()
 
   useLayoutEffect(() => {
-    if (pathname !== '/' || !hash || hash === '#') return
+    // No hash → reset to top of the page
+    if (!hash || hash === '#') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+      return
+    }
+
+    // Hash navigation only meaningful on the homepage
+    if (pathname !== '/') return
+
     const id = decodeURIComponent(hash.slice(1))
     if (!id) return
 
