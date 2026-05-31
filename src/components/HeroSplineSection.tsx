@@ -305,11 +305,11 @@ export function HeroSplineSection() {
         }}
       />
 
-      <div className="relative z-[2] box-border flex h-[calc(100dvh-var(--navbar-height))] min-h-[min(480px,calc(100dvh-var(--navbar-height)))] w-full flex-col px-[10%] md:flex-row">
-        {/* Left — text; key remounts when hero re-enters view on tablet/desktop */}
+      <div className="relative z-[2] box-border flex w-full flex-col px-[10%] lg:h-[calc(100dvh-var(--navbar-height))] lg:min-h-[min(480px,calc(100dvh-var(--navbar-height)))] lg:flex-row">
+        {/* Left — text; key remounts when hero re-enters view on desktop */}
         <div
           key={heroPlayKey}
-          className="relative z-[2] box-border flex w-full min-w-0 flex-col justify-center py-8 md:flex-1"
+          className="relative z-[2] box-border flex w-full min-w-0 flex-col justify-start pb-6 pt-8 lg:flex-1 lg:justify-center lg:py-8"
         >
           <div
             className={cn(
@@ -345,8 +345,8 @@ export function HeroSplineSection() {
           </div>
         </div>
 
-        {/* Right — profile stage; on mobile it sits below the copy and takes remaining height */}
-        <div className="relative z-[2] box-border flex min-h-[min(40vh,320px)] w-full min-w-0 md:flex-1 md:min-h-0">
+        {/* Right — profile stage; hidden on mobile/tablet, shown from lg up */}
+        <div className="relative z-[2] box-border hidden w-full min-w-0 lg:flex lg:min-h-0 lg:flex-1">
           <HeroProfileStage />
         </div>
       </div>

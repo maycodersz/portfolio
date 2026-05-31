@@ -166,7 +166,7 @@ export function SkillsShowcase() {
               key={`row-${rowGroups.map((g) => g.name).join('|')}-${rowIndex}`}
               className={cn(
                 'box-border px-[10%]',
-                rowIndex === 0 ? 'pb-14 pt-[clamp(3.5rem,8vw,6rem)] md:pb-16 md:pt-24' : 'py-12 md:py-14',
+                rowIndex === 0 ? 'pb-10 pt-6 sm:pb-12 sm:pt-8 lg:pb-16 lg:pt-24' : 'py-12 md:py-14',
               )}
             >
               <div className="grid min-w-0 grid-cols-1 items-start gap-x-12 gap-y-14 md:grid-cols-2 md:justify-items-stretch lg:gap-x-16 lg:gap-y-16">

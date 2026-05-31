@@ -191,6 +191,77 @@ export type StatItem = {
   icon: string
 }
 
+/* ─── CV types ──────────────────────────────────────────────────────────── */
+
+export type CvSkillCategory = {
+  category: string
+  items: readonly string[]
+}
+
+export type CvProject = {
+  id: string
+  title: string
+  year: string
+  techStack: string
+  bullets: readonly string[]
+  /** Portfolio route for "View project" link. Omit if no detail page exists. */
+  portfolioHref?: string
+}
+
+export type CvCertification = {
+  title: string
+  issuer: string
+  date: string
+}
+
+export type CvEducation = {
+  degree: string
+  institution: string
+  period: string
+  details?: string
+}
+
+export type CvAward = {
+  title: string
+  event: string
+  date: string
+}
+
+export type CvContactInfo = {
+  email: string
+  phone: string
+  location: string
+  linkedin: { label: string; href: string }
+  github: { label: string; href: string }
+  portfolio: { label: string; href: string }
+}
+
+export type CvContent = {
+  pageTitle: string
+  subtitle: string
+  professionalSummary: string
+  contact: CvContactInfo
+  skills: readonly CvSkillCategory[]
+  projects: readonly CvProject[]
+  certifications: readonly CvCertification[]
+  education: readonly CvEducation[]
+  awards: readonly CvAward[]
+  experiencePlaceholder: string
+  downloadLabel: string
+  downloadHref: string
+  backLabel: string
+  backHref: string
+  sectionLabels: {
+    summary: string
+    experience: string
+    skills: string
+    projects: string
+    education: string
+    certifications: string
+    awards: string
+  }
+}
+
 /** Resolve display label for a non-`all` automation category from `portfolio.automation.categoryFilters`. */
 export function automationCategoryLabel(
   categoryFilters: readonly AutomationCategoryFilter[],
@@ -220,7 +291,7 @@ export const portfolio = {
     brandName: 'Maycoder',
     brandHref: '/#hero',
     items: [
-      { id: 'nav-cv', label: 'CV', href: '/#cv', kind: 'link' },
+      { id: 'nav-cv', label: 'CV', href: '/cv', kind: 'link' },
       { id: 'nav-work', label: 'Work', href: '/#works', kind: 'link' },
       { id: 'nav-pricing', label: 'Pricing', href: '/#pricing', kind: 'link' },
       { id: 'nav-hire', label: 'Hire Me', href: '/#contact', kind: 'cta' },
@@ -502,6 +573,147 @@ export const portfolio = {
   ] as const,
 
   skillsNote: 'Open to integrating any other API or service your project needs.',
+
+  cv: {
+    pageTitle: 'Aian Mhyco B. Nunez',
+    subtitle: 'AI Automation Specialist · n8n · Agentic AI Systems',
+    professionalSummary:
+      'AI Automation Specialist and Computer Science student with hands-on experience building production-grade n8n workflows, multi-agent AI systems, and API integrations from scratch. Proficient in integrating Claude, OpenAI, and Gemini into real automation pipelines — including a Telegram-based multi-agent system with persistent PostgreSQL memory and a fully automated meeting-to-task workflow. Capable of delivering end-to-end automations independently, often within a single day. Actively seeking remote opportunities where I can design and build intelligent automation systems that eliminate manual work.',
+    contact: {
+      email: 'nunez.aianmhyco.bernardino@gmail.com',
+      phone: '+63 950 159 3599',
+      location: 'Caloocan City, Philippines',
+      linkedin: {
+        label: 'LinkedIn',
+        href: 'https://www.linkedin.com/in/aian-mhyco-nu%C3%B1ez-16b21a39b/',
+      },
+      github: {
+        label: 'GitHub',
+        href: 'https://github.com/maycodersz',
+      },
+      portfolio: {
+        label: 'maycoder.vercel.app',
+        href: 'https://maycoder.vercel.app',
+      },
+    },
+    skills: [
+      {
+        category: 'Automation & Integration',
+        items: ['n8n', 'Multi-agent orchestration', 'Webhook triggers', 'Sub-agents', 'API nodes', 'REST APIs', 'Webhooks'],
+      },
+      {
+        category: 'AI / LLM Integration',
+        items: ['Claude API', 'OpenAI API', 'OpenRouter', 'Google Gemini', 'Ollama', 'Prompt engineering'],
+      },
+      {
+        category: 'Programming',
+        items: ['Python', 'JavaScript', 'TypeScript', 'Java', 'C', 'React', 'HTML', 'CSS', 'Tailwind CSS'],
+      },
+      {
+        category: 'Databases',
+        items: ['PostgreSQL', 'Supabase', 'MySQL'],
+      },
+      {
+        category: 'Tools & Platforms',
+        items: ['Google Workspace', 'Gmail API', 'Calendar API', 'Sheets', 'Drive', 'Slack', 'Monday.com', 'Notion', 'Telegram', 'Git'],
+      },
+    ],
+    projects: [
+      {
+        id: 'cv-jarvis',
+        title: 'Jarvis AI Agent — Multi-Agent Automation System',
+        year: '2025',
+        techStack: 'n8n, Claude API, OpenAI, Telegram, PostgreSQL, Google Workspace, ElevenLabs',
+        bullets: [
+          'Architected a multi-agent AI system on Telegram using n8n, orchestrating specialized sub-agents for Gmail (read, draft, send, summarize) and Google Calendar (create, update, delete events) via natural language commands.',
+          'Integrated Claude API for intelligent task routing, PostgreSQL for persistent conversation memory, Google Sheets for contact lookup, and ElevenLabs for voice responses — built entirely from scratch.',
+        ],
+        portfolioHref: '/#automation',
+      },
+      {
+        id: 'cv-meeting',
+        title: 'Meeting Automation — Google Meet → Slack & Monday.com',
+        year: '2025',
+        techStack: 'n8n, OpenAI API, Google Drive, Slack API, Monday.com',
+        bullets: [
+          'Built a dual-pipeline n8n automation that processes Google Meet recordings automatically: one pipeline generates AI meeting summaries posted to Slack; the other extracts action items and creates Monday.com tasks — zero manual effort.',
+        ],
+        portfolioHref: '/#automation',
+      },
+      {
+        id: 'cv-bots',
+        title: 'Sales Tracker & Receipt Processor Bots',
+        year: '2025',
+        techStack: 'n8n, Telegram Bot API, OpenAI Vision, Google Sheets API, Google Drive API',
+        bullets: [
+          'Developed two production Telegram bots: one uses AI image recognition to digitize handwritten sales records and generate financial reports with CSV export; the other auto-extracts receipt data via AI vision and logs to Google Sheets and Drive.',
+        ],
+        portfolioHref: '/#automation',
+      },
+      {
+        id: 'cv-academic-hub',
+        title: 'OLFU Academic Hub',
+        year: '2024',
+        techStack: 'React, TypeScript, Supabase, PostgreSQL, Google OAuth',
+        bullets: [
+          'Built a full-stack academic platform from scratch with XP gamification, leaderboards, program rooms, and Google Sign-In restricted to school email domains.',
+        ],
+        portfolioHref: '/work/academic-hub',
+      },
+    ],
+    certifications: [
+      {
+        title: 'Advanced Learning Algorithms',
+        issuer: 'DeepLearning.AI & Stanford University (Coursera)',
+        date: 'Apr 2026',
+      },
+      {
+        title: 'Supervised Machine Learning: Regression & Classification',
+        issuer: 'DeepLearning.AI & Stanford (Coursera)',
+        date: 'Mar 2026',
+      },
+    ],
+    education: [
+      {
+        degree: 'Bachelor of Science in Computer Science',
+        institution: 'Our Lady of Fatima University',
+        period: '2024 – 2028',
+        details: 'GWA: 1.24 | Dean\'s List (2nd Year, 1st Semester)',
+      },
+      {
+        degree: 'Senior High School — STEM Strand',
+        institution: 'Our Lady of Fatima University',
+        period: 'Graduated 2024',
+      },
+    ],
+    awards: [
+      {
+        title: 'Champion — Python Programming Competition',
+        event: 'CCS Week, OLFU',
+        date: '2025',
+      },
+      {
+        title: '2nd Place — ADET Arduino Competition',
+        event: 'CCS Week, OLFU',
+        date: '2025',
+      },
+    ],
+    experiencePlaceholder:
+      'Currently a student actively building real-world projects and seeking remote opportunities. Open to freelance, internship, or contract roles in AI automation and full-stack development.',
+    downloadLabel: 'Download CV',
+    downloadHref: '/Aian_Mhyco_Nunez_CV.pdf',
+    backLabel: 'Back to portfolio',
+    backHref: '/',
+    sectionLabels: {
+      summary: 'Professional Summary',
+      experience: 'Experience',
+      skills: 'Technical Skills',
+      projects: 'Projects',
+      education: 'Education',
+      certifications: 'Certifications',
+      awards: 'Awards',
+    },
+  } satisfies CvContent,
 
   projects: [
     {

@@ -236,7 +236,6 @@ export function StatsSection() {
   return (
     <section
       ref={sectionRef}
-      id="cv"
       aria-label={stats.sectionAriaLabel}
       className="box-border flex min-h-[auto] scroll-mt-[var(--navbar-height)] flex-col overflow-hidden border-t border-border lg:min-h-dvh"
     >
