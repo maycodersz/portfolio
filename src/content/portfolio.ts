@@ -160,8 +160,6 @@ export type ContactProjectTypeOption = {
   messagePlaceholder: string
 }
 
-export type ContactWebhookUrls = Record<ContactProjectTypeId, string>
-
 export type ContactSocialPlatform = 'facebook' | 'instagram' | 'tiktok' | 'youtube'
 
 export type ContactMethodPlatform = 'gmail' | 'linkedin'
@@ -179,6 +177,13 @@ export type ContactMethod = {
   value: string
   href: string
   platform: ContactMethodPlatform
+}
+
+export type ContactFormRateLimitConfig = {
+  minIntervalSeconds: number
+  maxSubmissionsPerHour: number
+  rateLimitedMessage: string
+  rateLimitedRetryMessage: string
 }
 
 /* ─── Stats types ────────────────────────────────────────────────────────── */
@@ -379,11 +384,8 @@ export const portfolio = {
     eyebrow: 'Contact',
     title: 'Get in Touch',
     description: "Have a project in mind? I'd love to hear about it.",
-    webhookUrls: {
-      automation: 'https://n8n.maycoder.uk/webhook-test/e5fe5d21-128b-4fc4-960e-344d1d803108',
-      'web-dev': 'https://n8n.maycoder.uk/webhook-test/e5fe5d21-128b-4fc4-960e-344d1d803108',
-      'mobile-app': 'https://n8n.maycoder.uk/webhook-test/e5fe5d21-128b-4fc4-960e-344d1d803108',
-    } satisfies ContactWebhookUrls,
+    webhookUrl:
+      'https://n8n.maycoder.uk/webhook/e5fe5d21-128b-4fc4-960e-344d1d803108',
     methodsHeading: 'Direct',
     socialHeading: 'Tutorials & social',
     form: {
@@ -404,6 +406,11 @@ export const portfolio = {
       validationMessage: 'Please fill in your name, email, pick a project type, and add a message.',
       emailValidationMessage: 'Please enter a valid email address.',
       webhookNotConfiguredMessage: 'This contact channel is not configured yet. Please email me directly.',
+      minIntervalSeconds: 60,
+      maxSubmissionsPerHour: 5,
+      rateLimitedMessage:
+        "You're sending messages too quickly. Please wait a moment and try again.",
+      rateLimitedRetryMessage: 'Please wait {seconds} seconds before sending another message.',
       projectTypeOptions: [
         {
           id: 'web-dev',

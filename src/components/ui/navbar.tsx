@@ -304,7 +304,7 @@ export default function NavBar({
             exit={{ opacity: 0, x: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 320 }}
           >
-            <div className="absolute inset-0 bg-white/80 backdrop-blur-xl dark:bg-black/70" aria-hidden />
+            <div className="absolute inset-0 bg-white/80 backdrop-blur-xl dark:bg-[color:var(--overlay-scrim)]" aria-hidden />
             <div className="relative flex h-full flex-col pt-6">
               <motion.button
                 type="button"

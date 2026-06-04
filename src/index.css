@@ -111,31 +111,31 @@
   --works-info-bg: rgba(255, 255, 255, 0.92);
 }
 
-/* ── Dark palette — black · gray · purple · white (no pink) ───────────────── */
+/* ── Dark palette — deep purple-charcoal · gray · purple · white (no pink) ─ */
 .dark {
   --brand-shadow-glow: rgb(124 79 226 / 55%);
 
-  --color-page-background: #000;
+  --color-page-background: #0d0b14;
   --color-page-foreground: oklch(0.965 0 0);
 
   --background: var(--color-page-background);
   --foreground: var(--color-page-foreground);
 
-  --card: oklch(0.18 0 0);
+  --card: oklch(0.21 0.02 285);
   --card-foreground: oklch(0.985 0 0);
 
-  --popover: oklch(0.16 0 0);
+  --popover: oklch(0.19 0.02 285);
   --popover-foreground: oklch(0.985 0 0);
 
   --primary-foreground: oklch(0.98 0.01 276);
 
-  --secondary: color-mix(in oklch, var(--brand) 8%, oklch(0.26 0 0));
+  --secondary: color-mix(in oklch, var(--brand) 8%, oklch(0.28 0.02 285));
   --secondary-foreground: oklch(0.985 0 0);
 
-  --muted: color-mix(in oklch, var(--brand) 10%, oklch(0.22 0 0));
+  --muted: color-mix(in oklch, var(--brand) 10%, oklch(0.24 0.02 285));
   --muted-foreground: oklch(0.72 0 0);
 
-  --accent: color-mix(in srgb, #7C4FE2 22%, #06000c);
+  --accent: color-mix(in srgb, #7C4FE2 22%, #0d0b14);
   --accent-foreground: #A78BFA;
 
   --destructive: oklch(0.55 0.22 25);
@@ -178,17 +178,20 @@
   --glass-divider: rgba(255, 255, 255, 0.12);
 
   /* ── Device frame tokens (dark) ────────────────────────────────────────── */
-  --device-frame-bg: oklch(0.14 0 0);
-  --device-frame-stand-from: oklch(0.22 0 0);
-  --device-frame-stand-to: oklch(0.17 0 0);
-  --device-frame-base-from: oklch(0.26 0 0);
-  --device-frame-base-to: oklch(0.18 0 0);
-  --device-frame-dot: oklch(0.28 0 0);
-  --device-frame-notch: oklch(0.1 0 0);
-  --device-frame-button: oklch(0.24 0 0);
+  --device-frame-bg: oklch(0.24 0.02 285);
+  --device-frame-stand-from: oklch(0.30 0.02 285);
+  --device-frame-stand-to: oklch(0.26 0.02 285);
+  --device-frame-base-from: oklch(0.32 0.02 285);
+  --device-frame-base-to: oklch(0.27 0.02 285);
+  --device-frame-dot: oklch(0.34 0.02 285);
+  --device-frame-notch: oklch(0.18 0.015 285);
+  --device-frame-button: oklch(0.28 0.02 285);
 
   /* ── Works info bar (dark) ─────────────────────────────────────────────── */
-  --works-info-bg: rgba(0, 0, 0, 0.88);
+  --works-info-bg: color-mix(in srgb, var(--card) 85%, transparent);
+
+  /* ── Modal / sheet / mobile nav scrim (dark) ───────────────────────────── */
+  --overlay-scrim: color-mix(in srgb, var(--color-page-background) 72%, transparent);
 }
 
 html {

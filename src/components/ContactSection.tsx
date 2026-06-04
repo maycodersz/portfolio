@@ -32,6 +32,11 @@ import { useRevealOnView } from '@/hooks/useRevealOnView'
 import { useSectionAnimState } from '@/hooks/useSectionAnimState'
 import { useScrollDirection } from '@/hooks/useScrollDirection'
 import { cn } from '@/utils/cn'
+import {
+  checkContactRateLimit,
+  formatRateLimitedMessage,
+  recordContactSubmission,
+} from '@/utils/contactRateLimit'
 
 const c = portfolio.contact
 
@@ -143,15 +148,30 @@ export function ContactSection() {
       return
     }
 
+    const rateLimit = checkContactRateLimit({
+      minIntervalSeconds: c.form.minIntervalSeconds,
+      maxSubmissionsPerHour: c.form.maxSubmissionsPerHour,
+      rateLimitedMessage: c.form.rateLimitedMessage,
+      rateLimitedRetryMessage: c.form.rateLimitedRetryMessage,
+    })
+    if (!rateLimit.allowed) {
+      setErrorDetail(
+        formatRateLimitedMessage(c.form.rateLimitedRetryMessage, rateLimit.retryAfterMs),
+      )
+      setErrorOpen(true)
+      return
+    }
+
     setSending(true)
     setErrorDetail(null)
     try {
-      const res = await fetch(c.webhookUrls[projectType], {
+      const res = await fetch(c.webhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, projectType, message }),
       })
       if (!res.ok) throw new Error('Webhook responded with an error')
+      recordContactSubmission()
       setSuccessOpen(true)
     } catch {
       setErrorDetail(null)
