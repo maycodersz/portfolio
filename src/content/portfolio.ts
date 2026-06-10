@@ -5,6 +5,9 @@ import imgAutomationEmailWatcherSpam from '@/assets/projects/automation/project-
 import imgAutomationEmail from '@/assets/projects/automation/project-4.png'
 import imgAutomationJarvis from '@/assets/projects/automation/project-1.png'
 import imgAutomationReceipt from '@/assets/projects/automation/project-2.png'
+import imgAutomationReceiptDaily from '@/assets/projects/automation/project-2.1.png'
+import imgAutomationReceiptWeekly from '@/assets/projects/automation/project-2.2.png'
+import imgAutomationReceiptMonthly from '@/assets/projects/automation/project-2.3.png'
 import imgAutomationSales from '@/assets/projects/automation/project-3.png'
 import imgAutomationLeadQualifier from '@/assets/projects/automation/project-7.png'
 import imgAutomationMeeting from '@/assets/projects/automation/project-8.png'
@@ -884,9 +887,10 @@ export const portfolio = {
       title: 'Receipt Processor Bot',
       categories: ['ai', 'automation'],
       description:
-        'Send a receipt photo to Telegram and this bot automatically processes it using AI vision — extracting items, quantities, and prices, then logging everything to Google Sheets and saving the original receipt image to Google Drive. Zero manual data entry.',
+        'A complete AI-powered receipt and expense management system. Users submit receipt photos through Telegram, where AI extracts merchant information, purchased items, quantities, totals, and expense data automatically. The workflow stores structured records in Google Sheets, archives receipt images in Google Drive, and generates automated daily, weekly, and monthly spending reports.',
       tags: ['n8n', 'Telegram', 'OpenAI'],
       image: imgAutomationReceipt,
+      galleryImages: [imgAutomationReceiptDaily, imgAutomationReceiptWeekly, imgAutomationReceiptMonthly],
       databases: ['Google Sheets', 'Google Drive'],
       link: null,
     },

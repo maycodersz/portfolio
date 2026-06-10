@@ -24,6 +24,7 @@ firebase.json
 .cursor/
 # Claude AI local settings & plugin data
 .claude/
+.agents/
 
 # ── Logs ───────────────────────────────────────────────────────────────────────
 logs
