@@ -416,7 +416,7 @@ export function ContactSection() {
             <DialogDescription className="text-center">{f.successMessage}</DialogDescription>
           </DialogHeader>
           <DialogFooter className="sm:justify-center">
-            <Button type="button" variant="accent" className="w-full sm:w-auto" onClick={() => handleSuccessOpenChange(false)}>
+            <Button type="button" variant="accent" className="w-full sm:w-auto mt-4" onClick={() => handleSuccessOpenChange(false)}>
               {f.modalCloseLabel}
             </Button>
           </DialogFooter>
