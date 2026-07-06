@@ -355,7 +355,7 @@ export const portfolio = {
       {
         id: 'automation',
         title: 'Automation & AI',
-        startingPrice: '$799',
+        startingPrice: '$249',
         isPopular: true,
         inclusions: [
           'n8n workflow',
@@ -387,8 +387,14 @@ export const portfolio = {
     eyebrow: 'Contact',
     title: 'Get in Touch',
     description: "Have a project in mind? I'd love to hear about it.",
-    webhookUrl:
-      'https://n8n.maycoder.uk/webhook-test/e5fe5d21-128b-4fc4-960e-344d1d803108',
+    splitForms: {
+      submitUrl: 'https://splitforms.com/api/submit',
+      accessKey: 'c3c5c60268044dc5a4f787114b8e5404',
+      subject: 'New contact form submission',
+      poweredByLabel: 'Powered by',
+      poweredByName: 'splitforms',
+      poweredByHref: 'https://splitforms.com',
+    },
     methodsHeading: 'Direct',
     socialHeading: 'Tutorials & social',
     form: {

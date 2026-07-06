@@ -104,6 +104,11 @@ type FormState = {
   message: string
 }
 
+type SplitFormsResponse = {
+  success?: boolean
+  message?: string
+}
+
 const initialForm: FormState = {
   name: '',
   email: '',
@@ -165,12 +170,17 @@ export function ContactSection() {
     setSending(true)
     setErrorDetail(null)
     try {
-      const res = await fetch(c.webhookUrl, {
+      const data = new FormData(e.currentTarget)
+      data.set('access_key', c.splitForms.accessKey)
+      data.set('subject', c.splitForms.subject)
+
+      const res = await fetch(c.splitForms.submitUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, projectType, message }),
+        body: data,
+        headers: { Accept: 'application/json' },
       })
-      if (!res.ok) throw new Error('Webhook responded with an error')
+      const json = (await res.json()) as SplitFormsResponse
+      if (!res.ok || !json.success) throw new Error(json.message ?? 'SplitForms responded with an error')
       recordContactSubmission()
       setSuccessOpen(true)
     } catch {
@@ -335,6 +345,18 @@ export function ContactSection() {
                 <Button type="submit" variant="accent" disabled={sending} className="mt-1 w-full sm:w-auto">
                   {sending ? f.submittingLabel : f.submitLabel}
                 </Button>
+
+                <p className="mt-1 text-right text-[11px] text-muted-foreground/80">
+                  {c.splitForms.poweredByLabel}{' '}
+                  <a
+                    href={c.splitForms.poweredByHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-muted-foreground/80 no-underline transition-colors hover:text-foreground"
+                  >
+                    {c.splitForms.poweredByName}
+                  </a>
+                </p>
               </form>
             </div>
 

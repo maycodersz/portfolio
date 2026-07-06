@@ -235,11 +235,28 @@ function CardDeckCarousel({
   scrollReveal: boolean
 }) {
   const [active, setActive] = useState(0)
+  const [hasInteracted, setHasInteracted] = useState(false)
   const total = projects.length
   const { carouselAria } = auto
 
-  const goPrev = () => setActive((active - 1 + total) % total)
-  const goNext = () => setActive((active + 1) % total)
+  const revealActive = scrollReveal && !hasInteracted
+
+  const goPrev = () => {
+    setHasInteracted(true)
+    setActive((active - 1 + total) % total)
+  }
+  const goNext = () => {
+    setHasInteracted(true)
+    setActive((active + 1) % total)
+  }
+  const goTo = (index: number) => {
+    setHasInteracted(true)
+    setActive(index)
+  }
+  const openProject = (project: AutomationProject) => {
+    setHasInteracted(true)
+    onOpen(project)
+  }
 
   if (total === 0) {
     return (
@@ -285,14 +302,14 @@ function CardDeckCarousel({
                 project={project}
                 slot={slot}
                 total={total}
-                onClickCenter={() => onOpen(project)}
+                onClickCenter={() => openProject(project)}
                 onClickSide={() =>
                   slot === 'left'
                     ? goPrev()
                     : goNext()
                 }
                 sectionInView={sectionInView}
-                scrollReveal={scrollReveal}
+                scrollReveal={revealActive}
               />
             )
           })}
@@ -309,7 +326,7 @@ function CardDeckCarousel({
             <button
               key={i}
               type="button"
-              onClick={() => setActive(i)}
+              onClick={() => goTo(i)}
               aria-label={`${carouselAria.goToCardPrefix} ${i + 1}`}
               aria-current={i === active ? 'step' : undefined}
               className="flex min-h-11 min-w-11 items-center justify-center"
@@ -333,7 +350,7 @@ function CardDeckCarousel({
           className="lg:hidden"
           onClick={() => {
             const current = projects[active]
-            if (current) onOpen(current)
+            if (current) openProject(current)
           }}
         >
           {auto.viewWorkCursorLabel} →
