@@ -14,13 +14,6 @@ import imgAutomationMeeting from '@/assets/projects/automation/project-8.png'
 import imgGhlPublicRequestForm from '@/assets/projects/automation/project-9.2.png'
 import imgGhlPublicRequestWorkflow from '@/assets/projects/automation/project-9.1.png'
 import imgGhlPublicRequestEmail from '@/assets/projects/automation/project-9.3.png'
-import imgGhlDiscoveryWorkflow from '@/assets/projects/automation/project-10.1.png'
-import imgGhlDiscoveryBookingForm from '@/assets/projects/automation/project-10.2.png'
-import imgGhlDiscoveryCalendar from '@/assets/projects/automation/project-10.3.png'
-import imgGhlDiscoveryEmail from '@/assets/projects/automation/project-10.4.png'
-import imgGhlDiscoveryClientFolderWorkflow from '@/assets/projects/automation/project-10.5.png'
-import imgGhlDiscoveryTelegramWorkflow from '@/assets/projects/automation/project-10.6.png'
-import imgGhlDiscoveryDriveOutput from '@/assets/projects/automation/project-10.7.png'
 import imgAcademicHubDesktop from '@/assets/projects/web/academic-hub/desktop.png'
 import imgAcademicHubPhone from '@/assets/projects/web/academic-hub/phone.png'
 import imgAcademicHubTablet from '@/assets/projects/web/academic-hub/tablet.png'
@@ -540,7 +533,7 @@ export const portfolio = {
     eyebrow: 'Playground',
     title: 'Automation & AI Projects',
     description:
-      'n8n workflows, AI agents, CRM automations, and integrations across Gmail, Calendar, spreadsheets, databases, Google Drive, and more.',
+      'n8n workflows, AI agents on Telegram, and integrations across Gmail, Calendar, spreadsheets, databases, and more.',
     categoryFilterAriaLabel: 'Filter by category',
     emptyCategoryMessage: 'No projects in this category.',
     carouselViewportHeightPx: 340,
@@ -642,7 +635,7 @@ export const portfolio = {
       },
       {
         category: 'Tools & Platforms',
-        items: ['Google Workspace', 'Gmail API', 'Calendar API', 'Sheets', 'Drive', 'Slack', 'Monday.com', 'Notion', 'Telegram', 'Git', 'GoHighLevel'],
+        items: ['Google Workspace', 'Gmail API', 'Calendar API', 'Sheets', 'Drive', 'Slack', 'Monday.com', 'Notion', 'Telegram', 'Git'],
       },
     ],
     projects: [
@@ -689,12 +682,12 @@ export const portfolio = {
       },
       {
         id: 'cv-ghl-accounting-ops',
-        title: 'GHL AccountingOps — CRM + n8n Workflow System',
+        title: 'GHL AccountingOps — CRM & Lead Intake Automation System',
         year: '2026',
-        techStack: 'GoHighLevel, n8n, Google Drive, Forms, CRM Pipelines, Opportunities, Email Automation, Webhooks, Telegram',
+        techStack: 'GoHighLevel, Forms, CRM Pipelines, Opportunities, Email Automation, Telegram Webhooks',
         bullets: [
-          'Built a GoHighLevel CRM automation system for an accounting firm demo, including public request intake, discovery call booking, duplicate opportunity prevention, pipeline stage updates, contact and company status tracking, lead confirmation emails, owner tasks, and Telegram team alerts.',
-          'Integrated GoHighLevel with n8n and Google Drive so booked discovery calls can trigger client folder creation, accounting subfolder setup, company record updates with the Drive link, and internal owner notifications.',
+          'Built a GoHighLevel CRM automation system for an accounting firm demo, including a public request form that captures bookkeeping operation inquiries, updates contact and company records, and routes new leads into the correct pipeline stage.',
+          'Implemented duplicate-prevention logic by checking for existing opportunities before creating a new one, then automated lead confirmation emails, owner review tasks, and Telegram team notifications for faster follow-up.',
         ],
         portfolioHref: '/#automation',
       }
@@ -999,25 +992,6 @@ export const portfolio = {
       image: imgGhlPublicRequestWorkflow,
       galleryImages: [imgGhlPublicRequestForm, imgGhlPublicRequestEmail],
       databases: ['GoHighLevel Contacts', 'GoHighLevel Companies', 'GoHighLevel Opportunities'],
-      link: null,
-    },
-    {
-      id: 'ghl-discovery-call-booked',
-      title: 'GHL Discovery Call Booked',
-      categories: ['automation', 'crm'],
-      description:
-        'A GoHighLevel CRM workflow for booked discovery calls. When a lead books through the calendar and submits the booking form, the automation checks whether an existing opportunity already exists from the public request form. If found, it updates the opportunity to the Discovery Call Booked stage; if not, it creates a new direct-booking opportunity and tags the contact accordingly. The workflow then updates the contact and company status, sends a confirmation email, creates a preparation task for the firm owner, and calls an n8n workflow to create the client Google Drive folder structure, update the company Drive link, create accounting subfolders, and notify the owner through Telegram.',
-      tags: ['GoHighLevel', 'CRM', 'Calendar', 'Forms', 'Pipeline', 'Email', 'n8n', 'Google Drive', 'Telegram'],
-      image: imgGhlDiscoveryWorkflow,
-      galleryImages: [
-        imgGhlDiscoveryBookingForm,
-        imgGhlDiscoveryCalendar,
-        imgGhlDiscoveryEmail,
-        imgGhlDiscoveryClientFolderWorkflow,
-        imgGhlDiscoveryTelegramWorkflow,
-        imgGhlDiscoveryDriveOutput,
-      ],
-      databases: ['GoHighLevel Contacts', 'GoHighLevel Companies', 'GoHighLevel Opportunities', 'Google Drive'],
       link: null,
     }
   ] satisfies readonly AutomationProject[],
