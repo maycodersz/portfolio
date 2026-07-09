@@ -14,6 +14,28 @@ import imgAutomationMeeting from '@/assets/projects/automation/project-8.png'
 import imgGhlPublicRequestForm from '@/assets/projects/automation/project-9.2.png'
 import imgGhlPublicRequestWorkflow from '@/assets/projects/automation/project-9.1.png'
 import imgGhlPublicRequestEmail from '@/assets/projects/automation/project-9.3.png'
+import imgGhlDiscoveryWorkflow from '@/assets/projects/automation/project-10.1.png'
+import imgGhlDiscoveryBookingForm from '@/assets/projects/automation/project-10.2.png'
+import imgGhlDiscoveryCalendar from '@/assets/projects/automation/project-10.3.png'
+import imgGhlDiscoveryEmail from '@/assets/projects/automation/project-10.4.png'
+import imgGhlDiscoveryClientFolderWorkflow from '@/assets/projects/automation/project-10.5.png'
+import imgGhlDiscoveryTelegramWorkflow from '@/assets/projects/automation/project-10.6.png'
+import imgGhlDiscoveryDriveOutput from '@/assets/projects/automation/project-10.7.png'
+import imgGhlDiscoveryCompletedWorkflow from '@/assets/projects/automation/project-11.1.png'
+import imgGhlDiscoveryCompletedPipeline from '@/assets/projects/automation/project-11.2.png'
+import imgGhlDiscoveryCompletedTelegramWorkflow from '@/assets/projects/automation/project-11.3.png'
+import imgGhlInternalDiscoveryNotesForm from '@/assets/projects/automation/project-11.4.png'
+import imgGhlInternalDiscoveryNotesWorkflow from '@/assets/projects/automation/project-12.1.png'
+import imgGhlInternalDiscoveryNotesTelegramWorkflow from '@/assets/projects/automation/project-12.2.png'
+import imgGhlWonDealOnboardingWorkflow from '@/assets/projects/automation/project-13.1.png'
+import imgGhlWonDealOnboardingEmail from '@/assets/projects/automation/project-13.2.png'
+import imgGhlWonDealOnboardingTelegramWorkflow from '@/assets/projects/automation/project-13.3.png'
+import imgGhlClientOnboardingWorkflow from '@/assets/projects/automation/project-14.1.png'
+import imgGhlClientOnboardingFolderWorkflow from '@/assets/projects/automation/project-14.2.png'
+import imgGhlClientOnboardingDocumentRequestEmail from '@/assets/projects/automation/project-14.3.png'
+import imgGhlClientOnboardingForm from '@/assets/projects/automation/project-14.4.png'
+import imgGhlClientOnboardingTelegramWorkflow from '@/assets/projects/automation/project-14.5.png'
+import imgGhlClientOnboardingDriveOutput from '@/assets/projects/automation/project-14.6.png'
 import imgAcademicHubDesktop from '@/assets/projects/web/academic-hub/desktop.png'
 import imgAcademicHubPhone from '@/assets/projects/web/academic-hub/phone.png'
 import imgAcademicHubTablet from '@/assets/projects/web/academic-hub/tablet.png'
@@ -533,7 +555,7 @@ export const portfolio = {
     eyebrow: 'Playground',
     title: 'Automation & AI Projects',
     description:
-      'n8n workflows, AI agents on Telegram, and integrations across Gmail, Calendar, spreadsheets, databases, and more.',
+      'n8n workflows, AI agents, CRM automations, and integrations across Gmail, Calendar, spreadsheets, databases, Google Drive, and more.',
     categoryFilterAriaLabel: 'Filter by category',
     emptyCategoryMessage: 'No projects in this category.',
     carouselViewportHeightPx: 340,
@@ -635,7 +657,7 @@ export const portfolio = {
       },
       {
         category: 'Tools & Platforms',
-        items: ['Google Workspace', 'Gmail API', 'Calendar API', 'Sheets', 'Drive', 'Slack', 'Monday.com', 'Notion', 'Telegram', 'Git'],
+        items: ['Google Workspace', 'Gmail API', 'Calendar API', 'Sheets', 'Drive', 'Slack', 'Monday.com', 'Notion', 'Telegram', 'Git', 'GoHighLevel'],
       },
     ],
     projects: [
@@ -682,15 +704,15 @@ export const portfolio = {
       },
       {
         id: 'cv-ghl-accounting-ops',
-        title: 'GHL AccountingOps — CRM & Lead Intake Automation System',
+        title: 'GHL AccountingOps — CRM + n8n Workflow System',
         year: '2026',
-        techStack: 'GoHighLevel, Forms, CRM Pipelines, Opportunities, Email Automation, Telegram Webhooks',
+        techStack: 'GoHighLevel, n8n, Google Drive, Forms, CRM Pipelines, Opportunities, Tasks, Email Automation, Webhooks, Telegram',
         bullets: [
-          'Built a GoHighLevel CRM automation system for an accounting firm demo, including a public request form that captures bookkeeping operation inquiries, updates contact and company records, and routes new leads into the correct pipeline stage.',
-          'Implemented duplicate-prevention logic by checking for existing opportunities before creating a new one, then automated lead confirmation emails, owner review tasks, and Telegram team notifications for faster follow-up.',
+          'Built a GoHighLevel CRM automation system for an accounting firm demo, including public request intake, discovery call booking, duplicate opportunity prevention, pipeline stage updates, contact and company status tracking, lead confirmation emails, owner tasks, and Telegram team alerts.',
+          'Integrated GoHighLevel with n8n and Google Drive for client operations: booked discovery calls and onboarding submissions trigger Drive folder setup, post-call notes route proposal/follow-up/not-fit decisions, and won deals/onboarding steps send client emails, document requests, staff tasks, and Telegram team notifications.',
         ],
         portfolioHref: '/#automation',
-      }
+      },
     ],
     certifications: [
       {
@@ -992,6 +1014,89 @@ export const portfolio = {
       image: imgGhlPublicRequestWorkflow,
       galleryImages: [imgGhlPublicRequestForm, imgGhlPublicRequestEmail],
       databases: ['GoHighLevel Contacts', 'GoHighLevel Companies', 'GoHighLevel Opportunities'],
+      link: null,
+    },
+    {
+      id: 'ghl-discovery-call-booked',
+      title: 'GHL Discovery Call Booked',
+      categories: ['automation', 'crm'],
+      description:
+        'A GoHighLevel CRM workflow for booked discovery calls. When a lead books through the calendar and submits the booking form, the automation checks whether an existing opportunity already exists from the public request form. If found, it updates the opportunity to the Discovery Call Booked stage; if not, it creates a new direct-booking opportunity and tags the contact accordingly. The workflow then updates the contact and company status, sends a confirmation email, creates a preparation task for the firm owner, and calls an n8n workflow to create the client Google Drive folder structure, update the company Drive link, create accounting subfolders, and notify the owner through Telegram.',
+      tags: ['GoHighLevel', 'CRM', 'Calendar', 'Forms', 'Pipeline', 'Email', 'n8n', 'Google Drive', 'Telegram'],
+      image: imgGhlDiscoveryWorkflow,
+      galleryImages: [
+        imgGhlDiscoveryBookingForm,
+        imgGhlDiscoveryCalendar,
+        imgGhlDiscoveryEmail,
+        imgGhlDiscoveryClientFolderWorkflow,
+        imgGhlDiscoveryTelegramWorkflow,
+        imgGhlDiscoveryDriveOutput,
+      ],
+      databases: ['GoHighLevel Contacts', 'GoHighLevel Companies', 'GoHighLevel Opportunities', 'Google Drive'],
+      link: null,
+    },
+    {
+      id: 'ghl-discovery-completed-notes-reminder',
+      title: 'GHL Discovery Completed Notes Reminder',
+      categories: ['automation', 'crm'],
+      description:
+        'A GoHighLevel CRM workflow for post-discovery call follow-up. When the firm owner manually moves an opportunity from the Discovery Call Booked stage to the Discovery Call Completed stage, the automation gets the next-day due date, creates a task for the firm owner, and calls an n8n webhook to send a Telegram reminder. This keeps the internal discovery notes form from being forgotten, so the team can capture the call summary, lead fit score, lead temperature, service needed, budget, urgency, and next steps before moving the deal forward.',
+      tags: ['GoHighLevel', 'CRM', 'Pipeline', 'Tasks', 'Internal Forms', 'n8n', 'Telegram', 'Webhook'],
+      image: imgGhlDiscoveryCompletedWorkflow,
+      galleryImages: [
+        imgGhlDiscoveryCompletedPipeline,
+        imgGhlDiscoveryCompletedTelegramWorkflow,
+        imgGhlInternalDiscoveryNotesForm,
+      ],
+      databases: [],
+      link: null,
+    },
+    {
+      id: 'ghl-internal-discovery-notes-submitted',
+      title: 'GHL Internal Discovery Notes Submitted',
+      categories: ['automation', 'crm'],
+      description:
+        'A GoHighLevel CRM workflow for routing post-call decisions after the firm owner submits the internal discovery notes form. The automation finds the matching opportunity, checks the Post-Call Decision field, and moves the deal into the correct next step: Proposal Needed for prepare-proposal leads, Follow Up for additional questions, Not Fit for disqualified leads, or Follow Up for manual review. Each path updates the opportunity, creates the right owner task, and triggers an internal Telegram notification through n8n so the firm owner knows exactly what to do next.',
+      tags: ['GoHighLevel', 'CRM', 'Internal Forms', 'Pipeline', 'Conditional Logic', 'Tasks', 'n8n', 'Telegram', 'Webhook'],
+      image: imgGhlInternalDiscoveryNotesWorkflow,
+      galleryImages: [
+        imgGhlInternalDiscoveryNotesForm,
+        imgGhlInternalDiscoveryNotesTelegramWorkflow,
+      ],
+      databases: [],
+      link: null,
+    },
+    {
+      id: 'ghl-won-deal-onboarding',
+      title: 'GHL Won Deal Onboarding',
+      categories: ['automation', 'crm'],
+      description:
+        'A GoHighLevel CRM workflow for turning a won opportunity into an active client onboarding flow. When the firm owner moves an opportunity to Won, the automation updates the opportunity status to won, marks the proposal as accepted, adds the Active Client tag, and updates the related contact and company status. It then sends the client an onboarding email with the onboarding form link, creates a client success task, and triggers an internal Telegram notification through n8n so the team knows a new client is ready to onboard.',
+      tags: ['GoHighLevel', 'CRM', 'Pipeline', 'Client Onboarding', 'Email', 'Tasks', 'n8n', 'Telegram', 'Webhook'],
+      image: imgGhlWonDealOnboardingWorkflow,
+      galleryImages: [
+        imgGhlWonDealOnboardingEmail,
+        imgGhlWonDealOnboardingTelegramWorkflow,
+      ],
+      databases: [],
+      link: null,
+    },
+    {
+      id: 'ghl-client-onboarding-form-submitted',
+      title: 'GHL Client Onboarding Form Submitted',
+      categories: ['automation', 'crm'],
+      description:
+        'A GoHighLevel CRM workflow for the client onboarding form after a deal is won. When the client submits the onboarding form, the automation updates the associated company status, sends a document request email, and calls an n8n workflow to create the client company folder in Google Drive, update the company record with the Drive link, and generate the standard bookkeeping subfolders. It also creates a follow-up task and triggers a Telegram team notification so the onboarding handoff is ready for the client success process.',
+      tags: ['GoHighLevel', 'CRM', 'Client Onboarding', 'Forms', 'Email', 'Tasks', 'n8n', 'Google Drive', 'Telegram', 'Webhook'],
+      image: imgGhlClientOnboardingWorkflow,
+      galleryImages: [
+        imgGhlClientOnboardingForm,
+        imgGhlClientOnboardingDocumentRequestEmail,
+        imgGhlClientOnboardingFolderWorkflow,
+        imgGhlClientOnboardingTelegramWorkflow,
+        imgGhlClientOnboardingDriveOutput,
+      ],
+      databases: ['GoHighLevel Companies', 'Google Drive'],
       link: null,
     }
   ] satisfies readonly AutomationProject[],
