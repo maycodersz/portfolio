@@ -18,6 +18,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
+import { HighLevelMark } from '@/components/icons/HighLevelMark'
 import {
   Dialog,
   DialogContent,
@@ -107,6 +108,10 @@ function iconForDatabaseLine(label: string): LucideIcon {
   return Database
 }
 
+function isHighLevelLabel(label: string): boolean {
+  return /(?:go\s*)?high\s*level/i.test(label)
+}
+
 function buildSlides(project: AutomationProject): readonly string[] {
   return [project.image, ...(project.galleryImages ?? [])]
 }
@@ -145,7 +150,11 @@ function AutomationDetailBlock({
               'dark:border-primary/15 dark:bg-muted/40',
             )}
           >
-            <GradientStrokeIcon icon={resolveChipIcon(item)} className="size-3.5 shrink-0 sm:size-4" />
+            {isHighLevelLabel(item) ? (
+              <HighLevelMark className="h-4 w-5 shrink-0" />
+            ) : (
+              <GradientStrokeIcon icon={resolveChipIcon(item)} className="size-3.5 shrink-0 sm:size-4" />
+            )}
             {item}
           </span>
         ))}
@@ -174,11 +183,6 @@ function AutomationModalImageHero({
   const total = slides.length
   const hasCarousel = total > 1
   const useSlideAnimation = hasCarousel && !reducedMotion
-
-  useEffect(() => {
-    setActiveIndex(0)
-    setDirection(1)
-  }, [project.id])
 
   const goPrev = useCallback(() => {
     setDirection(-1)
@@ -310,6 +314,7 @@ export function AutomationModal({ project, open, onOpenChange }: AutomationModal
           {projectOpen ? (
             <>
               <AutomationModalImageHero
+                key={project.id}
                 project={project}
                 imageAltFallback={copy.imageAltFallback}
                 previousImageLabel={copy.previousImage}

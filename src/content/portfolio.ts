@@ -43,6 +43,7 @@ import imgGhlTextDocumentExtractorWorkflow from '@/assets/projects/automation/pr
 import imgGhlReviewRequestWriterWorkflow from '@/assets/projects/automation/project-15.5.png'
 import imgGhlAccountingTransactionWorkflow from '@/assets/projects/automation/project-15.6.png'
 import imgGhlDocumentInternalNotificationWorkflow from '@/assets/projects/automation/project-15.7.png'
+import imgGhlMonthlyCloseWorkflow from '@/assets/projects/automation/project-16.1.png'
 import imgAcademicHubDesktop from '@/assets/projects/web/academic-hub/desktop.png'
 import imgAcademicHubPhone from '@/assets/projects/web/academic-hub/phone.png'
 import imgAcademicHubTablet from '@/assets/projects/web/academic-hub/tablet.png'
@@ -242,7 +243,7 @@ export type CvProject = {
   id: string
   title: string
   year: string
-  techStack: string
+  techStack: readonly string[]
   bullets: readonly string[]
   /** Portfolio route for "View project" link. Omit if no detail page exists. */
   portfolioHref?: string
@@ -286,14 +287,12 @@ export type CvContent = {
   certifications: readonly CvCertification[]
   education: readonly CvEducation[]
   awards: readonly CvAward[]
-  experiencePlaceholder: string
   downloadLabel: string
   downloadHref: string
   backLabel: string
   backHref: string
   sectionLabels: {
     summary: string
-    experience: string
     skills: string
     projects: string
     education: string
@@ -625,9 +624,9 @@ export const portfolio = {
 
   cv: {
     pageTitle: 'Aian Mhyco B. Nunez',
-    subtitle: 'AI Automation Specialist · n8n · Agentic AI Systems',
+    subtitle: 'AI Automation Specialist',
     professionalSummary:
-      'AI Automation Specialist and Computer Science student with hands-on experience building production-grade n8n workflows, multi-agent AI systems, and API integrations from scratch. Proficient in integrating Claude, OpenAI, and Gemini into real automation pipelines — including a Telegram-based multi-agent system with persistent PostgreSQL memory and a fully automated meeting-to-task workflow. Capable of delivering end-to-end automations independently, often within a single day. Actively seeking remote opportunities where I can design and build intelligent automation systems that eliminate manual work.',
+      'Second-year Computer Science student at Our Lady of Fatima University specializing in AI-powered workflow automation using n8n. Experienced in integrating LLMs into production-ready Telegram bots, Gmail pipelines, and meeting automation workflows. Complements automation expertise with full-stack development skills and Stanford-certified machine learning knowledge. Available for remote engagements. Recently implemented a GoHighLevel CRM and automation system integrated with n8n, covering custom objects, pipelines, forms, calendars, workflow automations, and AI-powered document processing.',
     contact: {
       email: 'nunez.aianmhyco.bernardino@gmail.com',
       phone: '+63 950 159 3599',
@@ -647,16 +646,20 @@ export const portfolio = {
     },
     skills: [
       {
-        category: 'Automation & Integration',
-        items: ['n8n', 'Multi-agent orchestration', 'Webhook triggers', 'Sub-agents', 'API nodes', 'REST APIs', 'Webhooks'],
+        category: 'Automation',
+        items: ['n8n', 'Workflow design', 'Webhook triggers', 'Multi-agent orchestration'],
       },
       {
-        category: 'AI / LLM Integration',
-        items: ['Claude API', 'OpenAI API', 'OpenRouter', 'Google Gemini', 'Ollama', 'Prompt engineering'],
+        category: 'CRM',
+        items: ['GoHighLevel', 'Pipelines', 'Workflows', 'Forms', 'Calendars', 'Custom objects', 'CRM automation'],
+      },
+      {
+        category: 'AI / LLM',
+        items: ['OpenAI API', 'OpenRouter', 'Claude', 'Google Gemini', 'Ollama', 'Prompt Engineering'],
       },
       {
         category: 'Programming',
-        items: ['Python', 'JavaScript', 'TypeScript', 'Java', 'C', 'React', 'HTML', 'CSS', 'Tailwind CSS'],
+        items: ['Python', 'JavaScript', 'TypeScript', 'Java', 'C', 'React JS', 'HTML', 'CSS', 'Tailwind CSS'],
       },
       {
         category: 'Databases',
@@ -664,28 +667,28 @@ export const portfolio = {
       },
       {
         category: 'Tools & Platforms',
-        items: ['Google Workspace', 'Gmail API', 'Calendar API', 'Sheets', 'Drive', 'Slack', 'Monday.com', 'Notion', 'Telegram', 'Git', 'GoHighLevel'],
+        items: ['Google Workspace', 'Slack', 'Monday.com', 'Notion', 'Telegram', 'Git'],
       },
     ],
     projects: [
       {
         id: 'cv-jarvis',
-        title: 'Jarvis AI Agent — Multi-Agent Automation System',
+        title: 'Jarvis AI Agent',
         year: '2025',
-        techStack: 'n8n, Claude API, OpenAI, Telegram, PostgreSQL, Google Workspace, ElevenLabs',
+        techStack: ['n8n', 'Telegram', 'PostgreSQL', 'ElevenLabs', 'OpenAI'],
         bullets: [
-          'Architected a multi-agent AI system on Telegram using n8n, orchestrating specialized sub-agents for Gmail (read, draft, send, summarize) and Google Calendar (create, update, delete events) via natural language commands.',
-          'Integrated Claude API for intelligent task routing, PostgreSQL for persistent conversation memory, Google Sheets for contact lookup, and ElevenLabs for voice responses — built entirely from scratch.',
+          'Orchestrated a multi-agent Telegram AI assistant using n8n, delegating tasks to specialized Email and Calendar sub-agents with persistent PostgreSQL memory.',
+          'Enabled natural language control over Gmail and Google Calendar, with web search and contact lookup via Google Sheets.',
         ],
         portfolioHref: '/#automation',
       },
       {
         id: 'cv-meeting',
-        title: 'Meeting Automation — Google Meet → Slack & Monday.com',
+        title: 'Meeting Automation - Google Meet to Slack & Monday.com',
         year: '2025',
-        techStack: 'n8n, OpenAI API, Google Drive, Slack API, Monday.com',
+        techStack: ['n8n', 'OpenAI API', 'Slack', 'Monday.com'],
         bullets: [
-          'Built a dual-pipeline n8n automation that processes Google Meet recordings automatically: one pipeline generates AI meeting summaries posted to Slack; the other extracts action items and creates Monday.com tasks — zero manual effort.',
+          'Built parallel AI pipelines that auto-process Meet recordings: one generates structured Slack summaries, the other extracts action items as Monday.com tasks.',
         ],
         portfolioHref: '/#automation',
       },
@@ -693,9 +696,9 @@ export const portfolio = {
         id: 'cv-bots',
         title: 'Sales Tracker & Receipt Processor Bots',
         year: '2025',
-        techStack: 'n8n, Telegram Bot API, OpenAI Vision, Google Sheets API, Google Drive API',
+        techStack: ['Telegram', 'OpenAI Vision', 'Google Sheets', 'Google Drive'],
         bullets: [
-          'Developed two production Telegram bots: one uses AI image recognition to digitize handwritten sales records and generate financial reports with CSV export; the other auto-extracts receipt data via AI vision and logs to Google Sheets and Drive.',
+          'Developed two Telegram bots - one using AI image recognition for handwritten sales records with financial reports and CSV export; the other auto-extracting receipt data to Google Sheets via AI vision.',
         ],
         portfolioHref: '/#automation',
       },
@@ -703,21 +706,20 @@ export const portfolio = {
         id: 'cv-academic-hub',
         title: 'OLFU Academic Hub',
         year: '2024',
-        techStack: 'React, TypeScript, Supabase, PostgreSQL, Google OAuth',
+        techStack: ['React', 'TypeScript', 'Supabase', 'Google OAuth'],
         bullets: [
-          'Built a full-stack academic platform from scratch with XP gamification, leaderboards, program rooms, and Google Sign-In restricted to school email domains.',
+          'Built a full-stack academic platform with XP gamification, leaderboards, program rooms, and Google Sign-In restricted to school email domains.',
         ],
         portfolioHref: '/work/academic-hub',
       },
       {
         id: 'cv-ghl-accounting-ops',
-        title: 'GHL AccountingOps — CRM + n8n Workflow System',
+        title: 'GoHighLevel AccountingOps CRM System',
         year: '2026',
-        techStack: 'GoHighLevel, n8n, OpenAI, Google Drive, Forms, CRM Pipelines, Opportunities, Custom Objects, Tasks, Email Automation, Webhooks, Telegram',
+        techStack: ['GoHighLevel', 'n8n', 'Webhooks', 'OpenAI', 'Google Drive', 'Telegram'],
         bullets: [
-          'Built a GoHighLevel CRM automation system for an accounting firm demo, including public request intake, discovery call booking, duplicate opportunity prevention, pipeline stage updates, contact and company status tracking, lead confirmation emails, owner tasks, and Telegram team alerts.',
-          'Integrated GoHighLevel with n8n and Google Drive for client operations: booked discovery calls and onboarding submissions trigger Drive folder setup, post-call notes route proposal/follow-up/not-fit decisions, and won deals/onboarding steps send client emails, document requests, staff tasks, and Telegram team notifications.',
-          'Built an AI document processing pipeline that detects file type, extracts structured data from images, PDFs, and spreadsheets, creates review requests or accounting transaction records, associates records to the correct company/document, and alerts the bookkeeper for review.',
+          'Built a GoHighLevel CRM and automation system for an accounting/bookkeeping operations workflow, including subaccount setup, staff configuration, calendars, opportunity pipelines, custom fields, forms, email snippets, and workflow automations.',
+          'Integrated GoHighLevel with n8n through webhooks to support AI-powered document intake, file processing, status updates, confidence scoring, and human review routing.',
         ],
         portfolioHref: '/#automation',
       },
@@ -759,15 +761,12 @@ export const portfolio = {
         date: '2025',
       },
     ],
-    experiencePlaceholder:
-      'Currently a student actively building real-world projects and seeking remote opportunities. Open to freelance, internship, or contract roles in AI automation and full-stack development.',
     downloadLabel: 'Download CV',
     downloadHref: '/Aian_Mhyco_Nunez_CV.pdf',
     backLabel: 'Back to portfolio',
     backHref: '/',
     sectionLabels: {
       summary: 'Professional Summary',
-      experience: 'Experience',
       skills: 'Technical Skills',
       projects: 'Projects',
       education: 'Education',
@@ -1021,7 +1020,7 @@ export const portfolio = {
       tags: ['GoHighLevel', 'CRM', 'Forms', 'Pipeline', 'Email', 'Telegram', 'Webhook'],
       image: imgGhlPublicRequestWorkflow,
       galleryImages: [imgGhlPublicRequestForm, imgGhlPublicRequestEmail],
-      databases: ['GoHighLevel Contacts', 'GoHighLevel Companies', 'GoHighLevel Opportunities'],
+      databases: ['GoHighLevel'],
       link: null,
     },
     {
@@ -1040,7 +1039,7 @@ export const portfolio = {
         imgGhlDiscoveryTelegramWorkflow,
         imgGhlDiscoveryDriveOutput,
       ],
-      databases: ['GoHighLevel Contacts', 'GoHighLevel Companies', 'GoHighLevel Opportunities', 'Google Drive'],
+      databases: ['GoHighLevel', 'Google Drive'],
       link: null,
     },
     {
@@ -1104,7 +1103,7 @@ export const portfolio = {
         imgGhlClientOnboardingTelegramWorkflow,
         imgGhlClientOnboardingDriveOutput,
       ],
-      databases: ['GoHighLevel Companies', 'Google Drive'],
+      databases: ['GoHighLevel', 'Google Drive'],
       link: null,
     },
     {
@@ -1123,7 +1122,18 @@ export const portfolio = {
         imgGhlAccountingTransactionWorkflow,
         imgGhlDocumentInternalNotificationWorkflow,
       ],
-      databases: ['GoHighLevel Documents', 'GoHighLevel Review Requests', 'GoHighLevel Accounting Transactions'],
+      databases: ['GoHighLevel'],
+      link: null,
+    },
+    {
+      id: 'ghl-monthly-close-command-center',
+      title: 'GHL Monthly Close Command Center',
+      categories: ['automation', 'crm', 'cron'],
+      description:
+        'A monthly n8n and GoHighLevel workflow for tracking bookkeeping close readiness across active clients. Every month, the automation gets all active companies, prepares the company data, and loops through each company one by one. For every company, it checks the linked monthly close records, creates a new monthly close when none exists, reuses the current-month record when it already exists, or creates a fresh record when the latest close belongs to a previous month. The workflow then gets the company documents, accounting transactions, and review requests, analyzes blockers such as missing documents, unresolved review requests, or incomplete accounting records, updates the monthly close status, creates a bookkeeper task, and sends an internal team notification.',
+      tags: ['GoHighLevel', 'CRM', 'n8n', 'Cron', 'Monthly Close', 'Custom Objects', 'Tasks', 'Telegram', 'Webhook'],
+      image: imgGhlMonthlyCloseWorkflow,
+      databases: ['GoHighLevel'],
       link: null,
     }
   ] satisfies readonly AutomationProject[],

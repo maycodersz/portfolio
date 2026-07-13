@@ -54,7 +54,7 @@ export function CvProfileCard() {
       </div>
 
       {/* Download CV */}
-      <Button variant="accent" size="sm" className="rounded-xl" asChild>
+      <Button variant="accent" size="sm" className="min-h-11 rounded-xl" asChild>
         <a href={cv.downloadHref} download>
           <span className="inline-flex items-center gap-2">
             <Download className="size-4 shrink-0" aria-hidden />

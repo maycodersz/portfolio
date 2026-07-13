@@ -3,7 +3,6 @@ import {
   Bell,
   BellRing,
   Box,
-  Briefcase,
   Cloud,
   Container,
   Database,
@@ -39,7 +38,6 @@ import {
  * Prefer adding slugs there for real brand glyphs on project/skills surfaces.
  */
 const LABEL_ICON: Record<string, LucideIcon> = {
-  'Go High Level': Briefcase,
   Webhooks: Webhook,
   'Local file attachments': HardDrive,
   'Reminders APIs': Bell,

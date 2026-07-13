@@ -47,7 +47,7 @@ function CategoryPills({
             type="button"
             onClick={() => onChange(id)}
             className={cn(
-              'flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors duration-150 sm:px-3.5 sm:py-1.5 sm:text-sm',
+              'flex min-h-11 items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-colors duration-150 sm:px-4 sm:text-sm',
               isActive
                 ? 'border-primary/30 bg-primary/15 text-accent-foreground'
                 : 'border-border bg-muted text-muted-foreground hover:border-primary/20 hover:bg-accent/60 hover:text-accent-foreground',
@@ -187,7 +187,7 @@ function FanCard({
         <h3 className="text-[clamp(0.8125rem,0.4rem+3.25cqw,1.125rem)] font-bold leading-tight tracking-tight text-foreground">
           {project.title}
         </h3>
-        <p className="text-[clamp(0.625rem,0.38rem+2.15cqw,0.8125rem)] leading-snug text-muted-foreground sm:leading-relaxed">
+        <p className="line-clamp-5 text-[clamp(0.625rem,0.38rem+2.15cqw,0.8125rem)] leading-snug text-muted-foreground sm:line-clamp-6 sm:leading-relaxed">
           {project.description}
         </p>
       </div>
@@ -205,10 +205,24 @@ function FanCard({
         transition: 'transform 420ms cubic-bezier(0.22,1,0.36,1), opacity 380ms ease-out',
       }}
       onClick={isCenter ? undefined : onClickSide}
+      onKeyDown={
+        isCenter
+          ? undefined
+          : (event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault()
+                onClickSide()
+              }
+            }
+      }
+      role={isCenter ? undefined : 'button'}
+      tabIndex={isCenter || slot === 'hidden' ? undefined : 0}
+      aria-label={isCenter ? undefined : `Show ${project.title}`}
     >
       {isCenter ? (
         <WithCursorFollow
           label={auto.viewWorkCursorLabel}
+          ariaLabel={`View ${project.title}`}
           onClick={onClickCenter}
           containerClassName="h-full min-w-0 w-full"
         >
@@ -267,7 +281,7 @@ function CardDeckCarousel({
   }
 
   return (
-    <div className="flex w-full max-w-[80vw] flex-col items-center gap-6 sm:max-w-[70vw] lg:max-w-none">
+    <div className="flex w-full max-w-[min(82vw,23rem)] flex-col items-center gap-5 sm:max-w-[min(70vw,25rem)] sm:gap-6 lg:max-w-none">
       {/* Fan stage with mobile arrows */}
       <div className="relative w-full">
         {/* Left arrow — mobile only */}
@@ -275,7 +289,7 @@ function CardDeckCarousel({
           type="button"
           onClick={goPrev}
           aria-label="Previous project"
-          className="absolute -left-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background/80 text-muted-foreground shadow-md backdrop-blur-sm transition-colors hover:text-foreground active:scale-90 sm:-left-5 lg:hidden"
+          className="absolute -left-3 top-1/2 z-20 flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background/80 text-muted-foreground shadow-md backdrop-blur-sm transition-colors hover:text-foreground active:scale-90 sm:-left-5 lg:hidden"
         >
           <ChevronLeft className="size-5" />
         </button>
@@ -285,7 +299,7 @@ function CardDeckCarousel({
           type="button"
           onClick={goNext}
           aria-label="Next project"
-          className="absolute -right-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background/80 text-muted-foreground shadow-md backdrop-blur-sm transition-colors hover:text-foreground active:scale-90 sm:-right-5 lg:hidden"
+          className="absolute -right-3 top-1/2 z-20 flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background/80 text-muted-foreground shadow-md backdrop-blur-sm transition-colors hover:text-foreground active:scale-90 sm:-right-5 lg:hidden"
         >
           <ChevronRight className="size-5" />
         </button>
@@ -347,7 +361,7 @@ function CardDeckCarousel({
         <Button
           variant="accent"
           size="sm"
-          className="lg:hidden"
+          className="min-h-11 lg:hidden"
           onClick={() => {
             const current = projects[active]
             if (current) openProject(current)

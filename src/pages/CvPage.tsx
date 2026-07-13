@@ -5,7 +5,6 @@ import { AppShell } from '@/components/AppShell'
 import { CvAwardsSection } from '@/components/cv/CvAwardsSection'
 import { CvCertificationsSection } from '@/components/cv/CvCertificationsSection'
 import { CvEducationSection } from '@/components/cv/CvEducationSection'
-import { CvExperienceSection } from '@/components/cv/CvExperienceSection'
 import { CvProfileCard } from '@/components/cv/CvProfileCard'
 import { CvProjectsSection } from '@/components/cv/CvProjectsSection'
 import { CvSkillsSection } from '@/components/cv/CvSkillsSection'
@@ -33,7 +32,7 @@ export default function CvPage() {
             <Button
               variant="accentSecondary"
               size="sm"
-              className="rounded-xl border border-border bg-background/90 shadow-md backdrop-blur-sm"
+              className="min-h-11 rounded-xl border border-border bg-background/90 shadow-md backdrop-blur-sm"
               asChild
             >
               <Link href={cv.backHref}>
@@ -52,7 +51,6 @@ export default function CvPage() {
             <div className="mx-auto max-w-6xl space-y-10">
               <CvProfileCard />
               <CvSummarySection />
-              <CvExperienceSection />
               <CvSkillsSection />
               <CvProjectsSection />
               <CvEducationSection />
@@ -64,20 +62,7 @@ export default function CvPage() {
 
         {/* ─── Desktop: Apple-style bento grid ────────────────────── */}
         {/*
-          Grid layout (2 columns):
-          ┌──────────────┬──────────────────────┐
-          │  Profile     │  Summary + Contact   │
-          │  Photo+Name  │                      │
-          ├──────────────┴──────────────────────┤
-          │        Technical Skills (full)       │
-          ├──────────────┬──────────────────────┤
-          │  Education   │  Experience          │
-          │  (timeline)  │  (placeholder)       │
-          ├──────────────┴──────────────────────┤
-          │        Projects (full, 2-col grid)   │
-          ├──────────────┬──────────────────────┤
-          │  Certs       │  Awards              │
-          └──────────────┴──────────────────────┘
+          Two-column bento layout with full-width skills, education, and projects.
         */}
         <div className="hidden lg:block">
           <div className="px-[10%] pb-24 pt-10">
@@ -102,12 +87,9 @@ export default function CvPage() {
                   <CvSkillsSection />
                 </div>
 
-                {/* Row 3: Education | Experience */}
-                <div>
-                  <CvEducationSection stretch />
-                </div>
-                <div>
-                  <CvExperienceSection stretch />
+                {/* Row 3: Education */}
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <CvEducationSection />
                 </div>
 
                 {/* Row 4: Projects (full width) */}

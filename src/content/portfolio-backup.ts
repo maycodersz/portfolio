@@ -36,6 +36,13 @@ import imgGhlClientOnboardingDocumentRequestEmail from '@/assets/projects/automa
 import imgGhlClientOnboardingForm from '@/assets/projects/automation/project-14.4.png'
 import imgGhlClientOnboardingTelegramWorkflow from '@/assets/projects/automation/project-14.5.png'
 import imgGhlClientOnboardingDriveOutput from '@/assets/projects/automation/project-14.6.png'
+import imgGhlDocumentCreatedWorkflow from '@/assets/projects/automation/project-15.1.png'
+import imgGhlDocumentProcessingWorkflow from '@/assets/projects/automation/project-15.2.png'
+import imgGhlImageDocumentExtractorWorkflow from '@/assets/projects/automation/project-15.3.png'
+import imgGhlTextDocumentExtractorWorkflow from '@/assets/projects/automation/project-15.4.png'
+import imgGhlReviewRequestWriterWorkflow from '@/assets/projects/automation/project-15.5.png'
+import imgGhlAccountingTransactionWorkflow from '@/assets/projects/automation/project-15.6.png'
+import imgGhlDocumentInternalNotificationWorkflow from '@/assets/projects/automation/project-15.7.png'
 import imgAcademicHubDesktop from '@/assets/projects/web/academic-hub/desktop.png'
 import imgAcademicHubPhone from '@/assets/projects/web/academic-hub/phone.png'
 import imgAcademicHubTablet from '@/assets/projects/web/academic-hub/tablet.png'
@@ -706,10 +713,11 @@ export const portfolio = {
         id: 'cv-ghl-accounting-ops',
         title: 'GHL AccountingOps — CRM + n8n Workflow System',
         year: '2026',
-        techStack: 'GoHighLevel, n8n, Google Drive, Forms, CRM Pipelines, Opportunities, Tasks, Email Automation, Webhooks, Telegram',
+        techStack: 'GoHighLevel, n8n, OpenAI, Google Drive, Forms, CRM Pipelines, Opportunities, Custom Objects, Tasks, Email Automation, Webhooks, Telegram',
         bullets: [
           'Built a GoHighLevel CRM automation system for an accounting firm demo, including public request intake, discovery call booking, duplicate opportunity prevention, pipeline stage updates, contact and company status tracking, lead confirmation emails, owner tasks, and Telegram team alerts.',
           'Integrated GoHighLevel with n8n and Google Drive for client operations: booked discovery calls and onboarding submissions trigger Drive folder setup, post-call notes route proposal/follow-up/not-fit decisions, and won deals/onboarding steps send client emails, document requests, staff tasks, and Telegram team notifications.',
+          'Built an AI document processing pipeline that detects file type, extracts structured data from images, PDFs, and spreadsheets, creates review requests or accounting transaction records, associates records to the correct company/document, and alerts the bookkeeper for review.',
         ],
         portfolioHref: '/#automation',
       },
@@ -1013,7 +1021,7 @@ export const portfolio = {
       tags: ['GoHighLevel', 'CRM', 'Forms', 'Pipeline', 'Email', 'Telegram', 'Webhook'],
       image: imgGhlPublicRequestWorkflow,
       galleryImages: [imgGhlPublicRequestForm, imgGhlPublicRequestEmail],
-      databases: ['GoHighLevel Contacts', 'GoHighLevel Companies', 'GoHighLevel Opportunities'],
+      databases: ['GoHighLevel'],
       link: null,
     },
     {
@@ -1032,7 +1040,7 @@ export const portfolio = {
         imgGhlDiscoveryTelegramWorkflow,
         imgGhlDiscoveryDriveOutput,
       ],
-      databases: ['GoHighLevel Contacts', 'GoHighLevel Companies', 'GoHighLevel Opportunities', 'Google Drive'],
+      databases: ['GoHighLevel', 'Google Drive'],
       link: null,
     },
     {
@@ -1096,7 +1104,26 @@ export const portfolio = {
         imgGhlClientOnboardingTelegramWorkflow,
         imgGhlClientOnboardingDriveOutput,
       ],
-      databases: ['GoHighLevel Companies', 'Google Drive'],
+      databases: ['GoHighLevel', 'Google Drive'],
+      link: null,
+    },
+    {
+      id: 'ghl-document-created-processor',
+      title: 'GHL Document Created Processor',
+      categories: ['ai', 'automation', 'crm'],
+      description:
+        'A GoHighLevel and n8n workflow for processing newly created client documents. When a document record is created in GoHighLevel, the workflow marks it as not reviewed and calls n8n to connect the document to the correct contact and company, add the needed associations, retrieve the uploaded file, and check the file extension. Images are routed to an AI image extractor, while PDFs and spreadsheets are routed to a text-based AI extractor. The extracted data is then used to create a review request when human review is needed or create an accounting transaction record when the document contains transaction data. The workflow finishes by associating the new records back to the document and company, creating a bookkeeper task, and sending an internal Telegram notification that the document is ready for review.',
+      tags: ['GoHighLevel', 'CRM', 'Documents', 'n8n', 'OpenAI', 'AI Extraction', 'Custom Objects', 'Tasks', 'Telegram', 'Webhook'],
+      image: imgGhlDocumentCreatedWorkflow,
+      galleryImages: [
+        imgGhlDocumentProcessingWorkflow,
+        imgGhlImageDocumentExtractorWorkflow,
+        imgGhlTextDocumentExtractorWorkflow,
+        imgGhlReviewRequestWriterWorkflow,
+        imgGhlAccountingTransactionWorkflow,
+        imgGhlDocumentInternalNotificationWorkflow,
+      ],
+      databases: ['GoHighLevel'],
       link: null,
     }
   ] satisfies readonly AutomationProject[],

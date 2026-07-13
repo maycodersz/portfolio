@@ -28,11 +28,6 @@ export function CursorFollowButton({
   className,
 }: CursorFollowButtonProps) {
   const isPointerFine = useIsPointerFine()
-  const prevRef = useRef({ x, y })
-
-  if (visible) prevRef.current = { x, y }
-  const { x: px, y: py } = prevRef.current
-
   if (!isPointerFine) return null
 
   return createPortal(
@@ -44,7 +39,7 @@ export function CursorFollowButton({
         visible ? 'scale-100 opacity-100' : 'scale-75 opacity-0',
         className,
       )}
-      style={{ left: px, top: py }}
+      style={{ left: x, top: y }}
     >
       <span
         className={cn(
@@ -84,6 +79,7 @@ type WithCursorFollowProps = {
   className?: string
   containerClassName?: string
   onClick?: () => void
+  ariaLabel?: string
 }
 
 export function WithCursorFollow({
@@ -92,6 +88,7 @@ export function WithCursorFollow({
   className,
   containerClassName,
   onClick,
+  ariaLabel,
 }: WithCursorFollowProps) {
   const ref = useRef<HTMLDivElement>(null)
   const isPointerFine = useIsPointerFine()
@@ -117,8 +114,20 @@ export function WithCursorFollow({
   return (
     <div
       ref={ref}
-      className={cn('group', isPointerFine && 'cursor-none', containerClassName)}
+      className={cn(
+        'group outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+        isPointerFine && 'cursor-none',
+        containerClassName,
+      )}
       onClick={onClick}
+      onKeyDown={(event) => {
+        if (!onClick || (event.key !== 'Enter' && event.key !== ' ')) return
+        event.preventDefault()
+        onClick()
+      }}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      aria-label={onClick ? (ariaLabel ?? label) : undefined}
     >
       {children}
       <CursorFollowButton {...cursor} label={label} className={className} />

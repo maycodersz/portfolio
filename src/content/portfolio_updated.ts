@@ -43,6 +43,7 @@ import imgGhlTextDocumentExtractorWorkflow from '@/assets/projects/automation/pr
 import imgGhlReviewRequestWriterWorkflow from '@/assets/projects/automation/project-15.5.png'
 import imgGhlAccountingTransactionWorkflow from '@/assets/projects/automation/project-15.6.png'
 import imgGhlDocumentInternalNotificationWorkflow from '@/assets/projects/automation/project-15.7.png'
+import imgGhlMonthlyCloseWorkflow from '@/assets/projects/automation/project-16.1.png'
 import imgAcademicHubDesktop from '@/assets/projects/web/academic-hub/desktop.png'
 import imgAcademicHubPhone from '@/assets/projects/web/academic-hub/phone.png'
 import imgAcademicHubTablet from '@/assets/projects/web/academic-hub/tablet.png'
@@ -718,6 +719,7 @@ export const portfolio = {
           'Built a GoHighLevel CRM automation system for an accounting firm demo, including public request intake, discovery call booking, duplicate opportunity prevention, pipeline stage updates, contact and company status tracking, lead confirmation emails, owner tasks, and Telegram team alerts.',
           'Integrated GoHighLevel with n8n and Google Drive for client operations: booked discovery calls and onboarding submissions trigger Drive folder setup, post-call notes route proposal/follow-up/not-fit decisions, and won deals/onboarding steps send client emails, document requests, staff tasks, and Telegram team notifications.',
           'Built an AI document processing pipeline that detects file type, extracts structured data from images, PDFs, and spreadsheets, creates review requests or accounting transaction records, associates records to the correct company/document, and alerts the bookkeeper for review.',
+          'Built a monthly close automation that runs every month, loops through active companies, creates or reuses the correct monthly close record, reviews linked documents, accounting transactions, and review requests for blockers, updates the close status, and creates bookkeeper tasks with internal team notifications.',
         ],
         portfolioHref: '/#automation',
       },
@@ -1021,7 +1023,7 @@ export const portfolio = {
       tags: ['GoHighLevel', 'CRM', 'Forms', 'Pipeline', 'Email', 'Telegram', 'Webhook'],
       image: imgGhlPublicRequestWorkflow,
       galleryImages: [imgGhlPublicRequestForm, imgGhlPublicRequestEmail],
-      databases: ['GoHighLevel Contacts', 'GoHighLevel Companies', 'GoHighLevel Opportunities'],
+      databases: ['GoHighLevel'],
       link: null,
     },
     {
@@ -1040,7 +1042,7 @@ export const portfolio = {
         imgGhlDiscoveryTelegramWorkflow,
         imgGhlDiscoveryDriveOutput,
       ],
-      databases: ['GoHighLevel Contacts', 'GoHighLevel Companies', 'GoHighLevel Opportunities', 'Google Drive'],
+      databases: ['GoHighLevel', 'Google Drive'],
       link: null,
     },
     {
@@ -1104,7 +1106,7 @@ export const portfolio = {
         imgGhlClientOnboardingTelegramWorkflow,
         imgGhlClientOnboardingDriveOutput,
       ],
-      databases: ['GoHighLevel Companies', 'Google Drive'],
+      databases: ['GoHighLevel', 'Google Drive'],
       link: null,
     },
     {
@@ -1123,7 +1125,18 @@ export const portfolio = {
         imgGhlAccountingTransactionWorkflow,
         imgGhlDocumentInternalNotificationWorkflow,
       ],
-      databases: ['GoHighLevel Documents', 'GoHighLevel Review Requests', 'GoHighLevel Accounting Transactions'],
+      databases: ['GoHighLevel'],
+      link: null,
+    },
+    {
+      id: 'ghl-monthly-close-command-center',
+      title: 'GHL Monthly Close Command Center',
+      categories: ['automation', 'crm', 'cron'],
+      description:
+        'A monthly n8n and GoHighLevel workflow for tracking bookkeeping close readiness across active clients. Every month, the automation gets all active companies, prepares the company data, and loops through each company one by one. For every company, it checks the linked monthly close records, creates a new monthly close when none exists, reuses the current-month record when it already exists, or creates a fresh record when the latest close belongs to a previous month. The workflow then gets the company documents, accounting transactions, and review requests, analyzes blockers such as missing documents, unresolved review requests, or incomplete accounting records, updates the monthly close status, creates a bookkeeper task, and sends an internal team notification.',
+      tags: ['GoHighLevel', 'CRM', 'n8n', 'Cron', 'Monthly Close', 'Custom Objects', 'Tasks', 'Telegram', 'Webhook'],
+      image: imgGhlMonthlyCloseWorkflow,
+      databases: ['GoHighLevel'],
       link: null,
     }
   ] satisfies readonly AutomationProject[],

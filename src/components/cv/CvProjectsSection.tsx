@@ -1,5 +1,6 @@
 import { ArrowUpRight } from 'lucide-react'
 
+import { BrandSkillLogo } from '@/components/BrandSkillLogo'
 import { CvSectionShell } from '@/components/cv/CvSectionShell'
 import { Button } from '@/components/ui/button'
 import Link from '@/components/ui/link'
@@ -30,9 +31,17 @@ export function CvProjectsSection({ stretch }: { stretch?: boolean }) {
             </div>
 
             {/* Tech stack */}
-            <p className="mt-1 text-xs text-muted-foreground/80">
-              {project.techStack}
-            </p>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {project.techStack.map((technology) => (
+                <span
+                  key={technology}
+                  className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background/60 px-2 py-1 text-[11px] font-medium text-muted-foreground"
+                >
+                  <BrandSkillLogo label={technology} variant="techPill" />
+                  {technology}
+                </span>
+              ))}
+            </div>
 
             {/* Bullets */}
             <ul className="mt-3 space-y-1.5">
