@@ -18,9 +18,7 @@ import imgGhlDiscoveryWorkflow from '@/assets/projects/automation/project-10.1.p
 import imgGhlDiscoveryBookingForm from '@/assets/projects/automation/project-10.2.png'
 import imgGhlDiscoveryCalendar from '@/assets/projects/automation/project-10.3.png'
 import imgGhlDiscoveryEmail from '@/assets/projects/automation/project-10.4.png'
-import imgGhlDiscoveryClientFolderWorkflow from '@/assets/projects/automation/project-10.5.png'
-import imgGhlDiscoveryTelegramWorkflow from '@/assets/projects/automation/project-10.6.png'
-import imgGhlDiscoveryDriveOutput from '@/assets/projects/automation/project-10.7.png'
+import imgGhlDiscoveryTelegram from '@/assets/projects/automation/project-10.5.png'
 import imgGhlDiscoveryCompletedWorkflow from '@/assets/projects/automation/project-11.1.png'
 import imgGhlDiscoveryCompletedPipeline from '@/assets/projects/automation/project-11.2.png'
 import imgGhlDiscoveryCompletedTelegramWorkflow from '@/assets/projects/automation/project-11.3.png'
@@ -1028,18 +1026,16 @@ export const portfolio = {
       title: 'GHL Discovery Call Booked',
       categories: ['automation', 'crm'],
       description:
-        'A GoHighLevel CRM workflow for booked discovery calls. When a lead books through the calendar and submits the booking form, the automation checks whether an existing opportunity already exists from the public request form. If found, it updates the opportunity to the Discovery Call Booked stage; if not, it creates a new direct-booking opportunity and tags the contact accordingly. The workflow then updates the contact and company status, sends a confirmation email, creates a preparation task for the firm owner, and calls an n8n workflow to create the client Google Drive folder structure, update the company Drive link, create accounting subfolders, and notify the owner through Telegram.',
-      tags: ['GoHighLevel', 'CRM', 'Calendar', 'Forms', 'Pipeline', 'Email', 'n8n', 'Google Drive', 'Telegram'],
+        'A GoHighLevel CRM workflow for booked discovery calls. When a lead books a discovery call and submits the calendar form, the automation creates or updates the opportunity in the Discovery Call Booked stage, updates the contact and company status, and applies the correct contact tag. It then sends a confirmation email, creates a preparation task for the firm owner, and calls a webhook to notify the team that a discovery call was booked.',
+      tags: ['GoHighLevel', 'CRM', 'Calendar', 'Forms', 'Pipeline', 'Email', 'Tasks', 'Webhook', 'Telegram'],
       image: imgGhlDiscoveryWorkflow,
       galleryImages: [
         imgGhlDiscoveryBookingForm,
         imgGhlDiscoveryCalendar,
         imgGhlDiscoveryEmail,
-        imgGhlDiscoveryClientFolderWorkflow,
-        imgGhlDiscoveryTelegramWorkflow,
-        imgGhlDiscoveryDriveOutput,
+        imgGhlDiscoveryTelegram
       ],
-      databases: ['GoHighLevel', 'Google Drive'],
+      databases: ['GoHighLevel'],
       link: null,
     },
     {
