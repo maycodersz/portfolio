@@ -73,7 +73,7 @@ export function VisitorPresenceProvider({ children }: { children: ReactNode }) {
 
       const visitorId = getVisitorId()
       const channel = client.channel(TOPIC, {
-        config: { private: true, presence: { key: visitorId } },
+        config: { private: true, presence: { key: visitorId, enabled: true } },
       })
       channelRef.current = channel
 

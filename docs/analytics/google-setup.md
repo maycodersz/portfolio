@@ -81,7 +81,7 @@ npx supabase link --project-ref YOUR_PROJECT_REF
 npx supabase db push
 ```
 
-12. Confirm the two `realtime.messages` policies exist and are restricted to the `site:portfolio:presence` topic, the `presence` extension, and anonymous authenticated users.
+12. Confirm the two `realtime.messages` policies exist and are restricted to anonymous authenticated users on the `site:portfolio:presence` topic. Presence writes must remain Presence-only; the read policy also permits Broadcast reads because the private Realtime join performs that read check, while Broadcast writes remain denied.
 
 No visitor-log table is created. Presence metadata disappears when the visitor disconnects.
 

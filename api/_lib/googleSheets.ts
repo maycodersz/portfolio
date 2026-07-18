@@ -8,6 +8,7 @@ const API_ROOT = 'https://sheets.googleapis.com/v4/spreadsheets'
 const EVENTS_RANGE = 'Events!A2:Q100000'
 const VISITORS_RANGE = 'Visitors!A2:O100000'
 const EVENT_ID_INDEX = 16
+export const SHEETS_APPEND_INSERT_DATA_OPTION = 'OVERWRITE' as const
 
 type ServerFields = {
   city: string
@@ -140,7 +141,7 @@ async function appendRow(env: AnalyticsEnv, token: string, range: string, row: C
   const response = await request(
     env,
     token,
-    `values/${encodeURIComponent(range)}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`,
+    `values/${encodeURIComponent(range)}:append?valueInputOption=RAW&insertDataOption=${SHEETS_APPEND_INSERT_DATA_OPTION}`,
     { method: 'POST', body: JSON.stringify({ majorDimension: 'ROWS', values: [row] }) },
   )
   return response.ok

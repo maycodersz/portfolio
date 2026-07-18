@@ -14,6 +14,7 @@ export async function ingest(request: Request, schema: PayloadSchema, kind: 'vis
   try {
     env = analyticsEnv()
   } catch {
+    console.error('analytics_ingest_unavailable', { stage: 'environment', kind })
     return jsonResponse({ accepted: false, reason: 'unavailable' }, 503)
   }
   const headerError = validateRequestHeaders(request, env)
@@ -37,6 +38,7 @@ export async function ingest(request: Request, schema: PayloadSchema, kind: 'vis
       return jsonResponse({ accepted: true, duplicate: true }, 202)
     }
   } catch {
+    console.error('analytics_ingest_unavailable', { stage: 'rate-limit', kind })
     return jsonResponse({ accepted: false, reason: 'unavailable' }, 503)
   }
 
@@ -50,6 +52,7 @@ export async function ingest(request: Request, schema: PayloadSchema, kind: 'vis
   }) as AnalyticsEnvelope
 
   if (!(await writeAnalyticsToGoogleSheets(env, envelope))) {
+    console.error('analytics_ingest_unavailable', { stage: 'google-sheets', kind })
     await redis.del(`portfolio:event:${payload.eventId}`).catch(() => undefined)
     return jsonResponse({ accepted: false, reason: 'unavailable' }, 503)
   }

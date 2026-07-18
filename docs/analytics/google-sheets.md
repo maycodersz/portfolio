@@ -48,10 +48,10 @@ Create a `Dashboard` tab. These formulas scan at most 100,000 rows and exclude b
 
 ```gs
 Unique visitors today
-=IFERROR(COUNTUNIQUE(FILTER(Events!B2:B100000,LEFT(Events!A2:A100000,10)=TEXT(TODAY(),"yyyy-mm-dd"),Events!P2:P100000<>TRUE)),0)
+=IFERROR(COUNTUNIQUE(FILTER(Events!B2:B100000,Events!B2:B100000<>"",LEFT(Events!A2:A100000,10)=TEXT(TODAY(),"yyyy-mm-dd"),Events!P2:P100000<>TRUE)),0)
 
 Unique visitors this week
-=IFERROR(COUNTUNIQUE(FILTER(Events!B2:B100000,DATEVALUE(LEFT(Events!A2:A100000,10))>=TODAY()-WEEKDAY(TODAY(),2)+1,Events!P2:P100000<>TRUE)),0)
+=IFERROR(COUNTUNIQUE(FILTER(Events!B2:B100000,Events!B2:B100000<>"",LEFT(Events!A2:A100000,10)>=TEXT(TODAY()-WEEKDAY(TODAY(),2)+1,"yyyy-mm-dd"),Events!P2:P100000<>TRUE)),0)
 
 Page views today
 =COUNTIFS(Events!D2:D100000,"visit",Events!A2:A100000,TEXT(TODAY(),"yyyy-mm-dd")&"*",Events!P2:P100000,"<>TRUE")
@@ -60,16 +60,16 @@ Clicks today
 =COUNTIFS(Events!D2:D100000,"event",Events!A2:A100000,TEXT(TODAY(),"yyyy-mm-dd")&"*",Events!P2:P100000,"<>TRUE")
 
 Top pages
-=QUERY(FILTER(Events!E2:E100000,Events!P2:P100000<>TRUE),"select Col1,count(Col1) where Col1 is not null group by Col1 order by count(Col1) desc limit 10",0)
+=IFERROR(LET(r,FILTER(Events!E2:E100000,Events!E2:E100000<>"",Events!P2:P100000<>TRUE),u,UNIQUE(r),SORTN({u,MAP(u,LAMBDA(x,COUNTIF(r,x)))},10,0,2,FALSE)),{"",0})
 
 Top sources
-=QUERY(FILTER(Events!M2:M100000,Events!P2:P100000<>TRUE),"select Col1,count(Col1) where Col1 is not null group by Col1 order by count(Col1) desc limit 10",0)
+=IFERROR(LET(r,FILTER(Events!M2:M100000,Events!M2:M100000<>"",Events!P2:P100000<>TRUE),u,UNIQUE(r),SORTN({u,MAP(u,LAMBDA(x,COUNTIF(r,x)))},10,0,2,FALSE)),{"",0})
 
 Top countries
-=QUERY(FILTER(Events!L2:L100000,Events!P2:P100000<>TRUE),"select Col1,count(Col1) where Col1 is not null group by Col1 order by count(Col1) desc limit 10",0)
+=IFERROR(LET(r,FILTER(Events!L2:L100000,Events!L2:L100000<>"",Events!P2:P100000<>TRUE),u,UNIQUE(r),SORTN({u,MAP(u,LAMBDA(x,COUNTIF(r,x)))},10,0,2,FALSE)),{"",0})
 
 Top CTA labels
-=QUERY(FILTER(Events!G2:G100000,Events!P2:P100000<>TRUE),"select Col1,count(Col1) where Col1 is not null group by Col1 order by count(Col1) desc limit 10",0)
+=IFERROR(LET(r,FILTER(Events!G2:G100000,Events!G2:G100000<>"",Events!P2:P100000<>TRUE),u,UNIQUE(r),SORTN({u,MAP(u,LAMBDA(x,COUNTIF(r,x)))},10,0,2,FALSE)),{"",0})
 ```
 
-The API writes with `valueInputOption=RAW`, validates every field, formula-escapes text, and checks the Event ID before retrying an ambiguous append.
+The API writes with `valueInputOption=RAW` and `insertDataOption=OVERWRITE` so appends do not insert grid rows or shift Dashboard references. It validates every field, formula-escapes text, and checks the Event ID before retrying an ambiguous append.

@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
 
-import { eventRow, visitorRow, type AnalyticsEnvelope } from '../api/_lib/googleSheets.js'
+import {
+  eventRow,
+  SHEETS_APPEND_INSERT_DATA_OPTION,
+  visitorRow,
+  type AnalyticsEnvelope,
+} from '../api/_lib/googleSheets.js'
 
 const visit: AnalyticsEnvelope = {
   type: 'visit',
@@ -22,6 +27,10 @@ const visit: AnalyticsEnvelope = {
 }
 
 describe('Google Sheets row mapping', () => {
+  it('appends without inserting grid rows that shift Dashboard formulas', () => {
+    expect(SHEETS_APPEND_INSERT_DATA_OPTION).toBe('OVERWRITE')
+  })
+
   it('maps an event to the minimal 17-column contract', () => {
     const row = eventRow(visit)
     expect(row).toHaveLength(17)
