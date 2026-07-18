@@ -9,9 +9,7 @@ import {
   TabletFrame,
 } from '@/components/device/DeviceFrames'
 import { type Project, portfolio } from '@/content/portfolio'
-import { useRevealOnView } from '@/hooks/useRevealOnView'
-import { useSectionAnimState } from '@/hooks/useSectionAnimState'
-import { useScrollDirection } from '@/hooks/useScrollDirection'
+import { useSectionReveal } from '@/hooks/useSectionReveal'
 import { cn } from '@/utils/cn'
 
 /* ─── Device stage layouts ───────────────────────────────────────────────── */
@@ -93,14 +91,14 @@ function MobileDeviceStage({
 /* ─── Single project card ────────────────────────────────────────────────── */
 
 function ProjectCard({ project }: { project: Project }) {
-  const scrollDir = useScrollDirection()
-  const suppress = scrollDir === 'up'
-  const [sectionRef, visible, revealKey] = useRevealOnView<HTMLElement>({
+  const {
+    ref: sectionRef,
+    isVisible: visible,
+    revealKey,
+    shouldAnimate: canAnimate,
+  } = useSectionReveal<HTMLElement>({
     threshold: 0.1,
-    suppress,
   })
-  const animState = useSectionAnimState(visible, scrollDir)
-  const canAnimate = animState === 'animating'
   const navigate = useNavigate()
   const { devicePreviewAlt, metaDurationLabel, metaProjectTypeLabel, viewWorkCursorLabel } =
     portfolio.works
@@ -132,6 +130,8 @@ function ProjectCard({ project }: { project: Project }) {
           containerClassName="flex min-h-0 flex-1 flex-col justify-center"
           label={viewWorkCursorLabel}
           onClick={goWork}
+          analyticsEvent="project_card_click"
+          analyticsLabel={project.title}
         >
           {isMobile ? (
             <MobileDeviceStage
@@ -156,6 +156,8 @@ function ProjectCard({ project }: { project: Project }) {
         <div className="w-full shrink-0 space-y-2 py-4 md:pt-10 lg:py-12">
           <div
             role="button"
+            data-analytics-event="project_card_click"
+            data-analytics-label={project.title}
             tabIndex={0}
             onClick={goWork}
             onKeyDown={(e) => {

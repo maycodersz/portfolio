@@ -8,11 +8,8 @@ import profileLightImg from '@/assets/hero/profile-light.png'
 import { Button } from '@/components/ui/button'
 import Link from '@/components/ui/link'
 import { portfolio, type HeroCta } from '@/content/portfolio'
-import { useIsMobileViewport } from '@/hooks/useIsMobileViewport'
 import { useIsPointerFine } from '@/hooks/useIsPointerFine'
-import { useRevealOnView } from '@/hooks/useRevealOnView'
-import { useSectionAnimState } from '@/hooks/useSectionAnimState'
-import { useScrollDirection } from '@/hooks/useScrollDirection'
+import { useSectionReveal } from '@/hooks/useSectionReveal'
 import { cn } from '@/utils/cn'
 
 const { hero } = portfolio
@@ -27,13 +24,13 @@ function HeroCtaRow({ actions }: { actions: readonly HeroCta[] }) {
           case 'secondary':
             return (
               <Button key={action.id} asChild variant="secondary" size="default">
-                <Link href={action.href}>{action.label}</Link>
+                <Link href={action.href} data-analytics-event="hero_cta_click" data-analytics-label={action.label}>{action.label}</Link>
               </Button>
             )
           case 'main':
             return (
               <Button key={action.id} asChild variant="accent" size="default">
-                <Link href={action.href}>{action.label}</Link>
+                <Link href={action.href} data-analytics-event="hero_cta_click" data-analytics-label={action.label}>{action.label}</Link>
               </Button>
             )
           default: {
@@ -58,10 +55,6 @@ function RollingHeroHeading({
   sectionInView: boolean
 }) {
   const [index, setIndex] = useState(0)
-
-  useEffect(() => {
-    if (sectionInView) setIndex(0)
-  }, [sectionInView])
 
   useEffect(() => {
     if (!sectionInView || rotatingTitles.length === 0) return
@@ -242,18 +235,16 @@ function HeroProfileStage() {
 /* ── Section ─────────────────────────────────────────────────────────────── */
 
 export function HeroSplineSection() {
-  const mobile = useIsMobileViewport()
-  const scrollDir = useScrollDirection()
-  const suppress = scrollDir === 'up'
-
-  const [heroRef, heroInView, heroPlayKey] = useRevealOnView<HTMLElement>({
+  const {
+    ref: heroRef,
+    isVisible: heroVisible,
+    shouldAnimate: canAnim,
+    revealKey: heroPlayKey,
+  } = useSectionReveal<HTMLElement>({
     threshold: 0.14,
     rootMargin: '0px 0px -12% 0px',
-    replayOnReenter: !mobile,
-    suppress,
+    resetOnCycle: false,
   })
-  const animState = useSectionAnimState(heroInView, scrollDir)
-  const canAnim = animState === 'animating'
 
   const isPointerFine = useIsPointerFine()
 
@@ -314,20 +305,20 @@ export function HeroSplineSection() {
           <div
             className={cn(
               'motion-reduce:animate-none',
-              canAnim ? 'animate-stats-headline-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
+              canAnim ? 'animate-stats-headline-in' : heroVisible ? 'opacity-100' : 'opacity-0',
             )}
           >
             <RollingHeroHeading
               before={hero.headlineBefore}
               rotatingTitles={hero.rotatingTitles}
-              sectionInView={heroInView}
+              sectionInView={heroVisible}
             />
           </div>
 
           <p
             className={cn(
               'mt-4 max-w-xl text-base leading-relaxed text-muted-foreground motion-reduce:animate-none sm:text-xl',
-              canAnim ? 'animate-stats-support-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
+              canAnim ? 'animate-stats-support-in' : heroVisible ? 'opacity-100' : 'opacity-0',
             )}
             style={{ animationDelay: canAnim ? '0.48s' : undefined }}
           >
@@ -337,7 +328,7 @@ export function HeroSplineSection() {
           <div
             className={cn(
               'motion-reduce:animate-none',
-              canAnim ? 'animate-stats-support-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
+              canAnim ? 'animate-stats-support-in' : heroVisible ? 'opacity-100' : 'opacity-0',
             )}
             style={{ animationDelay: canAnim ? '0.72s' : undefined }}
           >

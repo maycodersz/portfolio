@@ -1,3 +1,5 @@
+/* Count-up state is intentionally synchronized to the reveal-cycle activation flag. */
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useRef, useState } from 'react'
 
 export interface UseCountUpOptions {

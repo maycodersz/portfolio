@@ -71,6 +71,8 @@ function DesktopNavLinks({ items, locationHash }: DesktopNavProps) {
             href={item.href}
             className={cn(navLinkBase, active && navLinkActiveClass)}
             aria-current={active ? 'page' : undefined}
+            data-analytics-event="navigation_click"
+            data-analytics-label={item.label}
           >
             {item.label}
           </Link>
@@ -99,7 +101,11 @@ function DesktopNavTrailing({ items }: { items: ReadonlyArray<NavbarItem> }) {
                 size="sm"
                 className={navCtaButtonClass}
               >
-                <Link href={item.href}>{item.label}</Link>
+                <Link
+                  href={item.href}
+                  data-analytics-event="navigation_cta_click"
+                  data-analytics-label={item.label}
+                >{item.label}</Link>
               </Button>
             ))}
           </div>
@@ -170,11 +176,13 @@ function MobileNav({ items, onNavigate, locationHash }: MobileNavProps) {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.1 + 0.05 }}
           >
-            <Link
+              <Link
               href={item.href}
               className={cn(navLinkMobileClass, active && navLinkActiveClass)}
               onClick={onNavigate}
-              aria-current={active ? 'page' : undefined}
+                aria-current={active ? 'page' : undefined}
+                data-analytics-event="navigation_click"
+                data-analytics-label={item.label}
             >
               {item.label}
             </Link>
@@ -199,7 +207,12 @@ function MobileNav({ items, onNavigate, locationHash }: MobileNavProps) {
                 size="sm"
                 className="w-full rounded-xl py-2.5 text-sm font-semibold leading-tight"
               >
-                <Link href={item.href} onClick={onNavigate}>
+                <Link
+                  href={item.href}
+                  onClick={onNavigate}
+                  data-analytics-event="navigation_cta_click"
+                  data-analytics-label={item.label}
+                >
                   {item.label}
                 </Link>
               </Button>
@@ -257,7 +270,12 @@ export default function NavBar({
             whileHover={{ scale: 1.03 }}
             className="shrink-0 md:justify-self-start"
           >
-            <Link href={brandHref} className={brandClass}>
+            <Link
+              href={brandHref}
+              className={brandClass}
+              data-analytics-event="navigation_click"
+              data-analytics-label={brandName}
+            >
               {brandName}
             </Link>
           </motion.div>

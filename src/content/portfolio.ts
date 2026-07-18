@@ -332,6 +332,7 @@ export const portfolio = {
     items: [
       { id: 'nav-cv', label: 'CV', href: '/cv', kind: 'link' },
       { id: 'nav-work', label: 'Work', href: '/#works', kind: 'link' },
+      { id: 'nav-contact', label: 'Contact', href: '/#contact', kind: 'link' },
       { id: 'nav-hire', label: 'Hire Me', href: '/#contact', kind: 'cta' },
     ] as const satisfies Readonly<NavbarItem[]>,
   },
@@ -566,11 +567,11 @@ export const portfolio = {
     carouselViewportHeightPx: 340,
     viewWorkCursorLabel: 'View Work',
     categoryFilters: [
+      { id: 'all', label: 'All' },
       { id: 'crm', label: 'CRM' },
       { id: 'ai', label: 'AI' },
       { id: 'cron', label: 'Cron' },
       { id: 'automation', label: 'Automation' },
-      { id: 'all', label: 'All' },
     ] as const satisfies Readonly<AutomationCategoryFilter[]>,
     carouselAria: {
       previous: 'Previous',

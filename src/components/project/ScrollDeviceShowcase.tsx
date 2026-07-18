@@ -106,7 +106,7 @@ export function ScrollDeviceShowcase({
   }, [readProgressAndIndex])
 
   useEffect(() => {
-    syncIndexFromScroll()
+    const initialFrame = window.requestAnimationFrame(syncIndexFromScroll)
     window.addEventListener('scroll', syncIndexFromScroll, { passive: true })
     window.addEventListener('resize', syncIndexFromScroll, { passive: true })
     const el = scrollRef.current
@@ -118,6 +118,7 @@ export function ScrollDeviceShowcase({
       ro.observe(el)
     }
     return () => {
+      window.cancelAnimationFrame(initialFrame)
       window.removeEventListener('scroll', syncIndexFromScroll)
       window.removeEventListener('resize', syncIndexFromScroll)
       ro?.disconnect()

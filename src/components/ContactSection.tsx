@@ -14,6 +14,8 @@ import {
 } from 'react-icons/si'
 
 import { Button } from '@/components/ui/button'
+import Link from '@/components/ui/link'
+import { useAnalytics } from '@/analytics/AnalyticsContext'
 import {
   Dialog,
   DialogContent,
@@ -28,9 +30,7 @@ import {
   type ContactSocialPlatform,
   portfolio,
 } from '@/content/portfolio'
-import { useRevealOnView } from '@/hooks/useRevealOnView'
-import { useSectionAnimState } from '@/hooks/useSectionAnimState'
-import { useScrollDirection } from '@/hooks/useScrollDirection'
+import { useSectionReveal } from '@/hooks/useSectionReveal'
 import { cn } from '@/utils/cn'
 import {
   checkContactRateLimit,
@@ -117,15 +117,11 @@ const initialForm: FormState = {
 }
 
 export function ContactSection() {
-  const scrollDir = useScrollDirection()
-  const suppress = scrollDir === 'up'
-  const [sectionRef, isInView] = useRevealOnView<HTMLElement>({
+  const { trackEvent } = useAnalytics()
+  const { ref: sectionRef, isVisible, shouldAnimate: canAnim } = useSectionReveal<HTMLElement>({
     threshold: 0.14,
     rootMargin: '0px 0px -12% 0px',
-    suppress,
   })
-  const animState = useSectionAnimState(isInView, scrollDir)
-  const canAnim = animState === 'animating'
 
   const [form, setForm] = useState<FormState>(initialForm)
   const [sending, setSending] = useState(false)
@@ -182,6 +178,10 @@ export function ContactSection() {
       const json = (await res.json()) as SplitFormsResponse
       if (!res.ok || !json.success) throw new Error(json.message ?? 'SplitForms responded with an error')
       recordContactSubmission()
+      trackEvent({
+        eventName: 'contact_form_success',
+        clickLabel: 'Successful contact submission',
+      })
       setSuccessOpen(true)
     } catch {
       setErrorDetail(null)
@@ -229,7 +229,7 @@ export function ContactSection() {
               <p
                 className={cn(
                   'text-[11px] font-bold uppercase tracking-[0.38em] text-accent-foreground motion-reduce:animate-none',
-                  canAnim ? 'animate-stats-eyebrow-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
+                  canAnim ? 'animate-stats-eyebrow-in' : isVisible ? 'opacity-100' : 'opacity-0',
                 )}
               >
                 {c.eyebrow}
@@ -238,7 +238,7 @@ export function ContactSection() {
               <h2
                 className={cn(
                   'text-gradient-brand px-px py-px text-[clamp(2.5rem,5vw,3.75rem)] font-extrabold leading-[1.1] tracking-[-0.04em] motion-reduce:animate-none',
-                  canAnim ? 'animate-stats-headline-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
+                  canAnim ? 'animate-stats-headline-in' : isVisible ? 'opacity-100' : 'opacity-0',
                 )}
                 style={{ animationDelay: canAnim ? '0.12s' : undefined }}
               >
@@ -248,7 +248,7 @@ export function ContactSection() {
               <p
                 className={cn(
                   'text-sm leading-relaxed text-muted-foreground motion-reduce:animate-none sm:text-[15px]',
-                  canAnim ? 'animate-stats-support-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
+                  canAnim ? 'animate-stats-support-in' : isVisible ? 'opacity-100' : 'opacity-0',
                 )}
                 style={{ animationDelay: canAnim ? '0.36s' : undefined }}
               >
@@ -258,7 +258,7 @@ export function ContactSection() {
               <form
                 className={cn(
                   'flex flex-col gap-4 motion-reduce:animate-none',
-                  canAnim ? 'animate-stats-support-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
+                  canAnim ? 'animate-stats-support-in' : isVisible ? 'opacity-100' : 'opacity-0',
                 )}
                 style={{ animationDelay: canAnim ? '0.52s' : undefined }}
                 onSubmit={handleSubmit}
@@ -363,7 +363,7 @@ export function ContactSection() {
             <div
               className={cn(
                 'flex w-full min-w-0 flex-col gap-8 lg:max-w-md motion-reduce:animate-none',
-                canAnim ? 'animate-stats-support-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
+                canAnim ? 'animate-stats-support-in' : isVisible ? 'opacity-100' : 'opacity-0',
               )}
               style={{ animationDelay: canAnim ? '0.68s' : undefined }}
             >
@@ -378,6 +378,8 @@ export function ContactSection() {
                       href={m.href}
                       target="_blank"
                       rel="noopener noreferrer"
+                      data-analytics-event="contact_method_click"
+                      data-analytics-label={m.label}
                       className={cn(
                         'flex items-center gap-4 rounded-2xl border border-border bg-background p-4 transition-all duration-300',
                         'hover:-translate-y-1 hover:shadow-[0_8px_28px_-12px_var(--brand-shadow-glow)]',
@@ -410,6 +412,8 @@ export function ContactSection() {
                       href={s.href}
                       target="_blank"
                       rel="noopener noreferrer"
+                      data-analytics-event="social_link_click"
+                      data-analytics-label={s.label}
                       className={cn(
                         'flex flex-col items-center gap-2 rounded-2xl border border-border bg-background p-4 transition-all duration-300',
                         'hover:-translate-y-1 hover:shadow-[0_8px_28px_-12px_var(--brand-shadow-glow)]',
@@ -423,6 +427,12 @@ export function ContactSection() {
                   ))}
                 </div>
               </div>
+              <Link
+                href="/privacy"
+                className="text-xs font-semibold text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground"
+              >
+                Privacy and analytics
+              </Link>
             </div>
           </div>
         </div>

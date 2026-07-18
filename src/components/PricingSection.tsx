@@ -2,9 +2,7 @@ import { Check } from 'lucide-react'
 
 import Link from '@/components/ui/link'
 import { type PricingPlan, portfolio } from '@/content/portfolio'
-import { useRevealOnView } from '@/hooks/useRevealOnView'
-import { useSectionAnimState } from '@/hooks/useSectionAnimState'
-import { useScrollDirection } from '@/hooks/useScrollDirection'
+import { useSectionReveal } from '@/hooks/useSectionReveal'
 import { cn } from '@/utils/cn'
 
 const p = portfolio.pricing
@@ -151,15 +149,10 @@ function PricingCard({
 /* ── Section ────────────────────────────────────────────────────────────── */
 
 export function PricingSection() {
-  const scrollDir = useScrollDirection()
-  const suppress = scrollDir === 'up'
-  const [sectionRef, isInView] = useRevealOnView<HTMLElement>({
+  const { ref: sectionRef, isVisible, shouldAnimate: canAnim } = useSectionReveal<HTMLElement>({
     threshold: 0.14,
     rootMargin: '0px 0px -12% 0px',
-    suppress,
   })
-  const animState = useSectionAnimState(isInView, scrollDir)
-  const canAnim = animState === 'animating'
 
   const cardDelays = ['0.36s', '0.52s', '0.68s']
 
@@ -180,7 +173,7 @@ export function PricingSection() {
           <p
             className={cn(
               'text-[11px] font-bold uppercase tracking-[0.38em] text-accent-foreground motion-reduce:animate-none',
-              canAnim ? 'animate-stats-eyebrow-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
+              canAnim ? 'animate-stats-eyebrow-in' : isVisible ? 'opacity-100' : 'opacity-0',
             )}
           >
             {p.eyebrow}
@@ -189,7 +182,7 @@ export function PricingSection() {
           <h2
             className={cn(
               'text-gradient-brand text-[clamp(2.4rem,5vw,3.5rem)] font-extrabold leading-[1.1] tracking-[-0.04em] motion-reduce:animate-none',
-              canAnim ? 'animate-stats-headline-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
+              canAnim ? 'animate-stats-headline-in' : isVisible ? 'opacity-100' : 'opacity-0',
             )}
             style={{ animationDelay: canAnim ? '0.12s' : undefined }}
           >
@@ -203,7 +196,7 @@ export function PricingSection() {
               key={plan.id}
               plan={plan}
               delay={cardDelays[i] ?? '0.48s'}
-              inView={animState !== 'hidden'}
+              inView={isVisible}
               canAnim={canAnim}
             />
           ))}
@@ -212,7 +205,7 @@ export function PricingSection() {
         <div
           className={cn(
             'mt-14 flex flex-col items-center gap-3 text-center motion-reduce:animate-none',
-            canAnim ? 'animate-stats-support-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
+            canAnim ? 'animate-stats-support-in' : isVisible ? 'opacity-100' : 'opacity-0',
           )}
           style={{ animationDelay: canAnim ? '0.88s' : undefined }}
         >

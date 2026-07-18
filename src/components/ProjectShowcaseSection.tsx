@@ -4,23 +4,21 @@ import {
   TabletFrame,
 } from '@/components/device/DeviceFrames'
 import { portfolio } from '@/content/portfolio'
-import { useRevealOnView } from '@/hooks/useRevealOnView'
-import { useSectionAnimState } from '@/hooks/useSectionAnimState'
-import { useScrollDirection } from '@/hooks/useScrollDirection'
+import { useSectionReveal } from '@/hooks/useSectionReveal'
 import { cn } from '@/utils/cn'
 
 const DEVICE_STAGE_SPACER_FEATURED = 'h-[clamp(300px,60vw,700px)]'
 
 export function ProjectShowcaseSection() {
-  const scrollDir = useScrollDirection()
-  const suppress = scrollDir === 'up'
-  const [sectionRef, visible, revealKey] = useRevealOnView<HTMLElement>({
+  const {
+    ref: sectionRef,
+    isVisible: visible,
+    revealKey,
+    shouldAnimate: canAnimate,
+  } = useSectionReveal<HTMLElement>({
     threshold: 0.14,
     rootMargin: '0px 0px -12% 0px',
-    suppress,
   })
-  const animState = useSectionAnimState(visible, scrollDir)
-  const canAnimate = animState === 'animating'
   const { devicePreviewAlt } = portfolio.works
   const showcaseScreens = portfolio.projectShowcase.screens
 

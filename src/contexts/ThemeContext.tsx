@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
 
 type Theme = 'light' | 'dark'
@@ -30,7 +31,12 @@ function applyThemeClass(theme: Theme) {
   }
 
   if (document.startViewTransition) {
-    document.startViewTransition(apply)
+    const transition = document.startViewTransition(apply)
+    void Promise.allSettled([
+      transition.ready,
+      transition.updateCallbackDone,
+      transition.finished,
+    ])
   } else {
     root.classList.add('theme-transitioning')
     apply()

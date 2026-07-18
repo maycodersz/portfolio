@@ -31,7 +31,9 @@ export function BrandSkillLogo({ label, variant, className }: BrandSkillLogoProp
     return (
       <HighLevelMark
         className={cn(
-          isMarquee ? 'skill-chip-icon h-9 w-11 shrink-0' : 'h-3.5 w-4 shrink-0',
+          isMarquee
+            ? 'skill-chip-fallback h-9 w-11 shrink-0'
+            : 'h-3.5 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-white',
           className,
         )}
       />

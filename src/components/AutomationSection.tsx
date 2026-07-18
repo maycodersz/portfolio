@@ -10,10 +10,7 @@ import {
   type AutomationProject,
   portfolio,
 } from '@/content/portfolio'
-import { useInView } from '@/hooks/useInView'
-import { useSectionAnimState } from '@/hooks/useSectionAnimState'
-import { useScrollDirection } from '@/hooks/useScrollDirection'
-import { useScrollRevealGate } from '@/hooks/useScrollRevealGate'
+import { useSectionReveal } from '@/hooks/useSectionReveal'
 import { CARD_DECK_STAGE_STYLE } from '@/utils/cardDeckStage'
 import { cn } from '@/utils/cn'
 
@@ -245,6 +242,8 @@ function FanCard({
           ariaLabel={`View ${project.title}`}
           onClick={onClickCenter}
           containerClassName="h-full min-w-0 w-full"
+          analyticsEvent="automation_card_click"
+          analyticsLabel={project.title}
         >
           {cardInner}
         </WithCursorFollow>
@@ -262,33 +261,32 @@ function CardDeckCarousel({
   onOpen,
   sectionInView,
   scrollReveal,
+  onInteraction,
 }: {
   projects: readonly AutomationProject[]
   onOpen: (p: AutomationProject) => void
   sectionInView: boolean
   scrollReveal: boolean
+  onInteraction: () => void
 }) {
   const [active, setActive] = useState(0)
-  const [hasInteracted, setHasInteracted] = useState(false)
   const total = projects.length
   const { carouselAria } = auto
 
-  const revealActive = scrollReveal && !hasInteracted
-
   const goPrev = () => {
-    setHasInteracted(true)
+    onInteraction()
     setActive((active - 1 + total) % total)
   }
   const goNext = () => {
-    setHasInteracted(true)
+    onInteraction()
     setActive((active + 1) % total)
   }
   const goTo = (index: number) => {
-    setHasInteracted(true)
+    onInteraction()
     setActive(index)
   }
   const openProject = (project: AutomationProject) => {
-    setHasInteracted(true)
+    onInteraction()
     onOpen(project)
   }
 
@@ -343,7 +341,7 @@ function CardDeckCarousel({
                     : goNext()
                 }
                 sectionInView={sectionInView}
-                scrollReveal={revealActive}
+                scrollReveal={scrollReveal}
               />
             )
           })}
@@ -397,19 +395,18 @@ function CardDeckCarousel({
 /* ── Section ────────────────────────────────────────────────────────────── */
 
 export function AutomationSection() {
-  const [activeCategory, setActiveCategory] = useState<AutomationCategory>('crm')
+  const [activeCategory, setActiveCategory] = useState<AutomationCategory>('all')
   const [modalProject, setModalProject] = useState<AutomationProject | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
-  const scrollDir = useScrollDirection()
-  const suppress = scrollDir === 'up'
-
-  const [sectionRef, isInView] = useInView<HTMLElement>({
+  const [interactionCycle, setInteractionCycle] = useState<number | null>(null)
+  const { ref: sectionRef, isVisible, shouldAnimate, revealKey } = useSectionReveal<HTMLElement>({
     threshold: 0.14,
     rootMargin: '0px 0px -12% 0px',
+    animationWindowMs: 1820,
   })
-  const scrollReveal = useScrollRevealGate(isInView, 1820, suppress)
-  const animState = useSectionAnimState(isInView, scrollDir)
-  const canAnim = animState === 'animating'
+  const canAnim = shouldAnimate
+
+  const revealInteractionDisabled = interactionCycle === revealKey
 
   const filteredProjects =
     activeCategory === 'all'
@@ -419,6 +416,7 @@ export function AutomationSection() {
         )
 
   const handleOpen = (project: AutomationProject) => {
+    setInteractionCycle(revealKey)
     setModalProject(project)
     setModalOpen(true)
   }
@@ -444,7 +442,7 @@ export function AutomationSection() {
             <p
               className={cn(
                 'text-[clamp(0.625rem,0.4rem+0.75vw,0.6875rem)] font-bold uppercase tracking-[0.38em] text-accent-foreground motion-reduce:animate-none',
-                canAnim ? 'animate-stats-eyebrow-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
+                canAnim ? 'animate-stats-eyebrow-in' : isVisible ? 'opacity-100' : 'opacity-0',
               )}
             >
               {auto.eyebrow}
@@ -453,7 +451,7 @@ export function AutomationSection() {
             <h2
               className={cn(
                 'text-gradient-brand px-px py-px text-[clamp(2.5rem,5vw,3.75rem)] font-extrabold leading-[1.1] tracking-[-0.04em] motion-reduce:animate-none',
-                canAnim ? 'animate-stats-headline-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
+                canAnim ? 'animate-stats-headline-in' : isVisible ? 'opacity-100' : 'opacity-0',
               )}
               style={{ animationDelay: canAnim ? '0.12s' : undefined }}
             >
@@ -464,7 +462,7 @@ export function AutomationSection() {
               <p
                 className={cn(
                   'text-[clamp(0.75rem,0.55rem+0.9vw,0.9375rem)] leading-relaxed text-muted-foreground motion-reduce:animate-none',
-                  canAnim ? 'animate-stats-support-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
+                  canAnim ? 'animate-stats-support-in' : isVisible ? 'opacity-100' : 'opacity-0',
                 )}
                 style={{ animationDelay: canAnim ? '0.48s' : undefined }}
               >
@@ -475,11 +473,17 @@ export function AutomationSection() {
                 <div
                   className={cn(
                     'motion-reduce:animate-none',
-                    canAnim ? 'animate-stats-support-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
+                    canAnim ? 'animate-stats-support-in' : isVisible ? 'opacity-100' : 'opacity-0',
                   )}
                   style={{ animationDelay: canAnim ? '0.72s' : undefined }}
                 >
-                  <CategoryPills active={activeCategory} onChange={setActiveCategory} />
+                  <CategoryPills
+                    active={activeCategory}
+                    onChange={(category) => {
+                      setInteractionCycle(revealKey)
+                      setActiveCategory(category)
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -491,8 +495,9 @@ export function AutomationSection() {
               key={activeCategory}
               projects={filteredProjects as readonly AutomationProject[]}
               onOpen={handleOpen}
-              sectionInView={isInView}
-              scrollReveal={scrollReveal}
+              sectionInView={isVisible}
+              scrollReveal={shouldAnimate && !revealInteractionDisabled}
+              onInteraction={() => setInteractionCycle(revealKey)}
             />
           </div>
 

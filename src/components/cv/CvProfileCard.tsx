@@ -2,21 +2,16 @@ import { Download } from 'lucide-react'
 
 import cvProfile from '@/assets/cv/profile.png'
 import { Button } from '@/components/ui/button'
-import { useInView } from '@/hooks/useInView'
-import { useScrollDirection } from '@/hooks/useScrollDirection'
-import { useSectionAnimState } from '@/hooks/useSectionAnimState'
+import { useSectionReveal } from '@/hooks/useSectionReveal'
 import { portfolio } from '@/content/portfolio'
 import { cn } from '@/utils/cn'
 
 export function CvProfileCard() {
   const { cv } = portfolio
-  const scrollDir = useScrollDirection()
-  const [ref, isInView] = useInView<HTMLDivElement>({
+  const { ref, isVisible, shouldAnimate: canAnim } = useSectionReveal<HTMLDivElement>({
     threshold: 0.08,
     rootMargin: '0px 0px -8% 0px',
   })
-  const animState = useSectionAnimState(isInView, scrollDir)
-  const canAnim = animState === 'animating'
 
   return (
     <div
@@ -24,7 +19,7 @@ export function CvProfileCard() {
       className={cn(
         'flex h-full flex-col items-center justify-center gap-5 rounded-2xl border border-border p-6 text-center motion-reduce:animate-none sm:p-8',
         'bg-background dark:bg-white/[0.04] dark:backdrop-blur-sm',
-        canAnim ? 'animate-stats-support-in' : animState !== 'hidden' ? 'opacity-100' : 'opacity-0',
+        canAnim ? 'animate-stats-support-in' : isVisible ? 'opacity-100' : 'opacity-0',
       )}
     >
       {/* Profile photo */}
@@ -55,7 +50,12 @@ export function CvProfileCard() {
 
       {/* Download CV */}
       <Button variant="accent" size="sm" className="min-h-11 rounded-xl" asChild>
-        <a href={cv.downloadHref} download>
+        <a
+          href={cv.downloadHref}
+          download
+          data-analytics-event="resume_download"
+          data-analytics-label="Download CV"
+        >
           <span className="inline-flex items-center gap-2">
             <Download className="size-4 shrink-0" aria-hidden />
             {cv.downloadLabel}

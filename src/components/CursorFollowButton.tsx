@@ -80,6 +80,8 @@ type WithCursorFollowProps = {
   containerClassName?: string
   onClick?: () => void
   ariaLabel?: string
+  analyticsEvent?: string
+  analyticsLabel?: string
 }
 
 export function WithCursorFollow({
@@ -89,6 +91,8 @@ export function WithCursorFollow({
   containerClassName,
   onClick,
   ariaLabel,
+  analyticsEvent,
+  analyticsLabel,
 }: WithCursorFollowProps) {
   const ref = useRef<HTMLDivElement>(null)
   const isPointerFine = useIsPointerFine()
@@ -128,6 +132,8 @@ export function WithCursorFollow({
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
       aria-label={onClick ? (ariaLabel ?? label) : undefined}
+      data-analytics-event={analyticsEvent}
+      data-analytics-label={analyticsLabel}
     >
       {children}
       <CursorFollowButton {...cursor} label={label} className={className} />

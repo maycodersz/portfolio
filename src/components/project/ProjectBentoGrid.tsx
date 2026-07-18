@@ -29,6 +29,7 @@ import {
   type TechStackCategory,
 } from '@/content/portfolio'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
+import { useRevealCycle } from '@/contexts/RevealCycleContext'
 import { cn } from '@/utils/cn'
 
 type ProjectBentoGridProps = {
@@ -251,6 +252,7 @@ function ResultsTileInner({
 export function ProjectBentoGrid({ project, className }: ProjectBentoGridProps) {
   const copy = portfolio.projectDetailPage
   const reducedMotion = usePrefersReducedMotion()
+  const { cycleId } = useRevealCycle()
   const feats = [...(project.features ?? [])].slice(0, 6)
   const tech = project.techStack ?? []
   const links = project.links ?? []
@@ -266,7 +268,7 @@ export function ProjectBentoGrid({ project, className }: ProjectBentoGridProps) 
       aria-label={copy.bentoGridAriaLabel}
       className={cn('bg-background px-[10%] py-12 md:py-16 lg:py-20', className)}
     >
-      <div className="mx-auto max-w-6xl">
+      <div key={cycleId} className="mx-auto max-w-6xl">
         <h2 className="sr-only">{copy.featuresHeading}</h2>
 
         <div className={gridClass}>
@@ -309,7 +311,14 @@ export function ProjectBentoGrid({ project, className }: ProjectBentoGridProps) 
                     className="rounded-xl"
                     asChild
                   >
-                    <a href={link.href} target="_blank" rel="noopener noreferrer" aria-label={linkAriaLabel(link, copy)}>
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={linkAriaLabel(link, copy)}
+                      data-analytics-event="project_link_click"
+                      data-analytics-label={`${project.title}: ${link.label}`}
+                    >
                       <span className="inline-flex items-center gap-2">
                         {link.variant === 'github' ? <GithubMark className="size-4 shrink-0" aria-hidden /> : null}
                         {link.label}

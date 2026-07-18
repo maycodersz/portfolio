@@ -11,6 +11,7 @@ node_modules
 .env.*
 .env.local
 .env.*.local
+!.env.example
 
 # ── Deployment configs (may contain tokens/keys) ───────────────────────────────
 .vercel
@@ -61,3 +62,5 @@ __pycache__/
 # ── Test & coverage output ─────────────────────────────────────────────────────
 coverage/
 .nyc_output/
+test-results/
+playwright-report/
