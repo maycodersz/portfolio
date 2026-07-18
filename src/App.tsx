@@ -3,7 +3,6 @@ import { AutomationSection } from '@/components/AutomationSection'
 import { ContactSection } from '@/components/ContactSection'
 import { HeroSplineSection } from '@/components/HeroSplineSection'
 import { LoadingScreen } from '@/components/LoadingScreen'
-import { PricingSection } from '@/components/PricingSection'
 import { RouteHashScroll } from '@/components/RouteHashScroll'
 import { SkillsShowcase } from '@/components/SkillsShowcase'
 import { StatsSection } from '@/components/StatsSection'
@@ -22,10 +21,9 @@ function App() {
       <SkillsShowcase />
       <StatsSection />
       <div id="works" className="scroll-mt-[var(--navbar-height)]">
+        <AutomationSection />
         <WorksSection />
       </div>
-      <AutomationSection />
-      <PricingSection />
       <ContactSection />
     </AppShell>
   )

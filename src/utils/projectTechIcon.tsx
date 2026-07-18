@@ -3,25 +3,32 @@ import {
   Bell,
   BellRing,
   Box,
+  Boxes,
+  CalendarCheck,
   Cloud,
+  ContactRound,
   Container,
   Database,
   FileCode2,
   FileText,
   FileType2,
   GitBranch,
+  GitFork,
   Globe,
   HardDrive,
   ImagePlus,
   KeyRound,
   Layers,
   LayoutTemplate,
+  ListChecks,
   Mail,
   Package,
   Palette,
+  PanelsTopLeft,
   Route,
   Server,
   Shield,
+  ScanText,
   Smartphone,
   Sparkles,
   Terminal,
@@ -96,6 +103,13 @@ function iconByPattern(lower: string): LucideIcon {
   if (lower.includes('file') || lower.includes('attachment') || lower.includes('vault')) return HardDrive
   if (lower.includes('local-first') || lower.includes('on-device')) return Smartphone
   if (lower.includes('n8n') || lower.includes('workflow')) return Workflow
+  if (lower === 'crm') return ContactRound
+  if (lower.includes('pipeline')) return GitFork
+  if (lower.includes('form')) return PanelsTopLeft
+  if (lower.includes('task')) return ListChecks
+  if (lower.includes('custom object')) return Boxes
+  if (lower.includes('ai extraction')) return ScanText
+  if (lower.includes('monthly close')) return CalendarCheck
   if (lower.includes('tanstack') || lower.includes('react query')) return Zap
   if (lower.includes('zod')) return Shield
   if (lower.includes('shadcn')) return LayoutTemplate

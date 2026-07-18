@@ -1,24 +1,16 @@
 import type { LucideIcon } from 'lucide-react'
 import {
-  Calendar,
   ChevronLeft,
   ChevronRight,
-  Cloud,
   Database,
   ExternalLink,
-  Globe,
   Layers,
-  Mail,
-  Send,
-  Sparkles,
-  Table2,
-  Workflow,
 } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
-import { HighLevelMark } from '@/components/icons/HighLevelMark'
+import { BrandSkillLogo } from '@/components/BrandSkillLogo'
 import {
   Dialog,
   DialogContent,
@@ -80,38 +72,6 @@ function GradientStrokeIcon({
   )
 }
 
-/** Match common tags to icons (substring / case insensitive). */
-function iconForAutomationTag(tag: string): LucideIcon {
-  const t = tag.toLowerCase()
-  if (t.includes('n8n')) return Workflow
-  if (t.includes('telegram')) return Send
-  if (t.includes('gmail') || (t.includes('mail') && t.includes('google'))) return Mail
-  if (t.includes('calendar')) return Calendar
-  if (t.includes('postgres')) return Database
-  if (t.includes('supabase')) return Database
-  if (t.includes('sheet')) return Table2
-  if (t.includes('drive')) return Cloud
-  if (t.includes('apify')) return Globe
-  if (t.includes('openrouter') || t.includes('open router')) return Sparkles
-  if (t.includes('openai')) return Sparkles
-  return Layers
-}
-
-function iconForDatabaseLine(label: string): LucideIcon {
-  const t = label.toLowerCase()
-  if (t.includes('postgres')) return Database
-  if (t.includes('supabase')) return Database
-  if (t.includes('sheet')) return Table2
-  if (t.includes('drive')) return Cloud
-  if (t.includes('sqlite')) return Database
-  if (t.includes('airtable')) return Table2
-  return Database
-}
-
-function isHighLevelLabel(label: string): boolean {
-  return /(?:go\s*)?high\s*level/i.test(label)
-}
-
 function buildSlides(project: AutomationProject): readonly string[] {
   return [project.image, ...(project.galleryImages ?? [])]
 }
@@ -123,12 +83,10 @@ function AutomationDetailBlock({
   sectionIcon: SectionIcon,
   heading,
   items,
-  resolveChipIcon,
 }: {
   sectionIcon: LucideIcon
   heading: string
   items: readonly string[]
-  resolveChipIcon: (label: string) => LucideIcon
 }) {
   if (items.length === 0) return null
 
@@ -150,11 +108,7 @@ function AutomationDetailBlock({
               'dark:border-primary/15 dark:bg-muted/40',
             )}
           >
-            {isHighLevelLabel(item) ? (
-              <HighLevelMark className="h-4 w-5 shrink-0" />
-            ) : (
-              <GradientStrokeIcon icon={resolveChipIcon(item)} className="size-3.5 shrink-0 sm:size-4" />
-            )}
+            <BrandSkillLogo label={item} variant="techPill" className="size-4" />
             {item}
           </span>
         ))}
@@ -255,7 +209,7 @@ function AutomationModalImageHero({
             type="button"
             onClick={goPrev}
             aria-label={previousImageLabel}
-            className="absolute left-3 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background/80 text-muted-foreground shadow-md backdrop-blur-sm transition-colors hover:text-foreground active:scale-90"
+            className="absolute left-2 top-1/2 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background/85 text-muted-foreground shadow-md backdrop-blur-sm transition-colors hover:text-foreground active:scale-95 sm:left-3"
           >
             <ChevronLeft className="size-5" aria-hidden />
           </button>
@@ -263,7 +217,7 @@ function AutomationModalImageHero({
             type="button"
             onClick={goNext}
             aria-label={nextImageLabel}
-            className="absolute right-3 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background/80 text-muted-foreground shadow-md backdrop-blur-sm transition-colors hover:text-foreground active:scale-90"
+            className="absolute right-2 top-1/2 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background/85 text-muted-foreground shadow-md backdrop-blur-sm transition-colors hover:text-foreground active:scale-95 sm:right-3"
           >
             <ChevronRight className="size-5" aria-hidden />
           </button>
@@ -310,7 +264,7 @@ export function AutomationModal({ project, open, onOpenChange }: AutomationModal
       </svg>
 
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-2xl gap-0 overflow-hidden p-0 sm:max-w-2xl">
+        <DialogContent className="max-h-[calc(100dvh-1rem)] w-[calc(100vw-1rem)] max-w-2xl gap-0 overflow-y-auto overscroll-contain p-0 sm:max-h-[calc(100dvh-2rem)] sm:w-[calc(100vw-2rem)] sm:max-w-2xl">
           {projectOpen ? (
             <>
               <AutomationModalImageHero
@@ -321,7 +275,7 @@ export function AutomationModal({ project, open, onOpenChange }: AutomationModal
                 nextImageLabel={copy.nextImage}
               />
 
-              <div className="flex flex-col gap-5 p-6 sm:p-7">
+              <div className="flex flex-col gap-4 p-4 sm:gap-5 sm:p-7">
                 <DialogHeader className="space-y-3 text-left">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-accent-foreground/90">
                     {copy.eyebrow}
@@ -348,14 +302,12 @@ export function AutomationModal({ project, open, onOpenChange }: AutomationModal
                   sectionIcon={Layers}
                   heading={copy.techStackHeading}
                   items={project.tags}
-                  resolveChipIcon={iconForAutomationTag}
                 />
 
                 <AutomationDetailBlock
                   sectionIcon={Database}
                   heading={copy.databaseHeading}
                   items={project.databases}
-                  resolveChipIcon={iconForDatabaseLine}
                 />
 
                 {project.link ? (

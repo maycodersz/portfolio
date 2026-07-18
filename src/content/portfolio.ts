@@ -123,6 +123,8 @@ export type Project = {
   id: string
   title: string
   kind: ProjectKind
+  /** Controls homepage visibility without removing the project or its direct route. */
+  showInWorks?: boolean
   description: string
   projectType: string
   duration: string
@@ -315,7 +317,7 @@ export const portfolio = {
     headlineBefore: "Let's build your",
     rotatingTitles: ['Automation', 'Website', 'Mobile App'] as const,
     description:
-      'I automate the Boring Stuff for E-Commerce & Marketing Teams using AI and n8n.I ship full products: web dashboards and mobile apps',
+      'I automate repetitive accounting-firm work with AI, n8n, and CRM systems. I also build focused web dashboards and client portals.',
     profileAlt: 'Photo of Maycoder',
     alterEgoAlt: 'Maycoder alter ego',
     ctas: [
@@ -330,7 +332,6 @@ export const portfolio = {
     items: [
       { id: 'nav-cv', label: 'CV', href: '/cv', kind: 'link' },
       { id: 'nav-work', label: 'Work', href: '/#works', kind: 'link' },
-      { id: 'nav-pricing', label: 'Pricing', href: '/#pricing', kind: 'link' },
       { id: 'nav-hire', label: 'Hire Me', href: '/#contact', kind: 'cta' },
     ] as const satisfies Readonly<NavbarItem[]>,
   },
@@ -559,17 +560,17 @@ export const portfolio = {
     eyebrow: 'Playground',
     title: 'Automation & AI Projects',
     description:
-      'n8n workflows, AI agents, CRM automations, and integrations across Gmail, Calendar, spreadsheets, databases, Google Drive, and more.',
+      'CRM workflows, AI document processing, scheduled close operations, and n8n integrations built around accounting-firm workflows.',
     categoryFilterAriaLabel: 'Filter by category',
     emptyCategoryMessage: 'No projects in this category.',
     carouselViewportHeightPx: 340,
     viewWorkCursorLabel: 'View Work',
     categoryFilters: [
-      { id: 'all', label: 'All' },
-      { id: 'ai', label: 'AI' },
-      { id: 'automation', label: 'Automation' },
-      { id: 'cron', label: 'Cron' },
       { id: 'crm', label: 'CRM' },
+      { id: 'ai', label: 'AI' },
+      { id: 'cron', label: 'Cron' },
+      { id: 'automation', label: 'Automation' },
+      { id: 'all', label: 'All' },
     ] as const satisfies Readonly<AutomationCategoryFilter[]>,
     carouselAria: {
       previous: 'Previous',
@@ -873,6 +874,7 @@ export const portfolio = {
       id: 'admino-mobile',
       title: 'Admino — Life Admin App',
       kind: 'mobile',
+      showInWorks: false,
       description:
         'A local-first mobile app for personal life admin — bills, renewals, subscriptions, medical tasks, IDs, and more. Capture tasks with categories and action types, attach photos or PDFs as proof, set due dates with local reminders, and browse everything from Inbox, Timeline, and Vault views. Data stays fully on-device.',
       projectType: 'Utility App, Mobile App',

@@ -221,9 +221,11 @@ function ProjectCard({ project }: { project: Project }) {
 /* ─── Section ────────────────────────────────────────────────────────────── */
 
 export function WorksSection() {
+  const visibleProjects = portfolio.projects.filter((project) => project.showInWorks !== false)
+
   return (
     <>
-      {portfolio.projects.map((project) => (
+      {visibleProjects.map((project) => (
         <ProjectCard key={project.id} project={project as Project} />
       ))}
     </>

@@ -19,6 +19,25 @@ import { cn } from '@/utils/cn'
 
 const auto = portfolio.automation
 
+const automationCategoryRank = new Map(
+  auto.categoryFilters
+    .filter(({ id }) => id !== 'all')
+    .map(({ id }, index) => [id, index]),
+)
+
+function projectAudienceRank(project: AutomationProject): number {
+  return Math.min(
+    ...project.categories.map((category) =>
+      automationCategoryRank.get(category) ?? Number.MAX_SAFE_INTEGER,
+    ),
+  )
+}
+
+/** Audience-first ordering follows the visible CRM â†’ AI â†’ Cron â†’ Automation filters. */
+const audienceOrderedProjects = [...portfolio.automationProjects].sort(
+  (left, right) => projectAudienceRank(left) - projectAudienceRank(right),
+)
+
 /* ── Category filter pills ──────────────────────────────────────────────── */
 
 function categoryCount(cat: AutomationCategory) {
@@ -46,6 +65,7 @@ function CategoryPills({
             key={id}
             type="button"
             onClick={() => onChange(id)}
+            aria-pressed={isActive}
             className={cn(
               'flex min-h-11 items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition-colors duration-150 sm:px-4 sm:text-sm',
               isActive
@@ -377,7 +397,7 @@ function CardDeckCarousel({
 /* ── Section ────────────────────────────────────────────────────────────── */
 
 export function AutomationSection() {
-  const [activeCategory, setActiveCategory] = useState<AutomationCategory>('all')
+  const [activeCategory, setActiveCategory] = useState<AutomationCategory>('crm')
   const [modalProject, setModalProject] = useState<AutomationProject | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
   const scrollDir = useScrollDirection()
@@ -393,8 +413,8 @@ export function AutomationSection() {
 
   const filteredProjects =
     activeCategory === 'all'
-      ? portfolio.automationProjects
-      : portfolio.automationProjects.filter((p) =>
+      ? audienceOrderedProjects
+      : audienceOrderedProjects.filter((p) =>
           p.categories.some((c) => c === activeCategory),
         )
 
