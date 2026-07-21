@@ -38,9 +38,9 @@ test('Google Maps outreach project shows its scraper, email, and results evidenc
   await expect(dialog.getByText('Google Sheets', { exact: true })).toBeVisible()
 
   await dialog.getByRole('button', { name: 'Next image' }).click()
-  await expect(dialog.getByText('Scheduled email outreach', { exact: true })).toBeVisible()
+  await expect(dialog.getByText('Scheduled cold email workflow', { exact: true })).toBeVisible()
   await dialog.getByRole('button', { name: 'Next image' }).click()
-  await expect(dialog.getByText('Lead results sheet', { exact: true })).toBeVisible()
+  await expect(dialog.getByText('Google Sheets lead results', { exact: true })).toBeVisible()
 })
 
 test('navigation matches the landing hierarchy and hash links reach their sections', async ({ page, isMobile }) => {
@@ -220,7 +220,8 @@ test('AccountingOps teaser opens the full eight-workflow case study', async ({ p
   await workflowSection.getByRole('button', { name: /View workflow evidence GHL Public Request Form/ }).first().click()
   const dialog = page.getByRole('dialog')
   await expect(dialog).toBeVisible()
-  await expect(dialog.getByText(/Workflow evidence 1 of/)).toBeVisible()
+  await expect(dialog.getByText('Public request intake workflow', { exact: true })).toBeVisible()
+  await expect(dialog.getByRole('img', { name: 'GHL Public Request Form — Public request intake workflow' })).toBeVisible()
   await expect(dialog.getByRole('button', { name: 'Previous workflow image' })).toBeVisible()
   await expect(dialog.getByRole('button', { name: 'Next workflow image' })).toBeVisible()
   await expect(dialog.getByRole('button', { name: 'Close' })).toBeVisible()
@@ -228,7 +229,8 @@ test('AccountingOps teaser opens the full eight-workflow case study', async ({ p
   await expect(dialog.getByText('Automation', { exact: true }).first()).toBeVisible()
   await expect(dialog.getByText('CRM', { exact: true }).first()).toBeVisible()
   await dialog.getByRole('button', { name: 'Next workflow image' }).click()
-  await expect(dialog.getByText(/Workflow evidence 2 of/)).toBeVisible()
+  await expect(dialog.getByText('Bookkeeping operations request form', { exact: true })).toBeVisible()
+  await expect(dialog.getByRole('img', { name: 'GHL Public Request Form — Bookkeeping operations request form' })).toBeVisible()
   await expect(dialog.getByRole('heading', { name: 'Trigger' })).toBeVisible()
   await expect(dialog.getByRole('heading', { name: 'Human checkpoint' })).toBeVisible()
   await expect(dialog.getByRole('heading', { name: 'Tech stack' })).toBeVisible()

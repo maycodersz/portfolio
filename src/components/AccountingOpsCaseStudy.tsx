@@ -2,7 +2,7 @@ import { ArrowLeft, CheckCircle2, ChevronLeft, ChevronRight, ExternalLink } from
 import { useEffect, useState } from 'react'
 
 import { AutomationCardDeckCarousel, AutomationCategoryPills } from '@/components/AutomationSection'
-import { AUTOMATION_DIALOG_CONTENT_CLASS } from '@/components/AutomationModal'
+import { AutomationImageCaption, AUTOMATION_DIALOG_CONTENT_CLASS } from '@/components/AutomationModal'
 import { BrandSkillLogo } from '@/components/BrandSkillLogo'
 import { Button } from '@/components/ui/button'
 import {
@@ -48,6 +48,7 @@ function WorkflowGallery({ workflow, open, onOpenChange }: { workflow: Workflow 
 
   if (!workflow) return null
   const currentImage = workflow.images[index]
+  const currentLabel = workflow.imageLabels[index] ?? workflow.title
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -56,15 +57,13 @@ function WorkflowGallery({ workflow, open, onOpenChange }: { workflow: Workflow 
           <div className="flex h-full w-full items-center justify-center p-2 sm:p-4">
             <img
               src={currentImage}
-              alt={`${workflow.title} evidence ${index + 1} of ${workflow.images.length}`}
+              alt={`${workflow.title} — ${currentLabel}`}
               className="h-full w-full object-contain"
               decoding="async"
             />
           </div>
           <div aria-hidden className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.04)_0%,rgba(0,0,0,0)_55%,rgba(0,0,0,0.32)_100%)]" />
-          <figcaption className="absolute bottom-3 left-3 rounded-full border border-border bg-background/90 px-3 py-1.5 text-xs font-semibold text-foreground shadow-sm backdrop-blur-sm">
-            Workflow evidence {index + 1} of {workflow.images.length}
-          </figcaption>
+          <AutomationImageCaption label={currentLabel} index={index} total={workflow.images.length} />
           {workflow.images.length > 1 ? (
             <>
               <Button type="button" variant="secondary" size="icon" className="absolute left-2 top-1/2 z-20 size-11 -translate-y-1/2 rounded-full bg-background/90 shadow-md backdrop-blur-sm sm:left-3" aria-label="Previous workflow image" onClick={() => setIndex((current) => (current - 1 + workflow.images.length) % workflow.images.length)}><ChevronLeft className="size-5" /></Button>

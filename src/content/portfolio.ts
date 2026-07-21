@@ -169,8 +169,8 @@ export type AutomationProject = {
   image: string
   /** Extra workflow screenshots shown in the detail modal (main thumbnail stays on `image`). */
   galleryImages?: readonly string[]
-  /** Optional labels for `image` followed by `galleryImages`, shown as contextual slide captions. */
-  imageLabels?: readonly string[]
+  /** Labels for `image` followed by `galleryImages`, shown in every modal slide caption. */
+  imageLabels: readonly string[]
   /** Stored data backends (Sheets, Postgres, Drive, etc.) — renders as chips like Tech stack */
   databases: readonly string[]
   link: AutomationProjectLink
@@ -941,6 +941,7 @@ export const portfolio = {
         'A personal AI assistant on Telegram that gets the contact details from Google Sheets and delegates tasks to specialized sub-agents, and searches the web for information. The Email Agent handles all Gmail operations, while the Calendar Agent manages Google Calendar events — all orchestrated through n8n with PostgreSQL for persistent memory.',
       tags: ['n8n', 'Telegram', 'Gmail', 'Google Calendar', 'Tavily'],
       image: imgAutomationJarvis,
+      imageLabels: ['Telegram Jarvis AI agent'],
       databases: ['PostgreSQL', 'Google Sheets'],
       link: null,
     },
@@ -953,6 +954,12 @@ export const portfolio = {
       tags: ['n8n', 'Telegram', 'OpenAI'],
       image: imgAutomationReceipt,
       galleryImages: [imgAutomationReceiptDaily, imgAutomationReceiptWeekly, imgAutomationReceiptMonthly],
+      imageLabels: [
+        'AI receipt processing workflow',
+        'Daily receipt report workflow',
+        'Weekly receipt report workflow',
+        'Monthly receipt report workflow',
+      ],
       databases: ['Google Sheets', 'Google Drive'],
       link: null,
     },
@@ -964,6 +971,7 @@ export const portfolio = {
         'A feature-rich Telegram bot for small business management. Log sales and expenses instantly, scan handwritten records with AI image recognition, and pull daily, weekly, monthly, or custom-range financial reports. Includes void/undo support and CSV export.',
       tags: ['n8n', 'Telegram', 'OpenAI', 'Google Sheets'],
       image: imgAutomationSales,
+      imageLabels: ['Sales tracker command workflow'],
       databases: ['PostgreSQL', 'Google Sheets'],
       link: null,
     },
@@ -975,6 +983,7 @@ export const portfolio = {
         'An AI-powered n8n automation that handles all Gmail tasks — reading, summarizing, drafting, and organizing emails on command. Uses PostgreSQL for conversation memory and Google Sheets as a lightweight log, triggered via webhook.',
       tags: ['n8n', 'Gmail', 'OpenAI'],
       image: imgAutomationEmail,
+      imageLabels: ['Gmail email agent tools'],
       databases: ['PostgreSQL', 'Google Sheets'],
       link: null,
     },
@@ -986,6 +995,7 @@ export const portfolio = {
         'A dedicated n8n automation agent for Google Calendar management — create, update, query, and delete events on behalf of the user through natural language. Pairs with the Jarvis AI Agent as a specialized sub-agent for scheduling tasks.',
       tags: ['n8n', 'Google Calendar'],
       image: imgAutomationCalendar,
+      imageLabels: ['Google Calendar agent tools'],
       databases: ['PostgreSQL', 'Google Sheets'],
       link: null,
     },
@@ -998,6 +1008,11 @@ export const portfolio = {
       tags: ['n8n', 'Gmail', 'Telegram', 'OpenRouter'],
       image: imgAutomationEmailWatcher,
       galleryImages: [imgAutomationEmailWatcherDigest, imgAutomationEmailWatcherSpam],
+      imageLabels: [
+        'AI email classification workflow',
+        'Daily email digest workflow',
+        'Scheduled spam cleanup workflow',
+      ],
       databases: ['Google Sheets'],
       link: null,
     },
@@ -1009,6 +1024,7 @@ export const portfolio = {
         'Hooks into this portfolio’s contact form: classifies each inquiry as hot, warm, or cold, enriches business emails via Apify, and drafts a reply grounded in your Supabase project library by service type (web, automation, or mobile). Hot and warm leads get a Gmail follow-up plus a Telegram ping; cold leads are logged to Sheets only.',
       tags: ['n8n', 'OpenRouter', 'Gmail', 'Telegram', 'Supabase', 'Apify'],
       image: imgAutomationLeadQualifier,
+      imageLabels: ['AI contact lead qualification'],
       databases: ['Google Sheets', 'Supabase'],
       link: null,
     },
@@ -1020,6 +1036,7 @@ export const portfolio = {
         'An n8n AI workflow built as a client demo — automatically transcribes and summarizes team meetings, then posts the summary with the meeting date directly to a Slack channel. It also extracts every action item and to-do from the discussion and pushes them as tasks into Monday.com, so the team immediately sees their pending work without any manual note-taking.',
       tags: ['n8n', 'OpenRouter', 'Slack', 'Monday.com'],
       image: imgAutomationMeeting,
+      imageLabels: ['Meeting summary and task extraction'],
       databases: ['Monday.com'],
       link: null,
     },
@@ -1032,6 +1049,11 @@ export const portfolio = {
       tags: ['GoHighLevel', 'CRM', 'Forms', 'Pipeline', 'Email', 'Telegram', 'Webhook'],
       image: imgGhlPublicRequestWorkflow,
       galleryImages: [imgGhlPublicRequestForm, imgGhlPublicRequestEmail],
+      imageLabels: [
+        'Public request intake workflow',
+        'Bookkeeping operations request form',
+        'Request received confirmation email',
+      ],
       databases: ['GoHighLevel'],
       link: null,
     },
@@ -1049,6 +1071,13 @@ export const portfolio = {
         imgGhlDiscoveryEmail,
         imgGhlDiscoveryTelegram
       ],
+      imageLabels: [
+        'Discovery booking automation workflow',
+        'Discovery booking form',
+        'Discovery call calendar',
+        'Discovery call confirmation email',
+        'Telegram notification workflow',
+      ],
       databases: ['GoHighLevel'],
       link: null,
     },
@@ -1065,6 +1094,12 @@ export const portfolio = {
         imgGhlDiscoveryCompletedTelegramWorkflow,
         imgGhlInternalDiscoveryNotesForm,
       ],
+      imageLabels: [
+        'Discovery notes reminder workflow',
+        'Discovery completed pipeline stage',
+        'Telegram notification workflow',
+        'Internal discovery notes form',
+      ],
       databases: [],
       link: null,
     },
@@ -1080,6 +1115,11 @@ export const portfolio = {
         imgGhlInternalDiscoveryNotesForm,
         imgGhlInternalDiscoveryNotesTelegramWorkflow,
       ],
+      imageLabels: [
+        'Post-call decision routing workflow',
+        'Internal discovery notes form',
+        'Telegram notification workflow',
+      ],
       databases: [],
       link: null,
     },
@@ -1094,6 +1134,11 @@ export const portfolio = {
       galleryImages: [
         imgGhlWonDealOnboardingEmail,
         imgGhlWonDealOnboardingTelegramWorkflow,
+      ],
+      imageLabels: [
+        'Won deal onboarding workflow',
+        'Client onboarding email',
+        'Telegram notification workflow',
       ],
       databases: [],
       link: null,
@@ -1112,6 +1157,14 @@ export const portfolio = {
         imgGhlClientOnboardingFolderWorkflow,
         imgGhlClientOnboardingTelegramWorkflow,
         imgGhlClientOnboardingDriveOutput,
+      ],
+      imageLabels: [
+        'Form submission workflow',
+        'Client onboarding form',
+        'Document request email',
+        'Client folder creation workflow',
+        'Telegram notification workflow',
+        'Google Drive client folders',
       ],
       databases: ['GoHighLevel', 'Google Drive'],
       link: null,
@@ -1132,6 +1185,15 @@ export const portfolio = {
         imgGhlAccountingTransactionWorkflow,
         imgGhlDocumentInternalNotificationWorkflow,
       ],
+      imageLabels: [
+        'Document created trigger',
+        'Document processing workflow',
+        'AI image document extractor',
+        'AI text document extractor',
+        'AI review request writer',
+        'Accounting transaction creator',
+        'Telegram notification workflow',
+      ],
       databases: ['GoHighLevel'],
       link: null,
     },
@@ -1143,6 +1205,7 @@ export const portfolio = {
         'A monthly n8n and GoHighLevel workflow for tracking bookkeeping close readiness across active clients. Every month, the automation gets all active companies, prepares the company data, and loops through each company one by one. For every company, it checks the linked monthly close records, creates a new monthly close when none exists, reuses the current-month record when it already exists, or creates a fresh record when the latest close belongs to a previous month. The workflow then gets the company documents, accounting transactions, and review requests, analyzes blockers such as missing documents, unresolved review requests, or incomplete accounting records, updates the monthly close status, creates a bookkeeper task, and sends an internal team notification.',
       tags: ['GoHighLevel', 'CRM', 'n8n', 'Cron', 'Monthly Close', 'Custom Objects', 'Tasks', 'Telegram', 'Webhook'],
       image: imgGhlMonthlyCloseWorkflow,
+      imageLabels: ['Monthly close workflow'],
       databases: ['GoHighLevel'],
       link: null,
     },
@@ -1155,7 +1218,7 @@ export const portfolio = {
       tags: ['n8n', 'Google Maps', 'Apify', 'Gmail'],
       image: imgGoogleMapsLeadScraper,
       galleryImages: [imgGoogleMapsColdEmailOutreach, imgGoogleMapsLeadResults],
-      imageLabels: ['Google Maps lead scraper', 'Scheduled email outreach', 'Lead results sheet'],
+      imageLabels: ['Google Maps lead scraper', 'Scheduled cold email workflow', 'Google Sheets lead results'],
       databases: ['Google Sheets'],
       link: null,
     }

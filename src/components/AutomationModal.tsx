@@ -1,12 +1,23 @@
 import type { LucideIcon } from 'lucide-react'
 import {
+  Bot,
+  Calculator,
+  CalendarDays,
   ChevronLeft,
   ChevronRight,
+  ClipboardList,
   Database,
   ExternalLink,
+  FileSearch,
+  FolderOpen,
+  GitFork,
   Layers,
   MailCheck,
   MapPinned,
+  MessageCircle,
+  ReceiptText,
+  ScanText,
+  ShieldCheck,
   TableProperties,
   Workflow,
 } from 'lucide-react'
@@ -81,22 +92,74 @@ function GradientStrokeIcon({
 
 type AutomationSlide = {
   src: string
-  label?: string
+  label: string
 }
 
 function buildSlides(project: AutomationProject): readonly AutomationSlide[] {
   return [project.image, ...(project.galleryImages ?? [])].map((src, index) => ({
     src,
-    label: project.imageLabels?.[index],
+    label: project.imageLabels[index] ?? project.title,
   }))
 }
 
 function slideLabelIcon(label: string): LucideIcon {
   const normalized = label.toLowerCase()
   if (normalized.includes('map') || normalized.includes('scrap')) return MapPinned
+  if (normalized.includes('telegram') || normalized.includes('notification')) return MessageCircle
   if (normalized.includes('mail') || normalized.includes('outreach')) return MailCheck
-  if (normalized.includes('result') || normalized.includes('sheet')) return TableProperties
+  if (normalized.includes('spam') || normalized.includes('cleanup')) return ShieldCheck
+  if (normalized.includes('receipt')) return ReceiptText
+  if (normalized.includes('form') || normalized.includes('review request')) return ClipboardList
+  if (normalized.includes('calendar') || normalized.includes('monthly close')) return CalendarDays
+  if (
+    normalized.includes('result') ||
+    normalized.includes('sheet') ||
+    normalized.includes('report') ||
+    normalized.includes('sales tracker')
+  ) return TableProperties
+  if (normalized.includes('pipeline') || normalized.includes('routing')) return GitFork
+  if (normalized.includes('folder') || normalized.includes('drive')) return FolderOpen
+  if (normalized.includes('transaction')) return Calculator
+  if (normalized.includes('extract')) return ScanText
+  if (normalized.includes('document') || normalized.includes('processing')) return FileSearch
+  if (normalized.includes('agent') || normalized.includes('ai ')) return Bot
   return Workflow
+}
+
+export function AutomationImageCaption({
+  label,
+  index,
+  total,
+  className,
+}: {
+  label: string
+  index: number
+  total: number
+  className?: string
+}) {
+  return (
+    <figcaption
+      aria-atomic="true"
+      aria-live="polite"
+      className={cn(
+        'pointer-events-none absolute bottom-3 left-1/2 z-10 flex max-w-[calc(100%-6.5rem)] -translate-x-1/2 items-center gap-2 rounded-full border border-border/80 bg-background/90 px-3 py-1.5 text-foreground shadow-lg backdrop-blur-md',
+        className,
+      )}
+    >
+      {createElement(slideLabelIcon(label), {
+        className: 'size-3.5 shrink-0 text-accent-foreground',
+        strokeWidth: 2,
+        'aria-hidden': true,
+      })}
+      <span className="truncate text-[11px] font-semibold sm:text-xs">{label}</span>
+      <span
+        className="shrink-0 text-[10px] font-medium tabular-nums text-muted-foreground"
+        aria-label={`Image ${index + 1} of ${total}`}
+      >
+        {index + 1}/{total}
+      </span>
+    </figcaption>
+  )
 }
 
 /**
@@ -142,14 +205,12 @@ function AutomationDetailBlock({
 
 type AutomationModalImageHeroProps = {
   project: AutomationProject
-  imageAltFallback: string
   previousImageLabel: string
   nextImageLabel: string
 }
 
 function AutomationModalImageHero({
   project,
-  imageAltFallback,
   previousImageLabel,
   nextImageLabel,
 }: AutomationModalImageHeroProps) {
@@ -186,12 +247,12 @@ function AutomationModalImageHero({
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [hasCarousel, goPrev, goNext])
 
-  const activeSlide = slides[activeIndex] ?? { src: project.image }
+  const activeSlide = slides[activeIndex] ?? { src: project.image, label: project.title }
   const activeLabel = activeSlide.label
-  const imageAlt = `${project.title} — ${activeLabel ?? imageAltFallback}`
+  const imageAlt = `${project.title} — ${activeLabel}`
 
   return (
-    <div className="relative aspect-video w-full overflow-hidden border-b border-border bg-muted">
+    <figure className="relative aspect-video w-full overflow-hidden border-b border-border bg-muted">
       <div className="relative h-full w-full overflow-hidden">
         {useSlideAnimation ? (
           <AnimatePresence mode="popLayout" initial={false} custom={direction}>
@@ -227,19 +288,7 @@ function AutomationModalImageHero({
         className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.06)_0%,rgba(0,0,0,0)_45%,rgba(0,0,0,0.35)_100%)]"
       />
 
-      {activeLabel ? (
-        <div className="pointer-events-none absolute bottom-3 left-1/2 z-10 flex max-w-[calc(100%-6.5rem)] -translate-x-1/2 items-center gap-2 rounded-full border border-border/80 bg-background/90 px-3 py-1.5 text-foreground shadow-lg backdrop-blur-md">
-          {createElement(slideLabelIcon(activeLabel), {
-            className: 'size-3.5 shrink-0 text-accent-foreground',
-            strokeWidth: 2,
-            'aria-hidden': true,
-          })}
-          <span className="truncate text-[11px] font-semibold sm:text-xs">{activeLabel}</span>
-          <span className="shrink-0 text-[10px] font-medium tabular-nums text-muted-foreground" aria-label={`Image ${activeIndex + 1} of ${total}`}>
-            {activeIndex + 1}/{total}
-          </span>
-        </div>
-      ) : null}
+      <AutomationImageCaption label={activeLabel} index={activeIndex} total={total} />
 
       {hasCarousel ? (
         <>
@@ -261,7 +310,7 @@ function AutomationModalImageHero({
           </button>
         </>
       ) : null}
-    </div>
+    </figure>
   )
 }
 
@@ -308,7 +357,6 @@ export function AutomationModal({ project, open, onOpenChange }: AutomationModal
               <AutomationModalImageHero
                 key={project.id}
                 project={project}
-                imageAltFallback={copy.imageAltFallback}
                 previousImageLabel={copy.previousImage}
                 nextImageLabel={copy.nextImage}
               />

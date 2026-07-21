@@ -12,7 +12,7 @@ describe('Google Maps lead outreach portfolio entry', () => {
       categories: ['automation', 'cron'],
       tags: ['n8n', 'Google Maps', 'Apify', 'Gmail'],
       databases: ['Google Sheets'],
-      imageLabels: ['Google Maps lead scraper', 'Scheduled email outreach', 'Lead results sheet'],
+      imageLabels: ['Google Maps lead scraper', 'Scheduled cold email workflow', 'Google Sheets lead results'],
     })
     expect(project?.galleryImages).toHaveLength(2)
 
@@ -24,5 +24,19 @@ describe('Google Maps lead outreach portfolio entry', () => {
     expect(resolveSkillBrandSlug('Apify')).toBe('apify')
     expect(resolveSkillBrandSlug('Gmail')).toBe('gmail')
     expect(resolveSkillBrandSlug('Google Sheets')).toBe('googlesheets')
+  })
+})
+
+describe('automation modal image identification', () => {
+  it('gives every project image an exact, non-empty caption and alt-text source', () => {
+    for (const project of portfolio.automationProjects) {
+      const imageCount = 1 + (project.galleryImages?.length ?? 0)
+
+      expect(project.imageLabels, `${project.title} image labels`).toHaveLength(imageCount)
+      for (const label of project.imageLabels) {
+        expect(label.trim(), `${project.title} has a blank image label`).not.toBe('')
+        expect(label, `${project.title} still uses the generic fallback`).not.toBe('Workflow screenshot')
+      }
+    }
   })
 })
