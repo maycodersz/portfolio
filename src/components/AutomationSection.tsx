@@ -37,25 +37,29 @@ const audienceOrderedProjects = [...portfolio.automationProjects].sort(
 
 /* ── Category filter pills ──────────────────────────────────────────────── */
 
-function categoryCount(cat: AutomationCategory) {
-  if (cat === 'all') return portfolio.automationProjects.length
-  return portfolio.automationProjects.filter((p) => p.categories.some((c) => c === cat)).length
+function categoryCount(cat: AutomationCategory, projects: readonly Pick<AutomationProject, 'categories'>[]) {
+  if (cat === 'all') return projects.length
+  return projects.filter((p) => p.categories.some((c) => c === cat)).length
 }
 
-function CategoryPills({
+export function AutomationCategoryPills({
   active,
   onChange,
+  projects = portfolio.automationProjects,
+  ariaLabel = auto.categoryFilterAriaLabel,
 }: {
   active: AutomationCategory
   onChange: (c: AutomationCategory) => void
+  projects?: readonly Pick<AutomationProject, 'categories'>[]
+  ariaLabel?: string
 }) {
   return (
     <nav
-      aria-label={auto.categoryFilterAriaLabel}
+      aria-label={ariaLabel}
       className="flex flex-wrap gap-2"
     >
       {auto.categoryFilters.map(({ id, label }) => {
-        const count = categoryCount(id)
+        const count = categoryCount(id, projects)
         const isActive = active === id
         return (
           <button
@@ -127,6 +131,8 @@ type FanCardProps = {
   onClickSide: () => void
   sectionInView: boolean
   scrollReveal: boolean
+  viewLabel: string
+  viewAriaLabelPrefix: string
 }
 
 function FanCard({
@@ -137,6 +143,8 @@ function FanCard({
   onClickSide,
   sectionInView,
   scrollReveal,
+  viewLabel,
+  viewAriaLabelPrefix,
 }: FanCardProps) {
   const isCenter = slot === 'center'
 
@@ -238,8 +246,8 @@ function FanCard({
     >
       {isCenter ? (
         <WithCursorFollow
-          label={auto.viewWorkCursorLabel}
-          ariaLabel={`View ${project.title}`}
+          label={viewLabel}
+          ariaLabel={`${viewAriaLabelPrefix} ${project.title}`}
           onClick={onClickCenter}
           containerClassName="h-full min-w-0 w-full"
           analyticsEvent="automation_card_click"
@@ -256,18 +264,28 @@ function FanCard({
 
 /* ── Card fan carousel ──────────────────────────────────────────────────── */
 
-function CardDeckCarousel({
+export function AutomationCardDeckCarousel({
   projects,
   onOpen,
   sectionInView,
   scrollReveal,
   onInteraction,
+  previousLabel = 'Previous project',
+  nextLabel = 'Next project',
+  paginationLabel = auto.sectionAriaLabel,
+  viewLabel = auto.viewWorkCursorLabel,
+  viewAriaLabelPrefix = 'View',
 }: {
   projects: readonly AutomationProject[]
   onOpen: (p: AutomationProject) => void
   sectionInView: boolean
   scrollReveal: boolean
   onInteraction: () => void
+  previousLabel?: string
+  nextLabel?: string
+  paginationLabel?: string
+  viewLabel?: string
+  viewAriaLabelPrefix?: string
 }) {
   const [active, setActive] = useState(0)
   const total = projects.length
@@ -306,7 +324,7 @@ function CardDeckCarousel({
         <button
           type="button"
           onClick={goPrev}
-          aria-label="Previous project"
+          aria-label={previousLabel}
           className="absolute -left-3 top-1/2 z-20 flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background/80 text-muted-foreground shadow-md backdrop-blur-sm transition-colors hover:text-foreground active:scale-90 sm:-left-5 lg:hidden"
         >
           <ChevronLeft className="size-5" />
@@ -316,7 +334,7 @@ function CardDeckCarousel({
         <button
           type="button"
           onClick={goNext}
-          aria-label="Next project"
+          aria-label={nextLabel}
           className="absolute -right-3 top-1/2 z-20 flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background/80 text-muted-foreground shadow-md backdrop-blur-sm transition-colors hover:text-foreground active:scale-90 sm:-right-5 lg:hidden"
         >
           <ChevronRight className="size-5" />
@@ -342,6 +360,8 @@ function CardDeckCarousel({
                 }
                 sectionInView={sectionInView}
                 scrollReveal={scrollReveal}
+                viewLabel={viewLabel}
+                viewAriaLabelPrefix={viewAriaLabelPrefix}
               />
             )
           })}
@@ -351,7 +371,7 @@ function CardDeckCarousel({
       {/* Pagination dots + mobile View Work */}
       <div className="flex flex-col items-center gap-3">
         <nav
-          aria-label={`${auto.sectionAriaLabel} pagination`}
+          aria-label={`${paginationLabel} pagination`}
           className="flex items-center justify-center gap-2"
         >
           {projects.map((_, i) => (
@@ -385,7 +405,7 @@ function CardDeckCarousel({
             if (current) openProject(current)
           }}
         >
-          {auto.viewWorkCursorLabel} →
+          {viewLabel} →
         </Button>
       </div>
     </div>
@@ -477,7 +497,7 @@ export function AutomationSection() {
                   )}
                   style={{ animationDelay: canAnim ? '0.72s' : undefined }}
                 >
-                  <CategoryPills
+                  <AutomationCategoryPills
                     active={activeCategory}
                     onChange={(category) => {
                       setInteractionCycle(revealKey)
@@ -491,7 +511,7 @@ export function AutomationSection() {
 
           {/* ── Right column — cards ─────────────────── */}
           <div className="flex items-center justify-center lg:justify-end">
-            <CardDeckCarousel
+            <AutomationCardDeckCarousel
               key={activeCategory}
               projects={filteredProjects as readonly AutomationProject[]}
               onOpen={handleOpen}

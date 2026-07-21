@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useTheme } from '@/contexts/ThemeContext'
 
 import alterEgoDarkImg from '@/assets/hero/alter-ego-dark.png'
@@ -44,65 +44,6 @@ function HeroCtaRow({ actions }: { actions: readonly HeroCta[] }) {
 }
 
 /* ── Rolling heading ─────────────────────────────────────────────────────── */
-
-function RollingHeroHeading({
-  before,
-  rotatingTitles,
-  sectionInView,
-}: {
-  before: string
-  rotatingTitles: readonly string[]
-  sectionInView: boolean
-}) {
-  const [index, setIndex] = useState(0)
-
-  useEffect(() => {
-    if (!sectionInView || rotatingTitles.length === 0) return
-    const id = window.setInterval(() => {
-      setIndex((i) => (i + 1) % rotatingTitles.length)
-    }, 2600)
-    return () => clearInterval(id)
-  }, [sectionInView, rotatingTitles.length])
-
-  const active = rotatingTitles[index] ?? ''
-  const gradient = 'text-gradient-brand'
-
-  const slotChars = useMemo(() => {
-    const n = rotatingTitles.reduce((m, s) => Math.max(m, s.length), 0)
-    return Math.max(n, 1)
-  }, [rotatingTitles])
-
-  const slotWidth = `${slotChars + 0.75}ch`
-
-  return (
-    <h1
-      aria-label={`${before} ${active}`}
-      className="relative m-0 text-[clamp(2rem,4vw,3rem)] font-bold leading-tight tracking-[-0.02em]"
-    >
-      <span className="flex flex-wrap items-baseline gap-x-2 gap-y-1" aria-hidden>
-        <span className={gradient}>{before}</span>
-        <span
-          className={cn(
-            gradient,
-            'relative inline-block h-[1.15em] max-w-full shrink-0 overflow-hidden align-bottom [width:var(--hero-roll-w)] [min-width:var(--hero-roll-w)]',
-          )}
-          style={{ ['--hero-roll-w' as string]: slotWidth }}
-        >
-          <span
-            key={sectionInView ? index : 'idle'}
-            className={cn(
-              gradient,
-              'inline-block whitespace-nowrap',
-              sectionInView && 'animate-hero-roll',
-            )}
-          >
-            {active}
-          </span>
-        </span>
-      </span>
-    </h1>
-  )
-}
 
 /* ── Hero portrait ─────────────────────────────────────────────────────────── */
 
@@ -308,11 +249,12 @@ export function HeroSplineSection() {
               canAnim ? 'animate-stats-headline-in' : heroVisible ? 'opacity-100' : 'opacity-0',
             )}
           >
-            <RollingHeroHeading
-              before={hero.headlineBefore}
-              rotatingTitles={hero.rotatingTitles}
-              sectionInView={heroVisible}
-            />
+            <p className="mb-5 text-[11px] font-bold uppercase tracking-[0.38em] text-accent-foreground sm:text-xs">
+              {hero.eyebrow}
+            </p>
+            <h1 className="text-gradient-brand m-0 max-w-3xl px-px py-px text-[clamp(2rem,4vw,3rem)] font-bold leading-tight tracking-[-0.02em]">
+              {hero.headline}
+            </h1>
           </div>
 
           <p

@@ -314,15 +314,15 @@ export function automationCategoryLabel(
 
 export const portfolio = {
   hero: {
-    headlineBefore: "Let's build your",
-    rotatingTitles: ['Automation', 'Website', 'Mobile App'] as const,
+    eyebrow: 'AI automation for service businesses',
+    headline: 'Automate the work slowing your business down.',
     description:
-      'I automate repetitive accounting-firm work with AI, n8n, and CRM systems. I also build focused web dashboards and client portals.',
+      'Connect leads, CRM records, email, documents, calendars, and internal tasks so your team spends less time copying data and chasing the next step.',
     profileAlt: 'Photo of Maycoder',
     alterEgoAlt: 'Maycoder alter ego',
     ctas: [
-      { id: 'hero-view-work', label: 'View Work ->', href: '/#works', tone: 'main' },
-      { id: 'hero-get-in-touch', label: 'Get in Touch', href: '/#contact', tone: 'secondary' },
+      { id: 'hero-book-review', label: 'Book a free automation review', href: '/#contact', tone: 'main' },
+      { id: 'hero-view-work', label: 'View Work', href: '/#works', tone: 'secondary' },
     ] as const satisfies Readonly<HeroCta[]>,
   },
 
@@ -330,10 +330,12 @@ export const portfolio = {
     brandName: 'Maycoder',
     brandHref: '/#hero',
     items: [
-      { id: 'nav-cv', label: 'CV', href: '/cv', kind: 'link' },
+      { id: 'nav-solutions', label: 'Solutions', href: '/#solutions', kind: 'link' },
+      { id: 'nav-process', label: 'Process', href: '/#process', kind: 'link' },
+      { id: 'nav-case-study', label: 'Case Study', href: '/#case-study', kind: 'link' },
       { id: 'nav-work', label: 'Work', href: '/#works', kind: 'link' },
-      { id: 'nav-contact', label: 'Contact', href: '/#contact', kind: 'link' },
-      { id: 'nav-hire', label: 'Hire Me', href: '/#contact', kind: 'cta' },
+      { id: 'nav-faq', label: 'FAQ', href: '/#faq', kind: 'link' },
+      { id: 'nav-book-review', label: 'Book a Review', href: '/#contact', kind: 'cta' },
     ] as const satisfies Readonly<NavbarItem[]>,
   },
 

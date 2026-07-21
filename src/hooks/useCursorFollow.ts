@@ -1,4 +1,4 @@
-import { useEffect, useState, type RefObject } from 'react'
+import { useCallback, useEffect, useState, type RefObject } from 'react'
 
 type CursorState = { x: number; y: number; visible: boolean }
 
@@ -9,6 +9,7 @@ type CursorState = { x: number; y: number; visible: boolean }
  */
 export function useCursorFollow(containerRef: RefObject<HTMLElement | null>) {
   const [state, setState] = useState<CursorState>({ x: 0, y: 0, visible: false })
+  const hide = useCallback(() => setState((current) => ({ ...current, visible: false })), [])
 
   useEffect(() => {
     const el = containerRef.current
@@ -34,5 +35,5 @@ export function useCursorFollow(containerRef: RefObject<HTMLElement | null>) {
     }
   }, [containerRef])
 
-  return state
+  return { ...state, hide }
 }

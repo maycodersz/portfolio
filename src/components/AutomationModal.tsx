@@ -31,6 +31,9 @@ const SLIDE_TRANSITION = {
   ease: [0.22, 1, 0.36, 1] as const,
 }
 
+export const AUTOMATION_DIALOG_CONTENT_CLASS =
+  'max-h-[calc(100dvh-1rem)] w-[calc(100vw-1rem)] max-w-2xl gap-0 overflow-y-auto overscroll-contain p-0 sm:max-h-[calc(100dvh-2rem)] sm:w-[calc(100vw-2rem)] sm:max-w-2xl'
+
 /** 1 = next (right arrow), -1 = previous (left arrow) */
 type SlideDirection = 1 | -1
 
@@ -264,7 +267,7 @@ export function AutomationModal({ project, open, onOpenChange }: AutomationModal
       </svg>
 
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-h-[calc(100dvh-1rem)] w-[calc(100vw-1rem)] max-w-2xl gap-0 overflow-y-auto overscroll-contain p-0 sm:max-h-[calc(100dvh-2rem)] sm:w-[calc(100vw-2rem)] sm:max-w-2xl">
+        <DialogContent className={AUTOMATION_DIALOG_CONTENT_CLASS}>
           {projectOpen ? (
             <>
               <AutomationModalImageHero

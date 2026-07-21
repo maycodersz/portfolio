@@ -97,7 +97,7 @@ export function WithCursorFollow({
   const ref = useRef<HTMLDivElement>(null)
   const isPointerFine = useIsPointerFine()
   const { setPaperPlaneSuppressed } = useSiteCursor()
-  const cursor = useCursorFollow(ref as React.RefObject<HTMLElement | null>)
+  const { hide: hideCursorFollow, ...cursor } = useCursorFollow(ref as React.RefObject<HTMLElement | null>)
 
   useEffect(() => {
     if (!isPointerFine) return
@@ -123,7 +123,10 @@ export function WithCursorFollow({
         isPointerFine && 'cursor-none',
         containerClassName,
       )}
-      onClick={onClick}
+      onClick={onClick ? () => {
+        hideCursorFollow()
+        onClick()
+      } : undefined}
       onKeyDown={(event) => {
         if (!onClick || (event.key !== 'Enter' && event.key !== ' ')) return
         event.preventDefault()

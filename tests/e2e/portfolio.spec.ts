@@ -10,7 +10,7 @@ test('automation defaults to All with CRM first and live fallback is honest', as
   await expect(page.getByRole('status', { name: 'Live count unavailable' })).toBeVisible()
 })
 
-test('Contact follows Work and hash navigation reaches the section', async ({ page, isMobile }) => {
+test('navigation matches the landing hierarchy and hash links reach their sections', async ({ page, isMobile }) => {
   await page.goto('/')
   if (isMobile) {
     await page.getByRole('button', { name: 'Open menu' }).click()
@@ -19,10 +19,227 @@ test('Contact follows Work and hash navigation reaches the section', async ({ pa
     ? page.locator('#mobile-nav-overlay nav')
     : page.locator('header nav[aria-label="Primary"]')
   const labels = await primary.getByRole('link').allTextContents()
-  expect(labels.indexOf('Contact')).toBe(labels.indexOf('Work') + 1)
-  await primary.getByRole('link', { name: 'Contact', exact: true }).click()
-  await expect(page).toHaveURL(/#contact$/)
-  await expect(page.locator('#contact')).toBeInViewport()
+  expect(labels.slice(0, 5)).toEqual(['Solutions', 'Process', 'Case Study', 'Work', 'FAQ'])
+  expect(labels).not.toContain('Contact')
+  expect(labels).not.toContain('CV')
+  await primary.getByRole('link', { name: 'Case Study', exact: true }).click()
+  await expect(page).toHaveURL(/#case-study$/)
+  await expect(page.locator('#case-study')).toBeInViewport()
+
+  if (isMobile) {
+    await page.getByRole('button', { name: 'Open menu' }).click()
+  }
+  const faqNavigation = isMobile
+    ? page.locator('#mobile-nav-overlay nav')
+    : page.locator('header nav[aria-label="Primary"]')
+  await faqNavigation.getByRole('link', { name: 'FAQ', exact: true }).click()
+  await expect(page).toHaveURL(/#faq$/)
+  await expect(page.locator('#faq')).toBeInViewport()
+})
+
+test('automation review progresses from business details to workflow details without submitting', async ({ page }) => {
+  await page.goto('/#contact')
+  const contactSidebar = page.getByRole('complementary', { name: 'Direct contact and social links' })
+  await expect(contactSidebar).toBeVisible()
+  await expect(contactSidebar.getByRole('link', { name: /Email/ })).toBeVisible()
+  await expect(contactSidebar.getByRole('link', { name: /LinkedIn/ })).toBeVisible()
+  await expect(contactSidebar.getByRole('link', { name: 'Facebook', exact: true })).toBeVisible()
+  await expect(contactSidebar.getByRole('link', { name: 'Instagram', exact: true })).toBeVisible()
+  await expect(contactSidebar.getByRole('link', { name: 'TikTok', exact: true })).toBeVisible()
+  await expect(contactSidebar.getByRole('link', { name: 'YouTube', exact: true })).toBeVisible()
+  await expect(contactSidebar.getByRole('link', { name: 'Privacy and analytics' })).toHaveCount(0)
+  await expect(page.locator('footer').getByRole('link', { name: 'Privacy and analytics' })).toBeVisible()
+
+  await page.getByLabel('Name', { exact: true }).fill('QA Visitor')
+  await page.getByLabel('Work email', { exact: true }).fill('qa@example.com')
+  await page.getByLabel('Company name', { exact: true }).fill('QA Company')
+  await page.getByRole('button', { name: 'Continue', exact: true }).click()
+
+  await expect(page.getByText('Step 2 of 2', { exact: true })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'The workflow' })).toBeVisible()
+  await expect(page.getByLabel('Industry', { exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: /Continue to calendar/ })).toBeVisible()
+})
+
+test('successful review shows only the Google appointment button', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(window, 'calendar', {
+      configurable: true,
+      value: {
+        schedulingButton: {
+          load: ({ label, target }: { label: string; target: HTMLElement }) => {
+            const button = document.createElement('button')
+            button.type = 'button'
+            button.textContent = label
+            target.appendChild(button)
+          },
+        },
+      },
+    })
+  })
+  await page.route('https://splitforms.com/api/submit', (route) => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: true }) }))
+  await page.goto('/#contact')
+
+  await page.getByLabel('Name', { exact: true }).fill('QA Visitor')
+  await page.getByLabel('Work email', { exact: true }).fill('qa@example.com')
+  await page.getByLabel('Company name', { exact: true }).fill('QA Company')
+  await page.getByRole('button', { name: 'Continue', exact: true }).click()
+  await page.getByLabel('Industry', { exact: true }).selectOption({ index: 1 })
+  await page.getByLabel('Team size', { exact: true }).selectOption({ index: 1 })
+  await page.getByLabel('Process to improve', { exact: true }).selectOption({ index: 1 })
+  await page.getByLabel('Timeframe', { exact: true }).selectOption({ index: 1 })
+  await page.getByLabel('What is the current bottleneck?').fill('Manual client follow-up is slowing the team down.')
+  await page.getByRole('checkbox').check()
+  await page.getByRole('button', { name: /Continue to calendar/ }).click()
+
+  await expect(page.getByRole('heading', { name: 'Choose a time' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Book an appointment' })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Open the booking page directly' })).toHaveCount(0)
+})
+
+test('automation review reports validation beside each invalid field', async ({ page }) => {
+  await page.goto('/#contact')
+  await expect(page.getByLabel('Name', { exact: true })).toHaveAttribute('placeholder', 'Your name')
+  await expect(page.getByLabel('Work email', { exact: true })).toHaveAttribute('placeholder', 'you@company.com')
+  await expect(page.getByLabel('Company name', { exact: true })).toHaveAttribute('placeholder', 'Company name')
+  await page.getByRole('button', { name: 'Continue', exact: true }).click()
+
+  const name = page.getByLabel('Name', { exact: true })
+  const email = page.getByLabel('Work email', { exact: true })
+  const company = page.getByLabel('Company name', { exact: true })
+  await expect(name).toBeFocused()
+  await expect(name).toHaveAttribute('aria-invalid', 'true')
+  await expect(email).toHaveAttribute('aria-invalid', 'true')
+  await expect(company).toHaveAttribute('aria-invalid', 'true')
+  await expect(page.getByText('Please enter your name.', { exact: true })).toBeVisible()
+  await expect(page.getByText('Please enter your work email.', { exact: true })).toBeVisible()
+  await expect(page.getByText('Please enter your company name.', { exact: true })).toBeVisible()
+  await expect(page.getByLabel(/Company website/)).not.toHaveAttribute('aria-invalid', 'true')
+  await expect(page.locator('#contact [role="alert"]')).toHaveCount(0)
+
+  await name.fill('QA Visitor')
+  await expect(page.getByText('Please enter your name.', { exact: true })).toHaveCount(0)
+  await expect(name).toHaveAttribute('aria-invalid', 'false')
+  await email.fill('invalid-email')
+  await company.fill('QA Company')
+  await page.getByRole('button', { name: 'Continue', exact: true }).click()
+  await expect(email).toBeFocused()
+  await expect(page.getByText('Please enter a valid work email address.', { exact: true })).toBeVisible()
+
+  await email.fill('qa@example.com')
+  await page.getByRole('button', { name: 'Continue', exact: true }).click()
+  await page.getByRole('button', { name: /Continue to calendar/ }).click()
+
+  await expect(page.getByLabel('Industry', { exact: true })).toBeFocused()
+  for (const message of [
+    'Please choose your industry.',
+    'Please choose your team size.',
+    'Please choose a process to improve.',
+    'Please choose a timeframe.',
+    'Please describe the current bottleneck.',
+    'Please confirm that Maycoder may use these details to respond.',
+  ]) {
+    await expect(page.getByText(message, { exact: true })).toBeVisible()
+  }
+  await expect(page.getByLabel(/Current tools/)).not.toHaveAttribute('aria-invalid', 'true')
+  await expect(page.getByLabel('Optional budget range')).not.toHaveAttribute('aria-invalid', 'true')
+  await expect(page.locator('#contact [role="alert"]')).toHaveCount(0)
+})
+
+test('FAQ starts collapsed and exposes answers through accessible controls', async ({ page }) => {
+  await page.goto('/#faq')
+  const faq = page.locator('#faq')
+  const questions = faq.locator('button[aria-expanded]')
+  await expect(questions).toHaveCount(8)
+  for (const question of await questions.all()) {
+    await expect(question).toHaveAttribute('aria-expanded', 'false')
+  }
+
+  const firstQuestion = questions.first()
+  await firstQuestion.click()
+  await expect(firstQuestion).toHaveAttribute('aria-expanded', 'true')
+  await expect(faq.getByText(/I work best with service businesses/)).toBeVisible()
+  await expect(questions.nth(1)).toHaveAttribute('aria-expanded', 'false')
+})
+
+test('AccountingOps teaser opens the full eight-workflow case study', async ({ page }) => {
+  await page.goto('/#case-study')
+  const teaser = page.locator('#case-study')
+  await expect(teaser.getByRole('heading', { name: 'AccountingOps Client Operations System' })).toBeVisible()
+  await expect(teaser.getByText(/not a claim of a live client deployment/)).toHaveCount(0)
+  await teaser.getByRole('link', { name: /View the full system/ }).click()
+
+  await expect(page).toHaveURL(/\/work\/accountingops-automation-system$/)
+  await expect(page.getByRole('heading', { name: 'AccountingOps Client Operations System' })).toBeVisible()
+  await expect(page.getByRole('link', { name: /Book a similar system/ })).toBeVisible()
+  await expect(page.getByRole('link', { name: /Back to overview/ })).toBeVisible()
+  const workflowSection = page.locator('section[aria-labelledby="workflow-evidence-title"]')
+  await workflowSection.scrollIntoViewIfNeeded()
+  const workflowFilters = workflowSection.getByRole('navigation', { name: 'Filter AccountingOps workflows by category' })
+  await expect(workflowFilters.getByRole('button')).toHaveCount(5)
+  await expect(workflowFilters.getByRole('button', { name: /^All/ })).toHaveAttribute('aria-pressed', 'true')
+  await workflowFilters.getByRole('button', { name: /^AI/ }).click()
+  await expect(workflowSection.getByRole('heading', { name: 'GHL Document Created Processor' })).toBeVisible()
+  await workflowFilters.getByRole('button', { name: /^All/ }).click()
+  const workflowPagination = workflowSection.getByRole('navigation', { name: 'AccountingOps workflows pagination' })
+  await expect(workflowPagination.getByRole('button')).toHaveCount(8)
+  await expect(workflowSection.getByRole('heading', { name: 'GHL Public Request Form' })).toBeVisible()
+  await workflowSection.getByRole('button', { name: /View workflow evidence GHL Public Request Form/ }).first().click()
+  const dialog = page.getByRole('dialog')
+  await expect(dialog).toBeVisible()
+  await expect(dialog.getByText(/Workflow evidence 1 of/)).toBeVisible()
+  await expect(dialog.getByRole('button', { name: 'Previous workflow image' })).toBeVisible()
+  await expect(dialog.getByRole('button', { name: 'Next workflow image' })).toBeVisible()
+  await expect(dialog.getByRole('button', { name: 'Close' })).toBeVisible()
+  await expect(dialog.locator('[aria-label="Workflow image thumbnails"]')).toHaveCount(0)
+  await expect(dialog.getByText('Automation', { exact: true }).first()).toBeVisible()
+  await expect(dialog.getByText('CRM', { exact: true }).first()).toBeVisible()
+  await dialog.getByRole('button', { name: 'Next workflow image' }).click()
+  await expect(dialog.getByText(/Workflow evidence 2 of/)).toBeVisible()
+  await expect(dialog.getByRole('heading', { name: 'Trigger' })).toBeVisible()
+  await expect(dialog.getByRole('heading', { name: 'Human checkpoint' })).toBeVisible()
+  await expect(dialog.getByRole('heading', { name: 'Tech stack' })).toBeVisible()
+})
+
+test('landing sections follow the requested conversion order', async ({ page }) => {
+  await page.goto('/')
+  const order = await page.evaluate(() => {
+    const selectors = ['#hero', 'section[aria-label="Technologies and tools"]', '#automation-helps', '#solutions', '#process', '#case-study', '#works', 'section[aria-label="OLFU Academic Hub"]', '#faq', '#contact', 'footer']
+    return selectors.map((selector) => document.querySelector(selector)?.getBoundingClientRect().top ?? -1)
+  })
+  expect(order.every((position, index) => index === 0 || position > order[index - 1])).toBe(true)
+  await expect(page.getByText('Open to integrating any other API or service your project needs.')).toBeVisible()
+})
+
+test('landing containers match Automation Work while the website project stays narrower', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'explicit viewport matrix runs once')
+  const selectedSelectors = [
+    '#automation-helps .max-w-7xl',
+    '#solutions .max-w-7xl',
+    '#process .max-w-7xl',
+    '#case-study .max-w-7xl',
+    '#faq .max-w-7xl',
+    '#contact .max-w-7xl',
+  ]
+
+  for (const width of [375, 768, 1024, 1600]) {
+    await page.setViewportSize({ width, height: 900 })
+    await page.goto('/')
+    const selectedWidths = await Promise.all(selectedSelectors.map((selector) => page.locator(selector).evaluate((element) => element.getBoundingClientRect().width)))
+    expect(new Set(selectedWidths.map((value) => Math.round(value))).size).toBe(1)
+    if (width >= 768) {
+      const automationWidth = await page.locator('#automation .max-w-7xl').evaluate((element) => element.getBoundingClientRect().width)
+      expect(Math.round(selectedWidths[0])).toBe(Math.round(automationWidth))
+    }
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)
+    expect(overflow).toBeLessThanOrEqual(1)
+  }
+
+  await page.setViewportSize({ width: 1600, height: 900 })
+  await page.goto('/')
+  const automationWidth = await page.locator('#automation .max-w-7xl').evaluate((element) => element.getBoundingClientRect().width)
+  const websiteWidth = await page.locator('section[aria-label="OLFU Academic Hub"] .max-w-5xl').first().evaluate((element) => element.getBoundingClientRect().width)
+  expect(websiteWidth).toBeLessThan(automationWidth)
 })
 
 test('privacy page is reachable', async ({ page }) => {
