@@ -38,6 +38,7 @@ export const SKILL_SIMPLE_ICON_SLUG: Partial<Record<string, string>> = {
   'Monday.com': 'mondaydotcom',
   Apify: 'apify',
   'Google Sheets': 'googlesheets',
+  'Google Maps': 'googlemaps',
   'Google Calendar': 'googlecalendar',
   'Google Drive': 'googledrive',
   'Google OAuth': 'google',

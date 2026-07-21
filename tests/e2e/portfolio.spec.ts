@@ -10,6 +10,39 @@ test('automation defaults to All with CRM first and live fallback is honest', as
   await expect(page.getByRole('status', { name: 'Live count unavailable' })).toBeVisible()
 })
 
+test('Google Maps outreach project shows its scraper, email, and results evidence', async ({ page }) => {
+  await page.goto('/')
+  const automation = page.locator('#automation')
+  await automation.scrollIntoViewIfNeeded()
+
+  await automation
+    .locator('nav[aria-label="Filter by category"]')
+    .getByRole('button', { name: /^Cron/ })
+    .click()
+  await automation
+    .locator('nav[aria-label="Automation Projects pagination"]')
+    .getByRole('button')
+    .last()
+    .click()
+
+  const title = 'Google Maps Lead Scraper & Cold Email Outreach'
+  await expect(automation.getByRole('heading', { name: title })).toBeVisible()
+  await automation.getByRole('button', { name: `View ${title}` }).click()
+
+  const dialog = page.getByRole('dialog')
+  await expect(dialog.getByRole('heading', { name: title })).toBeVisible()
+  await expect(dialog.getByText('Google Maps lead scraper', { exact: true })).toBeVisible()
+  await expect(dialog.getByText('Google Maps', { exact: true })).toBeVisible()
+  await expect(dialog.getByText('Apify', { exact: true })).toBeVisible()
+  await expect(dialog.getByText('Gmail', { exact: true })).toBeVisible()
+  await expect(dialog.getByText('Google Sheets', { exact: true })).toBeVisible()
+
+  await dialog.getByRole('button', { name: 'Next image' }).click()
+  await expect(dialog.getByText('Scheduled email outreach', { exact: true })).toBeVisible()
+  await dialog.getByRole('button', { name: 'Next image' }).click()
+  await expect(dialog.getByText('Lead results sheet', { exact: true })).toBeVisible()
+})
+
 test('navigation matches the landing hierarchy and hash links reach their sections', async ({ page, isMobile }) => {
   await page.goto('/')
   if (isMobile) {

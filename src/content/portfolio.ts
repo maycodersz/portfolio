@@ -42,6 +42,9 @@ import imgGhlReviewRequestWriterWorkflow from '@/assets/projects/automation/proj
 import imgGhlAccountingTransactionWorkflow from '@/assets/projects/automation/project-15.6.png'
 import imgGhlDocumentInternalNotificationWorkflow from '@/assets/projects/automation/project-15.7.png'
 import imgGhlMonthlyCloseWorkflow from '@/assets/projects/automation/project-16.1.png'
+import imgGoogleMapsLeadScraper from '@/assets/projects/automation/project-17.1.png'
+import imgGoogleMapsColdEmailOutreach from '@/assets/projects/automation/project-17.2.png'
+import imgGoogleMapsLeadResults from '@/assets/projects/automation/project-17.3.png'
 import imgAcademicHubDesktop from '@/assets/projects/web/academic-hub/desktop.png'
 import imgAcademicHubPhone from '@/assets/projects/web/academic-hub/phone.png'
 import imgAcademicHubTablet from '@/assets/projects/web/academic-hub/tablet.png'
@@ -166,6 +169,8 @@ export type AutomationProject = {
   image: string
   /** Extra workflow screenshots shown in the detail modal (main thumbnail stays on `image`). */
   galleryImages?: readonly string[]
+  /** Optional labels for `image` followed by `galleryImages`, shown as contextual slide captions. */
+  imageLabels?: readonly string[]
   /** Stored data backends (Sheets, Postgres, Drive, etc.) — renders as chips like Tech stack */
   databases: readonly string[]
   link: AutomationProjectLink
@@ -606,6 +611,10 @@ export const portfolio = {
         'Webhooks',
         'Telegram',
         'Go High Level',
+        'Google Maps',
+        'Apify',
+        'Gmail',
+        'Google Sheets',
       ],
     },
     {
@@ -1135,6 +1144,19 @@ export const portfolio = {
       tags: ['GoHighLevel', 'CRM', 'n8n', 'Cron', 'Monthly Close', 'Custom Objects', 'Tasks', 'Telegram', 'Webhook'],
       image: imgGhlMonthlyCloseWorkflow,
       databases: ['GoHighLevel'],
+      link: null,
+    },
+    {
+      id: 'google-maps-lead-outreach',
+      title: 'Google Maps Lead Scraper & Cold Email Outreach',
+      categories: ['automation', 'cron'],
+      description:
+        'An n8n lead-generation system that scrapes targeted businesses from Google Maps through Apify, prepares and stores structured prospect records in Google Sheets, and runs scheduled Gmail outreach from reusable email templates. Each sent email updates the lead status before the workflow waits a randomized interval, helping pace delivery while preserving a clear results sheet for follow-up.',
+      tags: ['n8n', 'Google Maps', 'Apify', 'Gmail'],
+      image: imgGoogleMapsLeadScraper,
+      galleryImages: [imgGoogleMapsColdEmailOutreach, imgGoogleMapsLeadResults],
+      imageLabels: ['Google Maps lead scraper', 'Scheduled email outreach', 'Lead results sheet'],
+      databases: ['Google Sheets'],
       link: null,
     }
   ] satisfies readonly AutomationProject[],

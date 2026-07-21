@@ -5,9 +5,13 @@ import {
   Database,
   ExternalLink,
   Layers,
+  MailCheck,
+  MapPinned,
+  TableProperties,
+  Workflow,
 } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { createElement, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { BrandSkillLogo } from '@/components/BrandSkillLogo'
@@ -75,8 +79,24 @@ function GradientStrokeIcon({
   )
 }
 
-function buildSlides(project: AutomationProject): readonly string[] {
-  return [project.image, ...(project.galleryImages ?? [])]
+type AutomationSlide = {
+  src: string
+  label?: string
+}
+
+function buildSlides(project: AutomationProject): readonly AutomationSlide[] {
+  return [project.image, ...(project.galleryImages ?? [])].map((src, index) => ({
+    src,
+    label: project.imageLabels?.[index],
+  }))
+}
+
+function slideLabelIcon(label: string): LucideIcon {
+  const normalized = label.toLowerCase()
+  if (normalized.includes('map') || normalized.includes('scrap')) return MapPinned
+  if (normalized.includes('mail') || normalized.includes('outreach')) return MailCheck
+  if (normalized.includes('result') || normalized.includes('sheet')) return TableProperties
+  return Workflow
 }
 
 /**
@@ -166,8 +186,9 @@ function AutomationModalImageHero({
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [hasCarousel, goPrev, goNext])
 
-  const activeSrc = slides[activeIndex] ?? project.image
-  const imageAlt = `${project.title} — ${imageAltFallback}`
+  const activeSlide = slides[activeIndex] ?? { src: project.image }
+  const activeLabel = activeSlide.label
+  const imageAlt = `${project.title} — ${activeLabel ?? imageAltFallback}`
 
   return (
     <div className="relative aspect-video w-full overflow-hidden border-b border-border bg-muted">
@@ -176,7 +197,7 @@ function AutomationModalImageHero({
           <AnimatePresence mode="popLayout" initial={false} custom={direction}>
             <motion.img
               key={activeIndex}
-              src={activeSrc}
+              src={activeSlide.src}
               alt={imageAlt}
               custom={direction}
               variants={slideVariants}
@@ -192,8 +213,8 @@ function AutomationModalImageHero({
           </AnimatePresence>
         ) : (
           <img
-            key={activeSrc}
-            src={activeSrc}
+            key={activeSlide.src}
+            src={activeSlide.src}
             alt={imageAlt}
             className="h-full w-full object-cover object-top"
             loading={activeIndex === 0 ? 'eager' : 'lazy'}
@@ -205,6 +226,20 @@ function AutomationModalImageHero({
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.06)_0%,rgba(0,0,0,0)_45%,rgba(0,0,0,0.35)_100%)]"
       />
+
+      {activeLabel ? (
+        <div className="pointer-events-none absolute bottom-3 left-1/2 z-10 flex max-w-[calc(100%-6.5rem)] -translate-x-1/2 items-center gap-2 rounded-full border border-border/80 bg-background/90 px-3 py-1.5 text-foreground shadow-lg backdrop-blur-md">
+          {createElement(slideLabelIcon(activeLabel), {
+            className: 'size-3.5 shrink-0 text-accent-foreground',
+            strokeWidth: 2,
+            'aria-hidden': true,
+          })}
+          <span className="truncate text-[11px] font-semibold sm:text-xs">{activeLabel}</span>
+          <span className="shrink-0 text-[10px] font-medium tabular-nums text-muted-foreground" aria-label={`Image ${activeIndex + 1} of ${total}`}>
+            {activeIndex + 1}/{total}
+          </span>
+        </div>
+      ) : null}
 
       {hasCarousel ? (
         <>

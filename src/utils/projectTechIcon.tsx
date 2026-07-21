@@ -22,6 +22,7 @@ import {
   LayoutTemplate,
   ListChecks,
   Mail,
+  MapPinned,
   Package,
   Palette,
   PanelsTopLeft,
@@ -57,6 +58,7 @@ const LABEL_ICON: Record<string, LucideIcon> = {
   'react-pdf': FileText,
   Resend: Mail,
   'next-themes': Palette,
+  'Google Maps': MapPinned,
 }
 
 function iconByExactOrCaseInsensitive(label: string): LucideIcon | undefined {
